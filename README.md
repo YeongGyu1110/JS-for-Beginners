@@ -91,5 +91,5 @@ JavaScript로 프로그래밍에 입문하려는 지인들을 위한 리포지�
  │   └── 📂 4-5.switch문/
  │       ├── 📝 01.JS
  │       └── 📝 02.JS
- └── README.md
+ └── 📝 README.md
 ```
