@@ -1,5 +1,4 @@
 # Js-for-Beginners
-# Js-for-Beginners
 JavaScript로 프로그래밍에 입문하려는 지인들을 위한 리포지토리
 
 ## 🛠️ 실행 환경 및 코드 버전
