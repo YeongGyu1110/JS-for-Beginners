@@ -5,43 +5,565 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Dark Dev Blog</title>
     
+    <!-- 코드 하이라이팅 테마 (Tomorrow Night) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- 웹 폰트: Pretendard (본문용), Fira Code (코드용) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. 고급스러운 다크 테마 변수
+           ========================================= */
+        :root {
+            --bg-color: #18191c;
+            --surface-color: #232428;
+            --surface-hover: #2d2f34;
+            
+            --text-heading: #f1f3f5;
+            --text-primary: #c1c2c5;
+            --text-secondary: #909296;
+            
+            --accent-color: #748ffc;
+            --accent-glow: rgba(116, 143, 252, 0.4);
+            
+            --border-color: #373a40;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        /* =========================================
+           2. 기본 설정 및 타이포그래피
+           ========================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            font-size: 16px;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =========================================
+           3. UI 컴포넌트 (헤더, 진행률 바)
+           ========================================= */
+        .progress-container {
+            width: 100%;
+            height: 3px;
+            background: transparent;
+            position: fixed;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: width 0.1s ease-out;
+        }
+
+        .header {
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(24, 25, 28, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-heading);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo span { color: var(--accent-color); }
+
+        /* =========================================
+           4. 레이아웃
+           ========================================= */
+        .layout-container {
+            display: grid;
+            grid-template-columns: 240px minmax(0, 800px) 240px;
+            gap: 3rem;
+            max-width: 1440px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            align-items: start;
+            justify-content: center;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* =========================================
+           5. 중앙 본문 & 마크다운 스타일 (디테일 개선)
+           ========================================= */
+        .content {
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        #post-content {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        #post-content.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* [개선] 헤더 영역 가림 방지를 위한 스크롤 타겟 여백 */
+        .content h1, .content h2, .content h3 {
+            color: var(--text-heading);
+            font-weight: 700;
+            margin-top: 3rem;
+            margin-bottom: 1.2rem;
+            letter-spacing: -0.5px;
+            scroll-margin-top: 100px; /* 고정 헤더 높이를 감안한 수치 */
+        }
+
+        .content h1 { font-size: 2.4rem; margin-top: 1rem; }
+        .content h2 { font-size: 1.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+        .content h3 { font-size: 1.4rem; }
+
+        .content p {
+            margin-bottom: 1.6rem;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            word-break: keep-all;
+        }
+
+        .content blockquote {
+            margin: 2rem 0;
+            padding: 1.2rem 1.5rem;
+            background-color: var(--surface-color);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .content blockquote p { margin-bottom: 0; }
+
+        .content ul, .content ol {
+            margin-bottom: 1.6rem;
+            padding-left: 1.5rem;
+            color: var(--text-primary);
+        }
+        .content li { margin-bottom: 0.4rem; }
+
+        /* [개선] 마크다운 구분선 디자인 */
+        .content hr {
+            border: none;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 3.5rem 0;
+        }
+
+        /* [개선] 마크다운 이미지 디자인 */
+        .content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            margin: 2rem auto;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        /* [개선] 마크다운 표(Table) 스타일 */
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2.5rem 0;
+            font-size: 0.95rem;
+        }
+        .content th {
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-heading);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+            padding: 12px 16px;
+            text-align: left;
+        }
+        .content td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .content tr:hover {
+            background-color: rgba(255, 255, 255, 0.01);
+        }
+
+        /* 인라인 코드 스타일 */
+        :not(pre) > code {
+            background-color: rgba(116, 143, 252, 0.15);
+            color: var(--accent-color);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        /* =========================================
+           6. 코드 블럭 및 복사 버튼 (추가 항목)
+           ========================================= */
+        .content pre {
+            background-color: var(--surface-color) !important;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin: 2.5rem 0 !important;
+            padding: 1.5rem !important;
+            max-width: 100%;
+            overflow-x: auto;
+            position: relative; /* 복사 버튼 배치용 기준점 */
+        }
+
+        .content pre code {
+            font-family: 'Fira Code', monospace !important;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* 복사 버튼 스타일 */
+        .copy-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: rgba(24, 25, 28, 0.8);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0; /* 마우스 오버 전 숨김 */
+            pointer-events: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+
+        /* 코드 블럭에 마우스를 올렸을 때 복사 버튼 노출 */
+        .content pre:hover .copy-button {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .copy-button:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .copy-button.copied {
+            background-color: #2b8a3e; /* 복사 성공 시 녹색 변경 */
+            border-color: #2b8a3e;
+            color: #ffffff;
+        }
+
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* =========================================
+           7. 좌우 사이드바 (ToC & 태그)
+           ========================================= */
+        .toc-container {
+            position: relative;
+            padding-left: 1rem;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .toc-container a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .toc-container a:hover {
+            color: var(--text-heading);
+        }
+
+        .toc-container a.active {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        .toc-container a.active::before {
+            content: '';
+            position: absolute;
+            left: -17px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 16px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .toc-h2 { margin-left: 0; }
+        .toc-h3 { margin-left: 12px; font-size: 0.85rem !important; }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .tag {
+            background-color: rgba(116, 143, 252, 0.08);
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            background-color: rgba(116, 143, 252, 0.2);
+            color: var(--accent-color);
+        }
+
+        /* =========================================
+           8. 반응형 (모바일)
+           ========================================= */
+        @media (max-width: 1024px) {
+            .layout-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 0 1.5rem;
+            }
+            .sidebar {
+                position: static;
+                max-height: none;
+            }
+            .left-sidebar { order: -1; }
+            .right-sidebar { order: 2; border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 1rem; }
+            .header { padding: 1rem 1.5rem; }
+        }
+    </style>
 </head>
 <body>
     <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
-    <header class="header"><div class="logo">DevLog_</div></header>
+    
+    <header class="header">
+        <div class="logo">DevLog<span>.</span></div>
+    </header>
 
     <div class="layout-container">
-        <!-- 좌측: 자동 목차 -->
         <aside class="sidebar left-sidebar">
-            <h3 class="sidebar-title">목차</h3>
+            <h3 class="sidebar-title">On this page</h3>
             <nav id="toc" class="toc-container"></nav>
         </aside>
 
-        <!-- 중앙: 블로그 본문 -->
         <main class="content">
-            <!-- 자바스크립트가 readme.md를 가져와서 여기에 쏙 넣어줍니다 -->
             <article id="post-content">
-                <p style="text-align: center; color: var(--text-secondary);">글을 불러오는 중입니다...</p>
+                <div style="display: flex; justify-content: center; align-items: center; height: 30vh; color: var(--text-secondary);">
+                    문서를 불러오는 중입니다...
+                </div>
             </article>
         </main>
 
-        <!-- 우측: 키워드 -->
         <aside class="sidebar right-sidebar">
-            <h3 class="sidebar-title">키워드</h3>
+            <h3 class="sidebar-title">Tags</h3>
             <div class="tags-container">
-                <a href="#" class="tag">#Markdown</a>
-                <a href="#" class="tag">#JavaScript</a>
+                <a href="#" class="tag"># Markdown</a>
+                <a href="#" class="tag"># JavaScript</a>
+                <a href="#" class="tag"># Web Design</a>
             </div>
         </aside>
     </div>
 
+    <!-- 라이브러리 스크립트 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
     
-    <script src="script.js"></script>
+    <!-- 커스텀 자바스크립트 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const contentArea = document.getElementById('post-content');
+
+            try {
+                // 1. Markdown 불러오기
+                const response = await fetch('./README.md');
+                
+                if (!response.ok) {
+                    throw new Error('마크다운 파일을 불러오는데 실패했습니다.');
+                }
+
+                const mdSource = await response.text();
+
+                // 2. 파싱 및 렌더링
+                contentArea.innerHTML = marked.parse(mdSource);
+
+                // 3. 코드 하이라이트 적용
+                Prism.highlightAll();
+
+                // 4. [추가] 코드 복사(Copy) 기능 동적 추가 적용
+                createCopyButtons();
+
+                // 5. 목차(ToC) 생성
+                const headings = contentArea.querySelectorAll('h1, h2, h3');
+                const tocContainer = document.getElementById('toc');
+
+                headings.forEach((heading, index) => {
+                    if (heading.tagName === 'H1') return;
+
+                    if (!heading.id) {
+                        heading.id = `heading-${index}`;
+                    }
+
+                    const link = document.createElement('a');
+                    link.href = `#${heading.id}`;
+                    link.textContent = heading.textContent;
+                    link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
+                    tocContainer.appendChild(link);
+                });
+
+                // 6. 스크롤 스파이 적용
+                const tocLinks = document.querySelectorAll('.toc-link');
+                const observerOptions = {
+                    root: null,
+                    rootMargin: "-100px 0px -70% 0px",
+                    threshold: 0
+                };
+
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            tocLinks.forEach(link => link.classList.remove('active'));
+                            const activeLink = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+                            if (activeLink) activeLink.classList.add('active');
+                        }
+                    });
+                }, observerOptions);
+
+                headings.forEach(heading => {
+                    if (heading.tagName !== 'H1') observer.observe(heading);
+                });
+
+                // 7. 로딩 완료 애니메이션 시작
+                setTimeout(() => {
+                    contentArea.classList.add('loaded');
+                }, 100);
+
+            } catch (error) {
+                console.error(error);
+                contentArea.innerHTML = `<p style="color: #fa5252; padding: 2rem;">에러가 발생했습니다: ${error.message}</p>`;
+                contentArea.classList.add('loaded');
+            }
+
+            // 8. 진행률 바
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById("myBar").style.width = scrolled + "%";
+            });
+        });
+
+        // [추가] 복사 버튼 생성 및 이벤트 부여 함수
+        function createCopyButtons() {
+            const preElements = document.querySelectorAll('.content pre');
+
+            preElements.forEach((pre) => {
+                // 이미 복사 버튼이 생성되어 있는 경우 스킵
+                if (pre.querySelector('.copy-button')) return;
+
+                const button = document.createElement('button');
+                button.className = 'copy-button';
+                
+                // SVG 복사 모양 아이콘 추가
+                button.innerHTML = `
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                `;
+
+                pre.appendChild(button);
+
+                button.addEventListener('click', async () => {
+                    const codeElement = pre.querySelector('code');
+                    if (!codeElement) return;
+
+                    try {
+                        // 텍스트 복사 (Prism의 하이라이트 공백 유지)
+                        await navigator.clipboard.writeText(codeElement.innerText);
+
+                        // 복사 성공 UI 피드백 (녹색 체크마크)
+                        button.classList.add('copied');
+                        button.innerHTML = `
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>복사 완료!</span>
+                        `;
+
+                        // 1.5초 후 복사 버튼 원래 상태 복귀
+                        setTimeout(() => {
+                            button.classList.remove('copied');
+                            button.innerHTML = `
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                            `;
+                        }, 1500);
+
+                    } catch (err) {
+                        console.error('복사에 실패했습니다.', err);
+                        button.innerText = '실패';
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
