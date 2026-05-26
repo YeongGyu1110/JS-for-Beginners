@@ -1,60 +1,77 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     
-    // 1. 마크다운 원본 가져오기
-    const mdSource = document.getElementById('markdown-source').textContent;
     const contentArea = document.getElementById('post-content');
 
-    // 2. 마크다운을 HTML로 변환하여 삽입 (marked.js 사용)
-    contentArea.innerHTML = marked.parse(mdSource);
-
-    // 3. 코드 블럭 하이라이팅 적용 (Prism.js 사용)
-    Prism.highlightAll();
-
-    // ----------------------------------------------------
-    // 아래부터는 기존과 동일하게 변환된 HTML을 바탕으로 목차를 만듭니다.
-    // ----------------------------------------------------
-
-    const headings = contentArea.querySelectorAll('h1, h2, h3');
-    const tocContainer = document.getElementById('toc');
-
-    headings.forEach((heading, index) => {
-        if (heading.tagName === 'H1') return; // H1은 목차에서 제외
-
-        // ID가 없으면 생성 (마크다운 변환기가 자동으로 만들어주기도 하지만 안전을 위해)
-        if (!heading.id) {
-            heading.id = `heading-${index}`;
+    try {
+        // 1. 같은 폴더에 있는 README.md 파일을 불러옵니다. (fetch)
+        // 만약 다른 글을 띄우고 싶다면 파일 이름만 바꾸면 됩니다.
+        const response = await fetch('./README.md');
+        
+        // 파일을 찾지 못했을 때의 에러 처리
+        if (!response.ok) {
+            throw new Error('마크다운 파일을 불러오는데 실패했습니다.');
         }
 
-        const link = document.createElement('a');
-        link.href = `#${heading.id}`;
-        link.textContent = heading.textContent;
-        link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
-        tocContainer.appendChild(link);
-    });
+        // 2. 텍스트 데이터로 변환
+        const mdSource = await response.text();
 
-    // 스크롤 스파이 (목차 하이라이트)
-    const tocLinks = document.querySelectorAll('.toc-link');
-    const observerOptions = {
-        root: null,
-        rootMargin: "0px 0px -80% 0px",
-        threshold: 0
-    };
+        // 3. 마크다운을 HTML로 변환하여 삽입
+        contentArea.innerHTML = marked.parse(mdSource);
 
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                tocLinks.forEach(link => link.classList.remove('active'));
-                const activeLink = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
-                if (activeLink) activeLink.classList.add('active');
+        // 4. 코드 하이라이팅 적용
+        Prism.highlightAll();
+
+        // ----------------------------------------------------
+        // 5. 목차(ToC) 생성 및 스크롤 스파이 적용
+        // (DOM이 업데이트된 후 실행되어야 하므로 불러온 직후에 실행합니다)
+        // ----------------------------------------------------
+        
+        const headings = contentArea.querySelectorAll('h1, h2, h3');
+        const tocContainer = document.getElementById('toc');
+
+        headings.forEach((heading, index) => {
+            if (heading.tagName === 'H1') return;
+
+            if (!heading.id) {
+                heading.id = `heading-${index}`;
             }
+
+            const link = document.createElement('a');
+            link.href = `#${heading.id}`;
+            link.textContent = heading.textContent;
+            link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
+            tocContainer.appendChild(link);
         });
-    }, observerOptions);
 
-    headings.forEach(heading => {
-        if (heading.tagName !== 'H1') observer.observe(heading);
-    });
+        // 스크롤 스파이 로직
+        const tocLinks = document.querySelectorAll('.toc-link');
+        const observerOptions = {
+            root: null,
+            rootMargin: "0px 0px -80% 0px",
+            threshold: 0
+        };
 
-    // 상단 진행률 바
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    tocLinks.forEach(link => link.classList.remove('active'));
+                    const activeLink = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+                    if (activeLink) activeLink.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        headings.forEach(heading => {
+            if (heading.tagName !== 'H1') observer.observe(heading);
+        });
+
+    } catch (error) {
+        // 에러 발생 시 화면에 표시
+        console.error(error);
+        contentArea.innerHTML = `<p style="color: #ff5252;">에러가 발생했습니다: ${error.message}</p>`;
+    }
+
+    // 6. 상단 진행률 바
     window.onscroll = function() {
         const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
         const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;

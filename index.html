@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Dark Dev Blog</title>
     
-    <!-- 코드 하이라이팅을 위한 Prism.css (다크 테마) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
 </head>
@@ -22,52 +21,10 @@
 
         <!-- 중앙: 블로그 본문 -->
         <main class="content">
-            <!-- 변환된 HTML이 들어갈 빈 공간 -->
-            <article id="post-content"></article>
-
-            <!-- ⭐️ 여기에 마크다운으로 글을 작성하세요! ⭐️ -->
-            <script type="text/markdown" id="markdown-source">
-# 자바스크립트 마크다운 블로그 테스트
-이 블로그는 백엔드 없이 작동하며, 작성된 **마크다운**을 실시간으로 변환합니다.
-
-## 인라인 코드 테스트
-자바스크립트에서 변수를 선언할 때는 `const`나 `let`을 사용합니다. 
-짧은 백틱 하나로 이렇게 예쁘게 표시됩니다!
-
-## 코드 블럭 (백틱 3개) 테스트
-아래는 자바스크립트 비동기 처리 예시입니다.
-
-```javascript
-async function fetchUserData() {
-    try {
-        const response = await fetch('https://api.example.com/user');
-        const data = await response.json();
-        console.log("가져온 데이터:", data);
-        return data;
-    } catch (error) {
-        console.error("에러 발생!", error);
-    }
-}
-```
-
-### 파이썬도 될까요?
-물론입니다. 언어 이름을 적어주면 알아서 색칠합니다.
-
-```python
-def say_hello(name):
-    print(f"Hello, {name}!")
-    
-say_hello("World")
-```
-
-```css
-body {
-    background-color: #121212;
-    color: #e0e0e0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-```
-            </script>
+            <!-- 자바스크립트가 readme.md를 가져와서 여기에 쏙 넣어줍니다 -->
+            <article id="post-content">
+                <p style="text-align: center; color: var(--text-secondary);">글을 불러오는 중입니다...</p>
+            </article>
         </main>
 
         <!-- 우측: 키워드 -->
@@ -80,7 +37,6 @@ body {
         </aside>
     </div>
 
-    <!-- 마크다운 변환(marked.js)과 코드 하이라이팅(Prism.js) 라이브러리 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
