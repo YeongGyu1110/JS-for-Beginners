@@ -184,8 +184,45 @@ body {
     margin-bottom: 0.5rem;
 }
 
+/* =========================================
+   기존 .content pre 를 아래 코드로 변경하세요 
+========================================= */
 .content pre {
     border-radius: 8px;
-    margin-bottom: 2rem !important; /* 코드 블럭 아래 여백 */
+    margin-bottom: 2rem !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    
+    /* 가로 스크롤을 위한 핵심 코드 */
+    max-width: 100%;    /* 부모 요소(.content)의 넓이를 넘지 못하게 제한 */
+    overflow-x: auto;   /* 내용이 넘치면 가로 스크롤바 생성 */
+    padding: 1.5rem;    /* 코드 블럭 안쪽 여백 추가 (Prism 기본값 덮어쓰기) */
+}
+
+/* 코드가 길어도 줄바꿈 되지 않고 스크롤 되도록 확실히 보장 */
+.content pre code {
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
+/* =========================================
+   (보너스) 다크 테마에 어울리는 스크롤바 디자인 
+   (Chrome, Safari, Edge 등 웹킷 기반 브라우저 적용)
+========================================= */
+.content pre::-webkit-scrollbar {
+    height: 10px; /* 가로 스크롤바의 두께 */
+}
+
+.content pre::-webkit-scrollbar-track {
+    background: #1e1e1e; /* 스크롤바 뒷 배경색 */
+    border-radius: 0 0 8px 8px; /* 코드 블럭 모서리에 맞춤 */
+}
+
+.content pre::-webkit-scrollbar-thumb {
+    background: #444; /* 스크롤바 막대 색상 */
+    border-radius: 8px;
+}
+
+.content pre::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color); /* 마우스 올렸을 때 민트색으로 하이라이트! */
 }
