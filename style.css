@@ -1,0 +1,191 @@
+/* 기본 변수 및 다크 테마 설정 */
+:root {
+    --bg-color: #121212;
+    --surface-color: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --text-secondary: #9e9e9e;
+    --accent-color: #00ffcc; /* 포인트 컬러 (민트) */
+    --border-color: #333333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth; /* 부드러운 스크롤 */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+}
+
+/* 상단 진행률 바 */
+.progress-container {
+    width: 100%;
+    height: 4px;
+    background: transparent;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+}
+
+.progress-bar {
+    height: 4px;
+    background: var(--accent-color);
+    width: 0%;
+}
+
+/* 상단 헤더 */
+.header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+/* 3단 레이아웃 (Grid) */
+.layout-container {
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr) 250px;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    align-items: start;
+}
+
+/* 양옆 사이드바 (스크롤 시 고정) */
+.sidebar {
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+}
+
+.sidebar-title {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 중앙 본문 영역 */
+.content {
+    background-color: var(--surface-color);
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.content h1, .content h2, .content h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.content p {
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+/* 좌측 목차 (ToC) 스타일 */
+.toc-container a {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+}
+
+.toc-container a:hover, 
+.toc-container a.active {
+    color: var(--accent-color);
+    border-left: 2px solid var(--accent-color);
+}
+
+/* 들여쓰기 설정 (h2, h3 에 따라 다르게) */
+.toc-h2 { margin-left: 0; }
+.toc-h3 { margin-left: 15px; font-size: 0.85rem !important; }
+
+/* 우측 키워드(태그) 스타일 */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    border: 1px solid var(--border-color);
+    transition: 0.3s;
+}
+
+.tag:hover {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+}
+
+/* 반응형 모바일 최적화 */
+@media (max-width: 1024px) {
+    .layout-container {
+        grid-template-columns: 1fr; /* 모바일에서는 1단으로 쌓임 */
+    }
+    .sidebar {
+        position: static;
+        max-height: none;
+    }
+    /* 모바일에서는 목차를 위로, 태그를 아래로 배치 */
+    .left-sidebar { order: -1; }
+    .right-sidebar { order: 2; margin-top: 2rem; }
+}
+
+/* 마크다운 인라인 코드 (백틱 1개) 스타일 */
+:not(pre) > code {
+    background-color: #2d2d2d;
+    color: #ff79c6; /* 다크 테마에 어울리는 핑크빛 포인트 */
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+/* 마크다운 요소 기본 간격 조정 */
+.content ul, .content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    color: var(--text-primary);
+}
+
+.content li {
+    margin-bottom: 0.5rem;
+}
+
+.content pre {
+    border-radius: 8px;
+    margin-bottom: 2rem !important; /* 코드 블럭 아래 여백 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
