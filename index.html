@@ -518,21 +518,45 @@
                 });
 
                 // 6. 스크롤 스파이 적용
+                // 6. 스크롤 스파이 적용 (개선된 버전)
                 const tocLinks = document.querySelectorAll('.toc-link');
                 const observerOptions = {
                     root: null,
-                    rootMargin: "-100px 0px -70% 0px",
+                    rootMargin: "-85px 0px -70% 0px", // scroll-margin-top(90px)보다 위인 85px로 설정하여 스크롤된 제목이 감지 영역 안에 들어오도록 수정
                     threshold: 0
                 };
+
+                // 현재 화면 감지 영역에 들어와 있는 heading들을 추적할 Set
+                const activeHeadings = new Set();
 
                 const observer = new IntersectionObserver(entries => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            tocLinks.forEach(link => link.classList.remove('active'));
-                            const activeLink = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
-                            if (activeLink) activeLink.classList.add('active');
+                            activeHeadings.add(entry.target);
+                        } else {
+                            activeHeadings.delete(entry.target);
                         }
                     });
+
+                    // 화면 감지 영역에 존재하는 heading 중 화면 가장 위(top 값이 가장 작은 것)에 있는 것을 활성화
+                    if (activeHeadings.size > 0) {
+                        let topHeading = null;
+                        let minTop = Infinity;
+
+                        activeHeadings.forEach(heading => {
+                            const rect = heading.getBoundingClientRect();
+                            if (rect.top < minTop) {
+                                minTop = rect.top;
+                                topHeading = heading;
+                            }
+                        });
+
+                        if (topHeading) {
+                            tocLinks.forEach(link => link.classList.remove('active'));
+                            const activeLink = document.querySelector(`.toc-link[href="#${topHeading.id}"]`);
+                            if (activeLink) activeLink.classList.add('active');
+                        }
+                    }
                 }, observerOptions);
 
                 headings.forEach(heading => {
