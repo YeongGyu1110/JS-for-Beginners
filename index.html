@@ -436,6 +436,58 @@
             .right-sidebar { order: 2; border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 1rem; }
             .header { padding: 1rem 1.5rem; }
         }
+
+        /* =========================================
+        9. 검색창 스타일 (Sidebar Search)
+        ========================================= */
+        .search-form {
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-heading);
+            padding: 0.75rem 1rem 0.75rem 2rem;
+            border-radius: var(--radius-sm);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-input::placeholder { color: transparent; } /* placeholder 텍스트는 숨김처리 하여 깔끔하게 */
+
+        .search-input:focus { border-color: var(--border-color); }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-family: 'Fira Code', monospace;
+            pointer-events: none;
+            opacity: 0.5;
+            transition: all 0.2s ease;
+        }
+
+        /* 기본 상태는 점(·) */
+        .search-icon::before { content: "·"; }
+
+        /* [수정됨] 텍스트 입력 여부와 상관없이 오직 ':focus' 상태일 때만 꺾쇠(>) 적용 */
+        .search-input:focus ~ .search-icon {
+            color: var(--accent-color);
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .search-input:focus ~ .search-icon::before {
+            content: ">";
+        }
     </style>
 </head>
 <body>
@@ -447,6 +499,13 @@
 
     <div class="layout-container">
         <aside class="sidebar left-sidebar">
+
+            <form action="search.html" method="GET" class="search-form">
+                <!-- input을 먼저 배치해야 CSS 형제 선택자(~)로 아이콘을 제어할 수 있습니다 -->
+                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off">
+                <span class="search-icon"></span>
+            </form>
+
             <h3 class="sidebar-title">On this page</h3>
             <nav id="toc" class="toc-container"></nav>
         </aside>
@@ -462,9 +521,9 @@
         <aside class="sidebar right-sidebar">
             <h3 class="sidebar-title">Tags</h3>
             <div class="tags-container">
-                <a href="#" class="tag">#markdown</a>
-                <a href="#" class="tag">#javascript</a>
-                <a href="#" class="tag">#web-design</a>
+                <a href="search.html?q=markdown" class="tag">#markdown</a>
+                <a href="search.html?q=javascript" class="tag">#javascript</a>
+                <a href="search.html?q=web-design" class="tag">#web-design</a>
             </div>
         </aside>
     </div>
