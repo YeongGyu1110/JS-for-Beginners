@@ -239,7 +239,7 @@
                             <a href="${post.link}" class="search-result-title">${post.title}</a>
                             <p class="search-result-summary">${post.summary}</p>
                             <div class="search-result-meta">
-                                ${post.tags.map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                                ${post.tags.map(tag => `<button class="tag result-tag" data-tag="#${tag}">#${tag}</button>`).join('')}
                             </div>
                         </article>
                     `).join('');
@@ -293,6 +293,26 @@
                 const q = params.get('q') || '';
                 searchInput.value = q;
                 renderSearch(q);
+            });
+
+            // 6. 검색 결과 내부의 태그 클릭 시 로직 (이벤트 위임)
+            resultsContainer.addEventListener('click', (e) => {
+                // 클릭된 요소가 결과 태그(.result-tag)인지 확인
+                if (e.target.classList.contains('result-tag')) {
+                    const tagQuery = e.target.getAttribute('data-tag');
+                    
+                    // 검색창 값 변경 및 렌더링
+                    searchInput.value = tagQuery;
+                    renderSearch(tagQuery);
+                    
+                    // URL 업데이트 및 히스토리 스택 추가 (뒤로가기 지원)
+                    const newUrl = `?q=${encodeURIComponent(tagQuery)}`;
+                    window.history.pushState({ path: newUrl }, '', newUrl);
+
+                    // 화면 맨 위 검색창으로 부드럽게 스크롤 이동 후 포커스
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    keepFocus();
+                }
             });
         });
     </script>
