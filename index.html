@@ -458,8 +458,11 @@
             transition: all 0.2s ease;
         }
 
-        .search-input::placeholder { color: transparent; } /* placeholder 텍스트는 숨김처리 하여 깔끔하게 */
-
+        .search-input::placeholder { 
+            color: var(--text-secondary); 
+            opacity: 0.5; /* 너무 튀지 않게 반투명 처리 */
+        }
+        
         .search-input:focus { border-color: var(--border-color); }
 
         .search-icon {

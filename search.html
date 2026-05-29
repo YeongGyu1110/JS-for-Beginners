@@ -88,8 +88,11 @@
             transition: all 0.2s ease;
         }
 
-        .hero-search-input::placeholder { color: transparent; }
-
+        .hero-search-input::placeholder { 
+            color: var(--text-secondary); 
+            opacity: 0.5; 
+        }
+        
         .hero-search-input:focus { border-color: var(--text-secondary); }
 
         .hero-search-icon {
