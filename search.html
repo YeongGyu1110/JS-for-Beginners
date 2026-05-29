@@ -92,7 +92,7 @@
             color: var(--text-secondary); 
             opacity: 0.5; 
         }
-        
+
         .hero-search-input:focus { border-color: var(--text-secondary); }
 
         .hero-search-icon {
@@ -216,13 +216,20 @@
                 searchStatus.style.display = 'block';
                 queryDisplay.textContent = query;
 
-                const lowerQuery = query.toLowerCase().replace(/^#/, '');
+                const isTagStrictSearch = query.startsWith('#'); // 맨 앞에 #이 있는지 확인
+                const lowerQuery = isTagStrictSearch ? query.substring(1).toLowerCase() : query.toLowerCase();
 
                 const filteredResults = mockDatabase.filter(post => {
-                    return post.title.toLowerCase().includes(lowerQuery) || 
-                           post.summary.toLowerCase().includes(lowerQuery) || 
-                           post.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
-                });
+                    if (isTagStrictSearch) {
+                        // 1. #으로 시작하면 '태그' 배열에서만 엄격하게 검색
+                        return post.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+                    } else {
+                        // 2. #이 없으면 '제목 + 요약 + 태그' 전체를 유연하게 검색
+                        return post.title.toLowerCase().includes(lowerQuery) || 
+                            post.summary.toLowerCase().includes(lowerQuery) || 
+                            post.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
+                    }
+                });                
 
                 if (filteredResults.length === 0) {
                     resultsContainer.innerHTML = `<div class="no-results">[SYS] 404_NOT_FOUND: 일치하는 문서를 찾을 수 없습니다.</div>`;
