@@ -59,8 +59,6 @@
                 linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
             background-size: 32px 32px;
             background-attachment: fixed; 
-
-            background-attachment: fixed; 
         }
 
         /* =========================================
@@ -491,6 +489,66 @@
         .search-input:focus ~ .search-icon::before {
             content: ">";
         }
+
+        /* 404 에러 페이지 돌아가기 버튼 */
+        .return-home-btn {
+            display: inline-block;
+            color: var(--text-primary);
+            text-decoration: none;
+            border: 1px solid var(--border-color);
+            background-color: var(--surface-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .return-home-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            /* 버튼이 살짝 위로 뜨는 효과를 주면 더 클릭하고 싶어집니다 */
+            transform: translateY(-2px); 
+        }
+
+        /* =========================================
+           10. 시스템 메시지 (404 에러 및 빈 문서 화면)
+           ========================================= */
+        .system-message-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 60vh;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .system-message-title {
+            color: var(--accent-color);
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .system-message-subtitle {
+            color: var(--text-heading);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .system-message-desc {
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            font-family: 'Pretendard', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .system-message-icon {
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -523,10 +581,8 @@
 
         <aside class="sidebar right-sidebar">
             <h3 class="sidebar-title">Tags</h3>
-            <div class="tags-container">
-                <a href="search.html?q=%23markdown" class="tag">#markdown</a>
-                <a href="search.html?q=%23javascript" class="tag">#javascript</a>
-                <a href="search.html?q=%23web-design" class="tag">#web-design</a>
+            <div class="tags-container" id="tags-container">
+                <!-- JS에서 동적으로 렌더링됩니다 -->
             </div>
         </aside>
     </div>
@@ -541,36 +597,117 @@
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const contentArea = document.getElementById('post-content');
+            const tagsContainer = document.querySelector('.right-sidebar .tags-container');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
 
+            let targetMdPath = null; // null로 초기화하여 버그 방지
+            let pageTitle = 'My Dark Dev Blog';
+            let pageTags = [];
+
+            // [함수 1] 빈 문서(NO_FILE) 화면 렌더링
+            const renderEmptyState = () => {
+                document.title = "Viewer - DEV_LOG_";
+                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary);">[WAITING_FOR_INPUT]</span>`;
+                contentArea.innerHTML = `
+                    <div class="system-message-container">
+                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                        <h2 class="system-message-subtitle" style="font-size: 1.2rem;">NO_FILE_SELECTED</h2>
+                        <p class="system-message-desc" style="opacity: 0.7; margin-bottom: 2.5rem;">읽을 문서를 선택하거나 검색해주세요.</p>
+                        <a href="../search.html" class="return-home-btn">> OPEN_SEARCH_</a>
+                    </div>
+                `;
+                contentArea.classList.add('loaded');
+            };
+
+            // [함수 2] 404 에러 화면 렌더링
+            const renderError404 = () => {
+                document.title = "404 Not Found - DEV_LOG_";
+                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
+                contentArea.innerHTML = `
+                    <div class="system-message-container">
+                        <h1 class="system-message-title">404</h1>
+                        <h2 class="system-message-subtitle">FILE_NOT_FOUND</h2>
+                        <p class="system-message-desc">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
+                        <a href="index.html" class="return-home-btn">> RETURN_TO_HOME_</a>
+                    </div>
+                `;
+                contentArea.classList.add('loaded');
+            };
+
+            // 1. JSON 데이터 가져오기 및 분기 처리
             try {
-                // 1. Markdown 불러오기
-                const response = await fetch('./README.md');
-                
-                if (!response.ok) {
-                    throw new Error('마크다운 파일을 불러오는데 실패했습니다.');
+                // 파라미터가 없으면 즉시 빈 화면 출력 후 종료
+                if (!postId) {
+                    renderEmptyState();
+                    return; 
                 }
 
-                const mdSource = await response.text();
+                const postsResponse = await fetch('./data/posts.json');
+                if (!postsResponse.ok) throw new Error('posts.json 로드 실패');
+                
+                const posts = await postsResponse.json();
+                const currentPost = posts.find(p => p.id === postId);
+                
+                // 파라미터는 있는데 매칭되는 데이터가 없으면 404 출력 후 종료
+                if (!currentPost) {
+                    renderError404();
+                    return;
+                }
 
-                // 2. 파싱 및 렌더링
+                // 정상 매칭 시 데이터 세팅
+                targetMdPath = currentPost.path;
+                
+                // [보안 강화] 경로 검증: 반드시 ./script/ 로 시작해야 함
+                if (!targetMdPath.startsWith('./script/')) {
+                    console.error('허용되지 않은 경로 접근 시도:', targetMdPath);
+                    renderError404(); 
+                    return;
+                }
+
+                pageTitle = currentPost.title + " - DEV_LOG_";
+                pageTags = currentPost.tags;
+
+            } catch (error) {
+                console.error('데이터베이스 통신 오류:', error);
+                renderError404(); // 파일이 없거나 JSON 파싱 에러 시에도 404 처리
+                return;
+            }
+
+            // 2. 동적 메타데이터(타이틀 및 태그) 업데이트
+            document.title = pageTitle;
+            if (pageTags.length > 0) {
+                tagsContainer.innerHTML = pageTags.map(tag => 
+                    `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`
+                ).join('');
+            }
+
+            // 3. 마크다운 파일 가져오기 및 렌더링 (targetMdPath가 유효할 때만 실행됨)
+            if (!targetMdPath) return; // 2차 안전장치
+
+            try {
+                const response = await fetch(targetMdPath);
+                if (!response.ok) throw new Error(`[404] 마크다운 파일을 불러오는데 실패했습니다: ${targetMdPath}`);
+
+                const mdSource = await response.text();
                 contentArea.innerHTML = marked.parse(mdSource);
 
-                // 3. 코드 하이라이트 적용
                 Prism.highlightAll();
-
-                // 4. [추가] 코드 복사(Copy) 기능 동적 추가 적용
                 createCopyButtons();
 
-                // 5. 목차(ToC) 생성
+                // 4. 목차(ToC) 생성
                 const headings = contentArea.querySelectorAll('h1, h2, h3');
                 const tocContainer = document.getElementById('toc');
+                tocContainer.innerHTML = ''; 
 
                 headings.forEach((heading, index) => {
                     if (heading.tagName === 'H1') return;
-
-                    if (!heading.id) {
-                        heading.id = `heading-${index}`;
-                    }
+                    if (!heading.id) heading.id = `heading-${index}`;
 
                     const link = document.createElement('a');
                     link.href = `#${heading.id}`;
@@ -579,40 +716,24 @@
                     tocContainer.appendChild(link);
                 });
 
-                // 6. 스크롤 스파이 적용
-                // 6. 스크롤 스파이 적용 (개선된 버전)
+                // 5. 스크롤 스파이 적용
                 const tocLinks = document.querySelectorAll('.toc-link');
-                const observerOptions = {
-                    root: null,
-                    rootMargin: "-85px 0px -70% 0px", // scroll-margin-top(90px)보다 위인 85px로 설정하여 스크롤된 제목이 감지 영역 안에 들어오도록 수정
-                    threshold: 0
-                };
-
-                // 현재 화면 감지 영역에 들어와 있는 heading들을 추적할 Set
+                const observerOptions = { root: null, rootMargin: "-85px 0px -70% 0px", threshold: 0 };
                 const activeHeadings = new Set();
-
+                
                 const observer = new IntersectionObserver(entries => {
                     entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            activeHeadings.add(entry.target);
-                        } else {
-                            activeHeadings.delete(entry.target);
-                        }
+                        if (entry.isIntersecting) activeHeadings.add(entry.target);
+                        else activeHeadings.delete(entry.target);
                     });
 
-                    // 화면 감지 영역에 존재하는 heading 중 화면 가장 위(top 값이 가장 작은 것)에 있는 것을 활성화
                     if (activeHeadings.size > 0) {
                         let topHeading = null;
                         let minTop = Infinity;
-
                         activeHeadings.forEach(heading => {
                             const rect = heading.getBoundingClientRect();
-                            if (rect.top < minTop) {
-                                minTop = rect.top;
-                                topHeading = heading;
-                            }
+                            if (rect.top < minTop) { minTop = rect.top; topHeading = heading; }
                         });
-
                         if (topHeading) {
                             tocLinks.forEach(link => link.classList.remove('active'));
                             const activeLink = document.querySelector(`.toc-link[href="#${topHeading.id}"]`);
@@ -621,22 +742,17 @@
                     }
                 }, observerOptions);
 
-                headings.forEach(heading => {
-                    if (heading.tagName !== 'H1') observer.observe(heading);
-                });
+                headings.forEach(heading => { if (heading.tagName !== 'H1') observer.observe(heading); });
 
-                // 7. 로딩 완료 애니메이션 시작
-                setTimeout(() => {
-                    contentArea.classList.add('loaded');
-                }, 100);
+                setTimeout(() => contentArea.classList.add('loaded'), 100);
 
             } catch (error) {
                 console.error(error);
-                contentArea.innerHTML = `<p style="font-family: 'Fira Code', monospace; color: var(--accent-color); padding: 2rem;">[Error: ${error.message}]</p>`;
+                contentArea.innerHTML = `<p style="font-family: 'Fira Code', monospace; color: var(--accent-color); padding: 2rem;">[SYS_ERROR: ${error.message}]</p>`;
                 contentArea.classList.add('loaded');
             }
 
-            // 8. 진행률 바
+            // 6. 스크롤 진행률 바
             window.addEventListener('scroll', () => {
                 const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
                 const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -645,17 +761,12 @@
             });
         });
 
-        // [추가] 복사 버튼 생성 및 이벤트 부여 함수
         function createCopyButtons() {
             const preElements = document.querySelectorAll('.content pre');
-
             preElements.forEach((pre) => {
                 if (pre.querySelector('.copy-button')) return;
-
                 const button = document.createElement('button');
                 button.className = 'copy-button';
-                
-                // 미니멀 SVG 복사 모양 아이콘
                 button.innerHTML = `
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect>
@@ -663,16 +774,12 @@
                     </svg>
                     <span>COPY</span>
                 `;
-
                 pre.appendChild(button);
-
                 button.addEventListener('click', async () => {
                     const codeElement = pre.querySelector('code');
                     if (!codeElement) return;
-
                     try {
                         await navigator.clipboard.writeText(codeElement.innerText);
-
                         button.classList.add('copied');
                         button.innerHTML = `
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -680,7 +787,6 @@
                             </svg>
                             <span>DONE</span>
                         `;
-
                         setTimeout(() => {
                             button.classList.remove('copied');
                             button.innerHTML = `
@@ -691,9 +797,7 @@
                                 <span>COPY</span>
                             `;
                         }, 1500);
-
                     } catch (err) {
-                        console.error('복사에 실패했습니다.', err);
                         button.innerText = 'ERR';
                     }
                 });
