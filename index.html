@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Dark Dev Blog</title>
+    <title>JFB</title>
     
     <!-- 코드 하이라이팅 테마 (Tomorrow Night) -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
@@ -555,7 +555,7 @@
     <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
     
     <header class="header">
-        <div class="logo">DEV_LOG<span>_</span></div>
+        <div class="logo">JFB<span>_</span></div>
     </header>
 
     <div class="layout-container">
@@ -603,12 +603,12 @@
             const postId = urlParams.get('id');
 
             let targetMdPath = null; // null로 초기화하여 버그 방지
-            let pageTitle = 'My Dark Dev Blog';
+            let pageTitle = 'JFB';
             let pageTags = [];
 
             // [함수 1] 빈 문서(NO_FILE) 화면 렌더링
             const renderEmptyState = () => {
-                document.title = "Viewer - DEV_LOG_";
+                document.title = "Viewer - JFB";
                 tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary);">[WAITING_FOR_INPUT]</span>`;
                 contentArea.innerHTML = `
                     <div class="system-message-container">
@@ -627,7 +627,7 @@
 
             // [함수 2] 404 에러 화면 렌더링
             const renderError404 = () => {
-                document.title = "404 Not Found - DEV_LOG_";
+                document.title = "404 Not Found - JFB";
                 tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
                 contentArea.innerHTML = `
                     <div class="system-message-container">
@@ -670,7 +670,7 @@
                     return;
                 }
 
-                pageTitle = currentPost.title + " - DEV_LOG_";
+                pageTitle = currentPost.title + " - JFB";
                 pageTags = currentPost.tags;
 
             } catch (error) {
