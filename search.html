@@ -205,15 +205,30 @@
                 if(res.ok) {
                     postsDatabase = await res.json();
                     
-                    // 모든 포스트에서 태그 추출 후 중복 제거
-                    const allTags = new Set();
+                    // 모든 포스트에서 태그 추출 및 빈도수 계산
+                    const tagCounts = {};
                     postsDatabase.forEach(post => {
-                        if (post.tags) post.tags.forEach(tag => allTags.add(tag));
+                        if (post.tags) {
+                            post.tags.forEach(tag => {
+                                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                            });
+                        }
                     });
 
-                    // 추천 태그 렌더링
+                    // 태그 목록을 배열로 변환 후 무작위 섞기 (Fisher-Yates)
+                    const tagArray = Object.keys(tagCounts);
+                    for (let i = tagArray.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [tagArray[i], tagArray[j]] = [tagArray[j], tagArray[i]];
+                    }
+
+                    // 빈도수 기준으로 정렬 (이미 섞인 상태라 빈도수 같으면 랜덤 순서 유지)
+                    tagArray.sort((a, b) => tagCounts[b] - tagCounts[a]);
+
+                    // 상위 4개 추출 및 렌더링
+                    const topTags = tagArray.slice(0, 4);
                     if (suggestedTagsContainer) {
-                        suggestedTagsContainer.innerHTML = Array.from(allTags).map(tag => 
+                        suggestedTagsContainer.innerHTML = topTags.map(tag => 
                             `<button class="tag" data-tag="#${tag}">#${tag}</button>`
                         ).join('');
                     }
