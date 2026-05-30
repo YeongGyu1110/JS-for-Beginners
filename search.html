@@ -159,6 +159,39 @@
         .no-results {
             text-align: center; padding: 4rem 0; color: var(--text-secondary); font-family: 'Fira Code', monospace; font-size: 0.85rem;
         }
+
+        /* =========================================
+           하단 알림창 (Toast Notification) 스타일
+           ========================================= */
+        .toast-notification {
+            position: fixed;
+            bottom: -60px; /* 초기에는 화면 아래에 숨김 */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--surface-color);
+            border: 1px solid var(--accent-color);
+            color: var(--text-heading);
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 탄력있는 애니메이션 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+        }
+
+        .toast-notification::before {
+            content: "[!] ";
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .toast-notification.show {
+            bottom: 40px; /* 화면 위로 올라옴 */
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -301,9 +334,36 @@
             // ==========================================
 
             // 폼 제출 (엔터)
+            const showToast = (message) => {
+                let existingToast = document.querySelector('.toast-notification');
+                if (existingToast) existingToast.remove();
+
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                setTimeout(() => toast.classList.add('show'), 10);
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2500);
+            };
+
+            // 폼 제출 (엔터) 로직 수정
             searchForm.addEventListener('submit', (e) => {
                 e.preventDefault(); 
-                const query = searchInput.value;
+                const query = searchInput.value.trim(); // 좌우 공백 제거
+
+                // 빈 검색어 방지 로직
+                if (query === '') {
+                    showToast('검색어를 입력해주세요.');
+                    searchInput.value = ''; // 스페이스바만 입력한 경우 초기화
+                    searchInput.focus();
+                    return; // 검색 실행 중단
+                }
+
                 renderSearch(query);
                 const newUrl = query ? `?q=${encodeURIComponent(query)}` : window.location.pathname;
                 window.history.pushState({ path: newUrl }, '', newUrl);
