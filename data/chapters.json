@@ -1,0 +1,5 @@
+{
+    "1": { "meta": "CH 01. FOUNDATION", "title": "기초 설계 및 문서화" },
+    "2": { "meta": "CH 02. ADVANCED", "title": "자바스크립트 심화" },
+    "3": { "meta": "CH 03. FRAMEWORK", "title": "프레임워크의 이해" }
+}

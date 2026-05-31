@@ -197,7 +197,7 @@
 <body>
     
     <header class="header">
-        <a href="index.html" class="logo">JFB<span>_</span></a>
+        <a href="main.html" class="logo">JFB<span>_</span></a>
     </header>
 
     <div class="layout-container">
@@ -234,7 +234,7 @@
 
             // 1. json 파일 비동기 호출 및 추천 태그 동적 생성
             try {
-                const res = await fetch('../data/posts.json');
+                const res = await fetch('./data/posts.json');
                 if(res.ok) {
                     postsDatabase = await res.json();
                     

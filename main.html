@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JFB - JavaScript for Beginners</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <style>
+        /* =========================================
+           1. 공통 테마 변수
+           ========================================= */
+        :root {
+            --bg-color: #0c0d0f;
+            --surface-color: #13151a;
+            --surface-hover: #191c22;
+            --text-heading: #f8fafc;
+            --text-primary: #cbd5e1;
+            --text-secondary: #64748b;
+            --accent-color: #ff6b00; 
+            --border-color: #22252e;
+            --radius-md: 4px;
+            --radius-sm: 2px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Pretendard', sans-serif;
+            font-size: 15px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-attachment: fixed;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* =========================================
+           2. 공통 상단 헤더
+           ========================================= */
+        .header {
+            padding: 1rem 2rem;
+            position: sticky; 
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(12, 13, 15, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span { 
+            color: var(--accent-color); 
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* =========================================
+           3. 히어로 섹션 (높이 및 여백 축소)
+           ========================================= */
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 높이를 줄이고 위로 끌어올림 */
+            padding: 12rem 2rem 6rem 2rem;
+            text-align: center;
+        }
+
+        .ascii-logo {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-color);
+            font-size: 0.75rem; 
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            white-space: pre;
+            pointer-events: none;
+            opacity: 0.85;
+            filter: drop-shadow(0 0 4px rgba(255, 107, 0, 0.4));
+        }
+
+        .scramble-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 1rem;
+            min-height: 3rem;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            display: block;
+        }
+
+        .sub-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease 0.2s; 
+        }
+
+        .sub-description.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .enter-btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none; /* 나타나기 전까지 클릭 차단 */
+            transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s, border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .enter-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto; /* 나타나면 클릭 허용 */
+        }
+
+        .enter-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background-color: var(--surface-hover);
+            transform: translateY(-2px); 
+        }
+
+        /* =========================================
+           4. 메인 컨텐츠 영역 (검색바 & 커리큘럼)
+           ========================================= */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem 2rem;
+        }
+
+        .section-block {
+            margin-bottom: 5rem;
+        }
+
+        /* 공통 섹션 헤더 (좌측 정렬) */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+        }
+
+        .section-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.25rem;
+            color: var(--text-heading);
+            font-weight: 600;
+        }
+        .section-title span { color: var(--accent-color); }
+
+        /* 검색 영역 스타일 */
+        .search-wrapper {
+            max-width: 100%; /* 전체를 채우지 않고 적당한 길이 유지 */
+        }
+
+        .main-search-form {
+            position: relative;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-heading);
+            padding: 0.85rem 1.25rem 0.85rem 2.2rem;
+            border-radius: var(--radius-sm);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-input::placeholder { color: var(--text-secondary); opacity: 0.5; }
+        .search-input:focus { border-color: var(--text-secondary); }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-family: 'Fira Code', monospace;
+            pointer-events: none;
+            opacity: 0.5;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: bold; }
+        .search-icon::before { content: "·"; }
+        .search-input:focus ~ .search-icon::before { content: ">"; }
+
+        /* 추천 태그 */
+        .suggested-tags { 
+            display: flex; flex-wrap: wrap; gap: 0.5rem; 
+        }
+        .tag {
+            font-family: 'Fira Code', monospace; background-color: var(--surface-color); border: 1px solid var(--border-color);
+            color: var(--text-secondary); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
+            font-size: 0.75rem; transition: all 0.15s ease; cursor: pointer;
+        }
+        .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        /* 챕터 통계 뱃지 */
+        .stats-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+        .stats-badge span { color: var(--accent-color); }
+
+        /* 커리큘럼 카드 디자인 */
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .chapter-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.5rem 2rem;
+            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--text-secondary); 
+            background-color: var(--surface-hover);
+        }
+
+        .chapter-meta {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            margin-bottom: 0.8rem;
+            display: block;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .chapter-title {
+            color: var(--text-heading);
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            letter-spacing: -0.5px;
+            transition: color 0.15s ease;
+        }
+
+        .chapter-title:hover { color: var(--accent-color); }
+
+        .chapter-list { list-style: none; }
+        .chapter-list li {
+            position: relative;
+            margin-bottom: 0.8rem;
+            padding-left: 1.2rem;
+        }
+        .chapter-list li::before {
+            content: "■";
+            position: absolute;
+            left: 0;
+            top: 0.45em; 
+            font-size: 0.55rem;
+            color: var(--text-secondary); 
+            transition: color 0.2s ease;
+        }
+        .chapter-list li:hover::before { color: var(--accent-color); }
+
+        .chapter-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.15s ease;
+            display: block; 
+            word-break: keep-all;
+        }
+        .chapter-list li a:hover { color: var(--text-heading); }
+
+        /* =========================================
+           5. 푸터 (Footer)
+           ========================================= */
+        .footer {
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            padding: 3rem 2rem;
+            margin-top: 3rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-brand { color: var(--text-heading); font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .footer-brand span { color: var(--accent-color); }
+        .footer-desc { color: var(--text-secondary); font-size: 0.8rem; font-family: 'Pretendard', sans-serif; max-width: 300px; }
+
+        .footer-sys-info {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            text-align: right;
+        }
+        .footer-sys-info .highlight { color: var(--text-primary); }
+
+        @media (max-width: 768px) {
+            .footer-sys-info { text-align: left; }
+            .section-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        
+            .scramble-title {
+                font-size: 2rem;
+                min-height: 4.8rem; /* 모바일에서 2줄로 늘어날 때를 대비한 높이 확보 (2rem * 1.2 * 2줄) */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="main.html" class="logo">JFB<span>_</span></a>
+    </header>
+
+    <div class="hero-container">
+        <pre class="ascii-logo">
+     ::::::::::: :::::::::: ::::::::: 
+        :+:     :+:        :+:    :+: 
+       +:+     +:+        +:+    +:+  
+      +#+     :#::+::#   +#++:++#+    
+     +#+     +#+        +#+    +#+    
+#+# #+#     #+#        #+#    #+#     
+#####      ###        #########       
+        </pre>
+
+        <h1 class="scramble-title" id="scramble-text"></h1>
+
+        <p class="sub-description" id="sub-desc">
+            복잡한 논리 속에서 가장 단순한 시작을 찾아서.<br>
+            자바스크립트라는 우주를 항해하는 입문자를 위한 가이드.
+        </p>
+
+        <!-- JSON 로드 후 첫 번째 글 링크로 치환됩니다 -->
+        <a href="#" class="enter-btn" id="enter-btn">> INITIALIZING...</a>
+    </div>
+
+    <main class="main-container">
+        
+        <!-- 검색 섹션 -->
+        <section class="section-block">
+            <div class="section-header">
+                <h2 class="section-title"><span>></span> SEARCH_DOCS_</h2>
+            </div>
+            
+            <div class="search-wrapper">
+                <form action="search.html" method="GET" class="main-search-form">
+                    <input type="text" name="q" class="search-input" placeholder="Search documentation..." autocomplete="off">
+                    <span class="search-icon"></span>
+                </form>
+                <!-- 자바스크립트로 추천 태그가 렌더링됩니다 -->
+                <div class="suggested-tags" id="suggested-tags"></div>
+            </div>
+        </section>
+
+        <!-- 챕터 (커리큘럼) 섹션 -->
+        <section class="section-block">
+            <div class="section-header">
+                <h2 class="section-title"><span>></span> EXPLORE_CHAPTERS_</h2>
+                <div class="stats-badge" id="stats-badge">[ LOADING_DATA... ]</div>
+            </div>
+
+            <div class="chapter-grid" id="chapter-grid"></div>
+        </section>
+
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">JFB<span>_</span></div>
+                <div class="footer-desc">자바스크립트라는 우주를 항해하는<br>입문자를 위한 컴팩트 가이드.</div>
+            </div>
+            <div class="footer-sys-info">
+                <div>SYS_STATUS: <span style="color: #10b981;">ONLINE</span></div>
+                <div>BUILD_VERSION: <span class="highlight">v1.0.3_stable</span></div>
+                <div id="footer-sync">LAST_SYNC: <span class="highlight">...</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        class TextScrambler {
+            constructor(el) {
+                this.el = el;
+                this.chars = '!<>-_\\/[]{}—=+*^?#@&%0123456789';
+                this.update = this.update.bind(this);
+            }
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => (this.resolve = resolve));
+                this.queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+            update() {
+                let output = '';
+                let complete = 0;
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span style="color: var(--accent-color)">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+                this.el.innerHTML = output;
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
+            }
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        async function loadData() {
+            const grid = document.getElementById('chapter-grid');
+            const enterBtn = document.getElementById('enter-btn');
+            const statsBadge = document.getElementById('stats-badge');
+            const suggestedTagsContainer = document.getElementById('suggested-tags');
+            
+            // 푸터 날짜 동기화
+            const now = new Date();
+            document.getElementById('footer-sync').innerHTML = `LAST_SYNC: <span class="highlight">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}</span>`;
+
+            try {
+                // 1. 데이터 병렬 로드
+                const [postsRes, chaptersRes] = await Promise.all([
+                    fetch('./data/posts.json'),
+                    fetch('./data/chapters.json')
+                ]);
+
+                if (!postsRes.ok || !chaptersRes.ok) throw new Error('데이터베이스 로드 실패');
+                
+                const posts = await postsRes.json();
+                const chaptersData = await chaptersRes.json();
+
+                // 2. 통계 업데이트 및 시작 버튼 링크 설정
+                if (posts.length > 0) {
+                    const sortedPosts = [...posts].sort((a, b) => {
+                        if(a.chapter !== b.chapter) return a.chapter.localeCompare(b.chapter);
+                        return a.order - b.order;
+                    });
+                    
+                    const firstPost = sortedPosts[0];
+                    enterBtn.href = `index.html?id=${firstPost.id}`;
+                    enterBtn.innerText = "> START_TUTORIAL_";
+                } else {
+                    enterBtn.innerText = "> NO_DATA_";
+                }
+
+                // 3. 태그 추출 및 렌더링
+                const tagCounts = {};
+                posts.forEach(post => {
+                    if (post.tags) {
+                        post.tags.forEach(tag => {
+                            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                        });
+                    }
+                });
+
+                const tagArray = Object.keys(tagCounts);
+                for (let i = tagArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [tagArray[i], tagArray[j]] = [tagArray[j], tagArray[i]];
+                }
+                tagArray.sort((a, b) => tagCounts[b] - tagCounts[a]);
+
+                const topTags = tagArray.slice(0, 4);
+                if (suggestedTagsContainer) {
+                    suggestedTagsContainer.innerHTML = topTags.map(tag => 
+                        `<a href="search.html?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`
+                    ).join('');
+                }
+
+                // 4. 챕터 렌더링
+                const chaptersObj = {};
+                posts.forEach(post => {
+                    if (!post.chapter) return;
+                    if (!chaptersObj[post.chapter]) {
+                        chaptersObj[post.chapter] = [];
+                    }
+                    chaptersObj[post.chapter].push(post);
+                });
+
+                const totalChapters = Object.keys(chaptersObj).length;
+                statsBadge.innerHTML = `[ TOTAL_CHAPTERS: <span>${totalChapters}</span> | DOCS_LOADED: <span>${posts.length}</span> ]`;
+
+                grid.innerHTML = '';
+                const sortedChapters = Object.keys(chaptersObj).sort();
+
+                sortedChapters.forEach(chapterKey => {
+                    const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
+                    const chapterInfo = chaptersData[chapterKey] || { 
+                        meta: `SECTION ${chapterKey}`, 
+                        title: `Chapter ${chapterKey}` 
+                    };
+
+                    const card = document.createElement('div');
+                    card.className = 'chapter-card';
+                    const listHTML = items.map(item => `<li><a href="index.html?id=${item.id}">${item.title}</a></li>`).join('');
+
+                    card.innerHTML = `
+                        <span class="chapter-meta">${chapterInfo.meta}</span>
+                        <h3 class="chapter-title">${chapterInfo.title}</h3>
+                        <ul class="chapter-list">${listHTML}</ul>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                grid.innerHTML = `<p style="color: var(--accent-color); font-family: 'Fira Code', monospace;">[SYS_ERR: 데이터베이스를 불러올 수 없습니다.]</p>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const el = document.getElementById('scramble-text');
+            const fx = new TextScrambler(el);
+            const subDesc = document.getElementById('sub-desc');
+            const enterBtn = document.getElementById('enter-btn');
+
+            loadData();
+
+            setTimeout(() => {
+                fx.setText('JavaScript for Beginners').then(() => {
+                    subDesc.classList.add('show');
+                    enterBtn.classList.add('show');
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
