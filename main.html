@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JFB - JavaScript for Beginners</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- [수정] 타 페이지와 동일하게 파비콘(Favicon) 추가 -->
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <style>
+        /* =========================================
+           1. 공통 테마 변수
+           ========================================= */
+        :root {
+            --bg-color: #0c0d0f;
+            --surface-color: #13151a;
+            --surface-hover: #191c22;
+            --text-heading: #f8fafc;
+            --text-primary: #cbd5e1;
+            --text-secondary: #64748b;
+            --accent-color: #ff6b00; 
+            --border-color: #22252e;
+            --radius-md: 4px;
+            --radius-sm: 2px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Pretendard', sans-serif;
+            font-size: 15px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-attachment: fixed;
+        }
+
+        /* [수정] 스크롤바 정밀화 통일 (index.html, search.html과 동일한 스타일 적용) */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* =========================================
+           2. 공통 상단 헤더
+           ========================================= */
+        .header {
+            padding: 1rem 2rem;
+            /* [수정] 다른 페이지와 동일하게 동작하도록 fixed -> sticky 및 투명도 0.8 -> 0.9로 변경 */
+            position: sticky; 
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background-color: rgba(12, 13, 15, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo span { 
+            color: var(--accent-color); 
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* =========================================
+           3. 히어로 섹션
+           ========================================= */
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* sticky 헤더로 인해 높이 여백 보정 */
+            min-height: calc(100vh - 60px);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .ascii-logo {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-color);
+            font-size: 0.75rem; 
+            line-height: 1.1;
+            margin-bottom: 2.5rem;
+            white-space: pre;
+            pointer-events: none;
+            opacity: 0.85;
+            filter: drop-shadow(0 0 4px rgba(255, 107, 0, 0.4));
+        }
+
+        .scramble-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 1rem;
+            min-height: 3.5rem;
+            letter-spacing: -1px;
+        }
+
+        .sub-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease 0.2s; 
+        }
+
+        .sub-description.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .enter-btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s, border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .enter-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .enter-btn:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background-color: var(--surface-hover);
+            transform: translateY(-2px); 
+            transition: all 0.2s ease; 
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-secondary);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            text-decoration: none;
+            transition: opacity 1s ease 0.6s;
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-indicator.show { opacity: 0.6; }
+        .scroll-indicator:hover { opacity: 1; color: var(--accent-color); }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-10px) translateX(-50%); }
+            60% { transform: translateY(-5px) translateX(-50%); }
+        }
+
+        /* =========================================
+           4. 커리큘럼 섹션 (카드 디자인 개선)
+           ========================================= */
+        .curriculum-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem 10rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.5rem;
+            color: var(--text-heading);
+            font-weight: 600;
+        }
+        .section-title span { color: var(--accent-color); }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .chapter-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2.5rem 2rem;
+            transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+            position: relative;
+        }
+
+        .chapter-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--text-secondary); 
+            background-color: var(--surface-hover);
+        }
+
+        .chapter-meta {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            margin-bottom: 0.8rem;
+            display: block;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .chapter-title {
+            color: var(--text-heading);
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            letter-spacing: -0.5px;
+            cursor: default;
+            /* [수정] 통일성을 위해 호버 트랜지션 추가 */
+            transition: color 0.15s ease;
+        }
+
+        .chapter-title:hover {
+            color: var(--accent-color);
+        }
+
+        .chapter-list { list-style: none; }
+
+        .chapter-list li {
+            position: relative;
+            margin-bottom: 0.8rem;
+            padding-left: 1.2rem;
+        }
+
+        .chapter-list li::before {
+            content: "■";
+            position: absolute;
+            left: 0;
+            top: 0.45em; 
+            font-size: 0.55rem;
+            color: var(--text-secondary); 
+            transition: color 0.2s ease;
+        }
+
+        .chapter-list li:hover::before {
+            color: var(--accent-color);
+        }
+
+        .chapter-list a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.15s ease;
+            display: block; 
+            word-break: keep-all;
+        }
+
+        .chapter-list li a:hover {
+            color: var(--text-heading);
+            /* font-weight: 500; */
+        }
+
+        /* =========================================
+           5. 시스템 라벨
+           ========================================= */
+        .system-label {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="main.html" class="logo">JFB<span>_</span></a>
+    </header>
+
+    <div class="hero-container">
+        <pre class="ascii-logo">
+     ::::::::::: :::::::::: ::::::::: 
+        :+:     :+:        :+:    :+: 
+       +:+     +:+        +:+    +:+  
+      +#+     :#::+::#   +#++:++#+    
+     +#+     +#+        +#+    +#+    
+#+# #+#     #+#        #+#    #+#     
+#####      ###        #########       
+        </pre>
+
+        <h1 class="scramble-title" id="scramble-text"></h1>
+
+        <p class="sub-description" id="sub-desc">
+            복잡한 논리 속에서 가장 단순한 시작을 찾아서.<br>
+            자바스크립트라는 우주를 항해하는 입문자를 위한 가이드.
+        </p>
+
+        <a href="search.html" class="enter-btn" id="enter-btn">> SEARCH_DOCS_</a>
+
+        <a href="#curriculum" class="scroll-indicator" id="scroll-btn">
+            SCROLL DOWN
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </a>
+    </div>
+
+    <section class="curriculum-section" id="curriculum">
+        <div class="section-header">
+            <h2 class="section-title"><span>></span> CORE_CURRICULUM_</h2>
+        </div>
+
+        <div class="chapter-grid" id="chapter-grid">
+            <p style="text-align: center; color: var(--text-secondary); width: 100%; font-family: 'Fira Code', monospace;">[LOADING_DATA...]</p>
+        </div>
+    </section>
+
+    <div class="system-label">SYS_STATUS: ONLINE<br>STABLE_BUILD_V1.0.3</div>
+
+    <script>
+        const CHAPTER_DATA = {
+            "1": { meta: "CH 01. FOUNDATION", title: "기초 설계 및 문서화" },
+            "2": { meta: "CH 02. ADVANCED", title: "자바스크립트 심화" },
+            "3": { meta: "CH 03. FRAMEWORK", title: "프레임워크의 이해" }
+        };
+
+        class TextScrambler {
+            constructor(el) {
+                this.el = el;
+                this.chars = '!<>-_\\/[]{}—=+*^?#@&%0123456789';
+                this.update = this.update.bind(this);
+            }
+            setText(newText) {
+                const oldText = this.el.innerText;
+                const length = Math.max(oldText.length, newText.length);
+                const promise = new Promise((resolve) => (this.resolve = resolve));
+                this.queue = [];
+                for (let i = 0; i < length; i++) {
+                    const from = oldText[i] || '';
+                    const to = newText[i] || '';
+                    const start = Math.floor(Math.random() * 40);
+                    const end = start + Math.floor(Math.random() * 40);
+                    this.queue.push({ from, to, start, end });
+                }
+                cancelAnimationFrame(this.frameRequest);
+                this.frame = 0;
+                this.update();
+                return promise;
+            }
+            update() {
+                let output = '';
+                let complete = 0;
+                for (let i = 0, n = this.queue.length; i < n; i++) {
+                    let { from, to, start, end, char } = this.queue[i];
+                    if (this.frame >= end) {
+                        complete++;
+                        output += to;
+                    } else if (this.frame >= start) {
+                        if (!char || Math.random() < 0.28) {
+                            char = this.randomChar();
+                            this.queue[i].char = char;
+                        }
+                        output += `<span style="color: var(--accent-color)">${char}</span>`;
+                    } else {
+                        output += from;
+                    }
+                }
+                this.el.innerHTML = output;
+                if (complete === this.queue.length) {
+                    this.resolve();
+                } else {
+                    this.frameRequest = requestAnimationFrame(this.update);
+                    this.frame++;
+                }
+            }
+            randomChar() {
+                return this.chars[Math.floor(Math.random() * this.chars.length)];
+            }
+        }
+
+        async function loadCurriculum() {
+            const grid = document.getElementById('chapter-grid');
+            try {
+                const res = await fetch('./data/posts.json'); 
+                if (!res.ok) throw new Error('데이터베이스 로드 실패');
+                
+                const posts = await res.json();
+                const chaptersObj = {};
+
+                posts.forEach(post => {
+                    if (!post.chapter) return;
+                    if (!chaptersObj[post.chapter]) {
+                        chaptersObj[post.chapter] = [];
+                    }
+                    chaptersObj[post.chapter].push(post);
+                });
+
+                grid.innerHTML = '';
+
+                const sortedChapters = Object.keys(chaptersObj).sort();
+
+                sortedChapters.forEach(chapterKey => {
+                    const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
+                    const chapterInfo = CHAPTER_DATA[chapterKey] || { 
+                        meta: `SECTION ${chapterKey}`, 
+                        title: `Chapter ${chapterKey}` 
+                    };
+
+                    const card = document.createElement('div');
+                    card.className = 'chapter-card';
+
+                    const listHTML = items.map(item => `<li><a href="index.html?id=${item.id}">${item.title}</a></li>`).join('');
+
+                    card.innerHTML = `
+                        <span class="chapter-meta">${chapterInfo.meta}</span>
+                        <h3 class="chapter-title">${chapterInfo.title}</h3>
+                        <ul class="chapter-list">
+                            ${listHTML}
+                        </ul>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error(error);
+                grid.innerHTML = `<p style="text-align: center; color: var(--accent-color); font-family: 'Fira Code', monospace; width: 100%;">[SYS_ERR: 커리큘럼을 불러올 수 없습니다.]</p>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const el = document.getElementById('scramble-text');
+            const fx = new TextScrambler(el);
+            const subDesc = document.getElementById('sub-desc');
+            const enterBtn = document.getElementById('enter-btn');
+            const scrollBtn = document.getElementById('scroll-btn');
+
+            loadCurriculum();
+
+            setTimeout(() => {
+                fx.setText('JavaScript for Beginners').then(() => {
+                    subDesc.classList.add('show');
+                    enterBtn.classList.add('show');
+                    scrollBtn.classList.add('show');
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>
