@@ -591,7 +591,9 @@
 
                     card.innerHTML = `
                         <span class="chapter-meta">${chapterInfo.meta}</span>
-                        <h3 class="chapter-title">${chapterInfo.title}</h3>
+                        <a href="chapter.html?id=${chapterKey}" style="text-decoration:none; display:block;">
+                            <h3 class="chapter-title">${chapterInfo.title}</h3>
+                        </a>
                         <ul class="chapter-list">${listHTML}</ul>
                     `;
                     grid.appendChild(card);
