@@ -446,12 +446,6 @@
     </footer>
 
     <script>
-        const CHAPTER_DATA = {
-            "1": { meta: "CH 01. FOUNDATION", title: "기초 설계 및 문서화" },
-            "2": { meta: "CH 02. ADVANCED", title: "자바스크립트 심화" },
-            "3": { meta: "CH 03. FRAMEWORK", title: "프레임워크의 이해" }
-        };
-
         class TextScrambler {
             constructor(el) {
                 this.el = el;
@@ -517,12 +511,18 @@
             document.getElementById('footer-sync').innerHTML = `LAST_SYNC: <span class="highlight">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}</span>`;
 
             try {
-                const res = await fetch('./data/posts.json'); 
-                if (!res.ok) throw new Error('데이터베이스 로드 실패');
-                
-                const posts = await res.json();
+                // 1. 데이터 병렬 로드
+                const [postsRes, chaptersRes] = await Promise.all([
+                    fetch('./data/posts.json'),
+                    fetch('./data/chapters.json')
+                ]);
 
-                // 1. 통계 업데이트 및 시작 버튼 링크 설정
+                if (!postsRes.ok || !chaptersRes.ok) throw new Error('데이터베이스 로드 실패');
+                
+                const posts = await postsRes.json();
+                const chaptersData = await chaptersRes.json();
+
+                // 2. 통계 업데이트 및 시작 버튼 링크 설정
                 if (posts.length > 0) {
                     const sortedPosts = [...posts].sort((a, b) => {
                         if(a.chapter !== b.chapter) return a.chapter.localeCompare(b.chapter);
@@ -536,7 +536,7 @@
                     enterBtn.innerText = "> NO_DATA_";
                 }
 
-                // 2. 태그 추출 및 렌더링 (search.html 스크립트 이식)
+                // 3. 태그 추출 및 렌더링
                 const tagCounts = {};
                 posts.forEach(post => {
                     if (post.tags) {
@@ -560,7 +560,7 @@
                     ).join('');
                 }
 
-                // 3. 챕터 렌더링
+                // 4. 챕터 렌더링
                 const chaptersObj = {};
                 posts.forEach(post => {
                     if (!post.chapter) return;
@@ -578,7 +578,7 @@
 
                 sortedChapters.forEach(chapterKey => {
                     const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
-                    const chapterInfo = CHAPTER_DATA[chapterKey] || { 
+                    const chapterInfo = chaptersData[chapterKey] || { 
                         meta: `SECTION ${chapterKey}`, 
                         title: `Chapter ${chapterKey}` 
                     };
