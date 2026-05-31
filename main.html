@@ -147,12 +147,14 @@
             border-radius: var(--radius-sm);
             opacity: 0;
             transform: translateY(20px);
+            pointer-events: none; /* 나타나기 전까지 클릭 차단 */
             transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s, border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
         }
 
         .enter-btn.show {
             opacity: 1;
             transform: translateY(0);
+            pointer-events: auto; /* 나타나면 클릭 허용 */
         }
 
         .enter-btn:hover {
