@@ -29,7 +29,7 @@
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* 화면 전체 높이를 최소 높이로 설정 */
+            min-height: 100vh;
             background-color: var(--bg-color); color: var(--text-primary);
             font-family: 'Pretendard', -apple-system, sans-serif; font-size: 15px; line-height: 1.75;
             -webkit-font-smoothing: antialiased;
@@ -54,13 +54,12 @@
            2. 레이아웃
            ========================================= */
         .layout-container {
-            flex: 1; /* 컨텐츠가 부족할 때 남는 세로 공간을 채워 푸터를 하단으로 밀어냅니다 */
             display: grid; 
             grid-template-columns: minmax(0, 800px); 
             justify-content: center;
             margin: 4rem auto; 
             padding: 0 2rem; 
-            width: 100%; /* 너비가 좁아지지 않도록 100% 부여 */
+            width: 100%;
         }
 
         /* =========================================
@@ -232,7 +231,7 @@
     </div>
 
     <!-- 푸터 추가 -->
-    <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: 3rem; font-family: 'Fira Code', monospace; text-align: center; width: 100%;">
+    <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: auto; font-family: 'Fira Code', monospace; text-align: center; width: 100%;">
         <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);">_</span></div>
         <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
