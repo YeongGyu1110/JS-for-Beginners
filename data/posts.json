@@ -25,5 +25,14 @@
     "path": "./script/dark-theme.md",
     "chapter": "1",
     "order": 2
+  },
+  {
+    "id": "post4",
+    "title": "자바스크립트 비동기 처리: async와 await",
+    "description": "Promise의 지옥에서 벗어나 깔끔한 비동기 코드를 작성하는 방법. async/await의 동작 원리를 파헤칩니다.",
+    "tags": ["javascript", "async"],
+    "path": "./script/lab.md",
+    "chapter": "1",
+    "order": 3
   }
 ]
