@@ -524,7 +524,7 @@
                 const posts = await postsRes.json();
                 const chaptersData = await chaptersRes.json();
 
-                // 2. 통계 업데이트 및 시작 버튼 링크 설정
+                // 2. 통계 업데이트 및 시작 버튼 링크 설정 (수정됨)
                 if (posts.length > 0) {
                     const sortedPosts = [...posts].sort((a, b) => {
                         if(a.chapter !== b.chapter) return a.chapter.localeCompare(b.chapter);
@@ -532,7 +532,7 @@
                     });
                     
                     const firstPost = sortedPosts[0];
-                    const targetPage = firstPost.path.toLowerCase().includes('lab') ? 'lab.html' : 'index.html';
+                    const targetPage = firstPost.type === 'lab' ? 'lab.html' : 'index.html';
                     enterBtn.href = `${targetPage}?id=${firstPost.id}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
@@ -563,7 +563,7 @@
                     ).join('');
                 }
 
-                // 4. 챕터 렌더링
+                // 4. 챕터 렌더링 (수정됨: items 배열은 여기서 생성됨)
                 const chaptersObj = {};
                 posts.forEach(post => {
                     if (!post.chapter) return;
@@ -589,8 +589,9 @@
                     const card = document.createElement('div');
                     card.className = 'chapter-card';
                     const listHTML = items.map(item => {
-                        const targetPage = item.path.toLowerCase().includes('lab') ? 'lab.html' : 'index.html';
-                        return `<li><a href="${targetPage}?id=${item.id}">${item.title}</a></li>`;
+                        const targetPage = item.type === 'lab' ? 'lab.html' : 'index.html';
+                        const labBadge = item.type === 'lab' ? `<span style="color:var(--accent-color); font-size:0.6rem; margin-left:6px; vertical-align:middle;">[LAB]</span>` : '';
+                        return `<li><a href="${targetPage}?id=${item.id}">${item.title} ${labBadge}</a></li>`;
                     }).join('');
 
                     card.innerHTML = `

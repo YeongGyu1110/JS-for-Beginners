@@ -453,8 +453,7 @@
                 }
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
                     const num = String(i + 1).padStart(2, '0');
-                    // 경로에 'lab'이 포함되어 있으면 lab.html로, 아니면 index.html로 이동
-                    const targetPage = p.path.toLowerCase().includes('lab') ? 'lab.html' : 'index.html';
+                    const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
                     return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}">${num}. ${p.title}</a>`;
                 }).join('');
                 document.getElementById('side-chapter-count').textContent = `[${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}]`;
