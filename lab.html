@@ -83,11 +83,14 @@
             justify-content: center;
         }
 
-        /* 사이드바 가로 스크롤 원천 차단 */
+        /* 사이드바 가로 스크롤 원천 차단 및 스티키 설정 */
         .sidebar { 
-            position: sticky; top: 100px; max-height: calc(100vh - 120px); 
+            position: sticky; 
+            top: 100px; 
+            max-height: calc(100vh - 120px); 
             overflow-y: auto; 
-            overflow-x: hidden; /* 추가됨 */
+            overflow-x: hidden;
+            /* sticky 자체가 absolute 자식의 기준점(positioning context)이 됩니다. */
         }
 
         /* 긴 목차 텍스트가 삐져나가지 않고 예쁘게 줄바꿈 되도록 처리 */
@@ -100,15 +103,31 @@
         }
 
         /* UI 전환 트랜지션용 클래스 */
-        .ui-element { transition: opacity 0.4s ease, transform 0.4s ease; opacity: 1; transform: translateY(0); }
-        .ui-element.hidden { opacity: 0; transform: translateY(10px); pointer-events: none; position: absolute; visibility: hidden; }
+        .ui-element { 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+            opacity: 1; 
+            transform: translateY(0); 
+            width: 100%;
+        }
+        .ui-element.hidden { 
+            opacity: 0; 
+            transform: translateY(10px); 
+            pointer-events: none; 
+            position: absolute; 
+            visibility: hidden; 
+            top: 0; 
+            left: 0; 
+            right: 0;
+            height: 0;         /* 높이를 0으로 만들어 스크롤바 유발 차단 */
+            overflow: hidden;  /* 내부 콘텐츠 넘침 차단 */
+        }
 
         /* =========================================
            4. 좌우 사이드바 요소 (검색, 목차, 챕터, 태그)
            ========================================= */
         /* 검색폼 (index.html, search.html 스타일 완벽 복사) */
         .search-form { margin-bottom: 2.5rem; position: relative; }
-        .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2.2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.8rem; outline: none; transition: all 0.2s ease; }
+        .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.8rem; outline: none; transition: all 0.2s ease; }
         .search-input::placeholder { color: var(--text-secondary); opacity: 0.5; }
         .search-input:focus { border-color: var(--text-secondary); }
         .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.9rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
@@ -133,15 +152,87 @@
         .toc-h3 { margin-left: 10px; font-size: 0.75rem !important; }
 
         /* 우측 챕터 링크 */
-        .sidebar-title-link { text-decoration: none; display: inline-block; margin-bottom: 1.2rem; transition: opacity 0.2s ease; }
-        .sidebar-title-link:hover .sidebar-title { color: var(--accent-color); }
-        .chapter-count { color: var(--text-secondary); font-size: 0.7rem; font-weight: 400; letter-spacing: 0; margin-left: 8px;}
-        .right-toc-container { margin-bottom: 2.5rem; }
-        .right-toc-container a { display: block; color: var(--text-secondary); text-decoration: none; margin-bottom: 0.6rem; font-size: 0.8rem; font-family: 'Fira Code', monospace; transition: color 0.15s; position: relative; padding-left: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .right-toc-container a::before { content: "·"; position: absolute; left: 0; opacity: 0.5; }
-        .right-toc-container a:hover { color: var(--text-heading); }
-        .right-toc-container a.active { color: var(--accent-color); font-weight: 500; }
-        .right-toc-container a.active::before { content: ">"; color: var(--accent-color); opacity: 1; }
+        .sidebar-title-link {
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            margin-bottom: 1.2rem;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar-title-link:hover {
+            opacity: 0.7;
+        }
+
+        .sidebar-title-link .sidebar-title {
+            margin-bottom: 0; /* 링크 내부이므로 하단 여백 제거 */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar-title-link:hover .sidebar-title {
+            color: var(--accent-color);
+        }
+
+        /* [ 1/5 ] 같은 카운터 뱃지 */
+        .chapter-count {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+
+        .right-toc-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2.5rem;
+        }
+
+        .right-toc-container a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.6rem;
+            font-size: 0.8rem;
+            font-family: 'Fira Code', monospace;
+            transition: color 0.15s ease;
+            position: relative;
+            padding-left: 14px;
+
+            /* 너비가 좁을 때 텍스트가 줄바꿈되지 않고 '...'으로 처리되게 함 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 기본 마커: 점(·) */
+        .right-toc-container a::before {
+            content: "·";
+            position: absolute;
+            left: 0;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .right-toc-container a:hover {
+            color: var(--text-heading);
+        }
+
+        /* 현재 읽고 있는 문서 액티브 효과 */
+        .right-toc-container a.active {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* 액티브 마커: 꺾쇠(>) */
+        .right-toc-container a.active::before {
+            content: ">";
+            color: var(--accent-color);
+            opacity: 1;
+        }
 
         /* 태그 */
         .tags-container { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -345,7 +436,7 @@
             <!-- [Standby 모드] 챕터 목록 및 태그 -->
             <div id="ui-chapter-tags" class="ui-element">
                 <a href="#" id="side-chapter-title-link" class="sidebar-title-link" title="해당 챕터 전체 보기">
-                    <h3 class="sidebar-title" style="margin-bottom:0; display:flex; align-items:center;">
+                    <h3 class="sidebar-title">
                         <span id="side-chapter-title">Chapter</span> 
                         <span class="chapter-count" id="side-chapter-count">[0/0]</span>
                     </h3>
@@ -447,19 +538,28 @@
                 document.title = `${currentPost.title} (Lab) - JFB`;
 
                 // 우측 사이드바 데이터 바인딩
-                const chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a, b) => a.order - b.order);
-                if (chapters[currentPost.chapter]) {
-                    document.getElementById('side-chapter-title').textContent = chapters[currentPost.chapter].title;
+                const chapterId = currentPost.chapter;
+                const chapterInfo = chapters[chapterId];
+                const chapterPosts = posts.filter(p => p.chapter === chapterId).sort((a, b) => a.order - b.order);
+
+                if (chapterInfo) {
+                    document.getElementById('side-chapter-title').textContent = chapterInfo.title;
+                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${chapterId}`;
                 }
+
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
                     const num = String(i + 1).padStart(2, '0');
                     const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
-                    return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}">${num}. ${p.title}</a>`;
+                    return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
                 }).join('');
-                document.getElementById('side-chapter-count').textContent = `[${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}]`;
+
+                const currentIndex = chapterPosts.findIndex(p => p.id === postId) + 1;
+                document.getElementById('side-chapter-count').textContent = `[${currentIndex}/${chapterPosts.length}]`;
 
                 if (currentPost.tags) {
-                    document.getElementById('tags-container').innerHTML = currentPost.tags.map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                    document.getElementById('tags-container').innerHTML = currentPost.tags.map(tag => 
+                        `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`
+                    ).join('');
                 }
 
                 // 마크다운 로드 및 파싱 (Standby 모드이므로 코드는 자동으로 CSS에 의해 잠김)
