@@ -532,7 +532,8 @@
                     });
                     
                     const firstPost = sortedPosts[0];
-                    enterBtn.href = `index.html?id=${firstPost.id}`;
+                    const targetPage = firstPost.path.toLowerCase().includes('lab') ? 'lab.html' : 'index.html';
+                    enterBtn.href = `${targetPage}?id=${firstPost.id}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
                     enterBtn.innerText = "> NO_DATA_";
@@ -587,7 +588,10 @@
 
                     const card = document.createElement('div');
                     card.className = 'chapter-card';
-                    const listHTML = items.map(item => `<li><a href="index.html?id=${item.id}">${item.title}</a></li>`).join('');
+                    const listHTML = items.map(item => {
+                        const targetPage = item.path.toLowerCase().includes('lab') ? 'lab.html' : 'index.html';
+                        return `<li><a href="${targetPage}?id=${item.id}">${item.title}</a></li>`;
+                    }).join('');
 
                     card.innerHTML = `
                         <span class="chapter-meta">${chapterInfo.meta}</span>
