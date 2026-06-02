@@ -584,6 +584,91 @@
             bottom: 40px; /* 화면 위로 올라옴 */
             opacity: 1;
         }
+
+        /* =========================================
+           11. 우측 챕터 리스트 (Left ToC와 대칭 디자인)
+           ========================================= */
+        .sidebar-title-link {
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            margin-bottom: 1.2rem;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar-title-link:hover {
+            opacity: 0.7;
+        }
+
+        .sidebar-title-link .sidebar-title {
+            margin-bottom: 0; /* 링크 내부이므로 하단 여백 제거 */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar-title-link:hover .sidebar-title {
+            color: var(--accent-color);
+        }
+
+        /* [ 1/5 ] 같은 카운터 뱃지 */
+        .chapter-count {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+
+        .right-toc-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2.5rem;
+        }
+
+        .right-toc-container a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.6rem;
+            font-size: 0.8rem;
+            font-family: 'Fira Code', monospace;
+            transition: color 0.15s ease;
+            position: relative;
+            padding-left: 14px;
+            
+            /* 너비가 좁을 때 텍스트가 줄바꿈되지 않고 '...'으로 처리되게 함 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 기본 마커: 점(·) */
+        .right-toc-container a::before {
+            content: "·";
+            position: absolute;
+            left: 0;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .right-toc-container a:hover {
+            color: var(--text-heading);
+        }
+
+        /* 현재 읽고 있는 문서 액티브 효과 */
+        .right-toc-container a.active {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+        
+        /* 액티브 마커: 꺾쇠(>) */
+        .right-toc-container a.active::before {
+            content: ">";
+            color: var(--accent-color);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -615,10 +700,24 @@
         </main>
 
         <aside class="sidebar right-sidebar">
+            
+            <!-- 챕터 제목 (클릭 시 chapter.html로 이동) -->
+            <a href="#" id="side-chapter-title-link" class="sidebar-title-link" title="해당 챕터 전체 보기">
+                <h3 class="sidebar-title">
+                    <span id="side-chapter-title">Chapter</span> 
+                    <span class="chapter-count" id="side-chapter-count">[0/0]</span>
+                </h3>
+            </a>
+            
+            <!-- 네비게이션 리스트 -->
+            <nav id="chapter-nav" class="right-toc-container"></nav>
+            
+            <!-- 태그 영역 -->
             <h3 class="sidebar-title">Tags</h3>
             <div class="tags-container" id="tags-container">
                 <!-- JS에서 동적으로 렌더링됩니다 -->
             </div>
+            
         </aside>
     </div>
 
@@ -717,10 +816,16 @@
                     return; 
                 }
 
-                const postsResponse = await fetch('./data/posts.json');
-                if (!postsResponse.ok) throw new Error('posts.json 로드 실패');
+                // 데이터 병렬 로드
+                const [postsResponse, chaptersResponse] = await Promise.all([
+                    fetch('./data/posts.json'),
+                    fetch('./data/chapters.json')
+                ]);
+
+                if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('데이터베이스 로드 실패');
                 
                 const posts = await postsResponse.json();
+                const chapters = await chaptersResponse.json();
                 const currentPost = posts.find(p => p.id === postId);
                 
                 // 파라미터는 있는데 매칭되는 데이터가 없으면 404 출력 후 종료
@@ -741,6 +846,30 @@
 
                 pageTitle = currentPost.title + " - JFB";
                 pageTags = currentPost.tags;
+
+                // 챕터 정보 업데이트
+                const chapterId = currentPost.chapter;
+                const chapterInfo = chapters[chapterId];
+                const chapterPosts = posts.filter(p => p.chapter === chapterId).sort((a, b) => a.order - b.order);
+                if (chapterInfo) {
+                    document.getElementById('side-chapter-title').textContent = chapterInfo.title;
+                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${chapterId}`;
+                }
+                
+                // 2. 챕터 포스트 렌더링 (번호 수동 부여 01. 02.)
+                const chapterNav = document.getElementById('chapter-nav');
+                chapterNav.innerHTML = chapterPosts.map((p, idx) => {
+                    const num = String(idx + 1).padStart(2, '0');
+                    // 글자가 잘려도 마우스를 올리면 전체 제목이 보이도록 title 속성 추가
+                    return `<a href="index.html?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
+                }).join('');
+
+                // 3. 전체 포스트 중 현재 위치 계산 (우측 상단 뱃지용)
+                const currentIndex = chapterPosts.findIndex(p => p.id === postId) + 1;
+                const countBadge = document.getElementById('side-chapter-count');
+                if(countBadge) {
+                    countBadge.textContent = `[${currentIndex}/${chapterPosts.length}]`;
+                }
 
             } catch (error) {
                 console.error('데이터베이스 통신 오류:', error);
