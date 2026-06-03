@@ -544,6 +544,7 @@
             margin-bottom: 3rem;
             font-family: 'Pretendard', sans-serif;
             font-size: 0.95rem;
+            opacity: 0.7;
         }
 
         .system-message-icon {
@@ -799,9 +800,13 @@
                 tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
                 contentArea.innerHTML = `
                     <div class="system-message-container">
+                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
                         <h1 class="system-message-title">404</h1>
                         <h2 class="system-message-subtitle">FILE_NOT_FOUND</h2>
-                        <p class="system-message-desc">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
+                        <p class="system-message-desc" style="opacity: 0.7;">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
                         <a href="index.html" class="return-home-btn">> RETURN_TO_HOME_</a>
                     </div>
                 `;
@@ -822,7 +827,7 @@
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
                         <h2 class="system-message-subtitle">INVALID_VIEWER_TYPE</h2>
-                        <p class="system-message-desc">이 문서는 ${typeName} 전용 환경에서 열람해야 합니다.</p>
+                        <p class="system-message-desc" style="opacity: 0.7;">이 문서는 ${typeName} 전용 환경에서 열람해야 합니다.</p>
                         <a href="${targetPage}?id=${id}" class="return-home-btn">> OPEN_IN_CORRECT_VIEWER_</a>
                     </div>
                 `;

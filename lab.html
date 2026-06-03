@@ -342,8 +342,14 @@
            ========================================= */
         .system-message-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center; font-family: 'Fira Code', monospace; }
         .system-message-title { color: var(--accent-color); font-size: 4rem; margin-bottom: 1rem; line-height: 1; }
-        .system-message-subtitle { color: var(--text-heading); font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 600; }
-        .system-message-desc { color: var(--text-secondary); margin-bottom: 3rem; font-family: 'Pretendard', sans-serif; font-size: 0.95rem; }
+        .system-message-subtitle {
+            color: var(--text-heading);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .system-message-desc { color: var(--text-secondary); margin-bottom: 3rem; font-family: 'Pretendard', sans-serif; font-size: 0.95rem; opacity: 0.7; }
+        .system-message-icon { margin-bottom: 1.5rem; opacity: 0.5; color: var(--text-secondary); }
         .return-home-btn { display: inline-block; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color); background-color: var(--surface-color); padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); transition: all 0.2s ease; }
         .return-home-btn:hover { color: var(--accent-color); border-color: var(--accent-color); transform: translateY(-2px); }
 
@@ -356,6 +362,13 @@
             .sidebar { position: static; max-height: none; }
             .left-sidebar { order: -1; }
             .right-sidebar { order: 2; border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 1rem; }
+        }
+
+        .content p {
+            margin-bottom: 1.6rem;
+            font-size: 0.98rem;
+            color: var(--text-primary);
+            word-break: keep-all;
         }
     </style>
 </head>
@@ -521,19 +534,51 @@
             }
 
             const renderError = (code, subtitle, desc, linkHref = "main.html", linkText = "RETURN_TO_MAIN") => {
-                document.title = `${code} - JFB`;
+                const badgeContainer = document.getElementById('tags-container');
+                
+                // 1. 브라우저 탭 및 배지 설정
+                if (code === '404') {
+                    document.title = "404 Not Found - JFB";
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
+                } else if (code === 'EMPTY') {
+                    document.title = "Lab Environment - JFB";
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary);">[WAITING_FOR_INPUT]</span>`;
+                } else if (code === 'ACCESS_DENIED') {
+                    document.title = "Access Denied - JFB";
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[TYPE_MISMATCH]</span>`;
+                } else {
+                    document.title = `${code} - JFB`;
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[${code}]</span>`;
+                }
+
+                // 2. 아이콘 선택
+                let iconSVG = '';
+                if (code === '404') {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
+                } else if (code === 'EMPTY') {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
+                } else if (code === 'ACCESS_DENIED' || code === 'SECURE_ERR') {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+                } else {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+                }
+
+                const subtitleStyle = code === 'EMPTY' ? 'style="font-size: 1.2rem;"' : '';
+                const descStyle = code === 'EMPTY' ? 'style="opacity: 0.7; margin-bottom: 2.5rem;"' : 'style="opacity: 0.7;"';
+
                 loaderState.style.display = 'none';
                 labContent.innerHTML = `
                     <div class="system-message-container">
-                        <h1 class="system-message-title">${code}</h1>
-                        <h2 class="system-message-subtitle">${subtitle}</h2>
-                        <p class="system-message-desc">${desc}</p>
+                        ${iconSVG}
+                        ${(code !== 'EMPTY' && code !== 'ACCESS_DENIED' && code !== 'SECURE_ERR') ? `<h1 class="system-message-title">${code}</h1>` : ''}
+                        <h2 class="system-message-subtitle" ${subtitleStyle}>${subtitle}</h2>
+                        <p class="system-message-desc" ${descStyle}>${desc}</p>
                         <a href="${linkHref}" class="return-home-btn">> ${linkText}_</a>
                     </div>`;
                 labContent.classList.add('loaded');
             };
 
-            if (!postId) return renderError("EMPTY", "NO_LAB_SELECTED", "실습 파일 식별자가 전달되지 않았습니다.");
+            if (!postId) return renderError("EMPTY", "NO_FILE_SELECTED", "읽을 문서를 선택하거나 검색해주세요.", "search.html", "OPEN_SEARCH");
 
             // 1. 데이터 로드 및 초기 렌더링 (Standby 모드 유지)
             try {
@@ -544,11 +589,11 @@
                 const chapters = await chaptersRes.json();
                 const currentPost = posts.find(p => p.id === postId);
 
-                if (!currentPost) return renderError("404", "LAB_NOT_FOUND", "요청하신 실습 문서가 존재하지 않습니다.");
+                if (!currentPost) return renderError("404", "FILE_NOT_FOUND", "요청하신 문서를 찾을 수 없거나 삭제되었습니다.", "index.html", "RETURN_TO_HOME");
                 
                 // [보안 강화] 타입 검증: 일반 문서(doc)는 index.html에서 열람해야 함
                 if (currentPost.type !== 'lab') {
-                    return renderError("ACCESS_DENIED", "NOT_A_LAB_DOCUMENT", "이 문서는 일반 문서 뷰어에서 열람해야 합니다.", `index.html?id=${postId}`, "OPEN_IN_DOC_VIEWER");
+                    return renderError("ACCESS_DENIED", "INVALID_VIEWER_TYPE", "이 문서는 일반 문서 전용 환경에서 열람해야 합니다.", `index.html?id=${postId}`, "OPEN_IN_CORRECT_VIEWER");
                 }
 
                 if (!currentPost.path.startsWith('./script/')) return renderError("SECURE_ERR", "UNAUTHORIZED_PATH", "허용되지 않은 경로입니다.");
@@ -614,7 +659,10 @@
                 labContent.classList.add('loaded');
 
             } catch (e) {
-                return renderError("SYS_ERR", "LOAD_FAILURE", "데이터를 불러오는 중 문제가 발생했습니다.");
+                return renderError("SYS_ERR", "LOAD_FAILURE", "데이터를 불러오는 중 문제가 발생했습니다.", {
+                    badgeText: "[SYS_ERR: LOAD]",
+                    titlePrefix: "System Error"
+                });
             }
 
             // 2. 실습 시작 (UI 트랜지션 및 코드 잠금 해제)
