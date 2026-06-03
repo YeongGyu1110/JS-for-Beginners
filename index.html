@@ -860,8 +860,9 @@
                 const chapterNav = document.getElementById('chapter-nav');
                 chapterNav.innerHTML = chapterPosts.map((p, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
+                    const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
                     // 글자가 잘려도 마우스를 올리면 전체 제목이 보이도록 title 속성 추가
-                    return `<a href="index.html?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
+                    return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
                 }).join('');
 
                 // 3. 전체 포스트 중 현재 위치 계산 (우측 상단 뱃지용)

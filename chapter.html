@@ -422,14 +422,17 @@
                 const finalDesc = info.description || fallbackDescription;
 
                 document.title = `${info.title} - JFB`;
-                const firstPostId = chapterPosts[0].id;
+                const firstPost = chapterPosts[0];
+                const firstPostTarget = firstPost.type === 'lab' ? 'lab.html' : 'index.html';
 
                 // 모듈 카드 HTML 생성 (카드는 div, 타이틀과 태그는 a 태그)
-                const modulesHTML = chapterPosts.map((post, index) => `
+                const modulesHTML = chapterPosts.map((post, index) => {
+                    const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
+                    return `
                     <div class="module-card">
                         <div class="module-number">${String(index + 1).padStart(2, '0')}</div>
                         <div class="module-content">
-                            <a href="index.html?id=${post.id}" class="module-title">${post.title}</a>
+                            <a href="${targetPage}?id=${post.id}" class="module-title">${post.title}</a>
                             <p class="module-desc">${post.description || '상세 설명이 제공되지 않은 문서입니다.'}</p>
                             <div class="module-tags">
                                 ${(post.tags || []).map(tag => 
@@ -438,7 +441,7 @@
                             </div>
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
 
                 container.innerHTML = `
                     <section class="chapter-hero">
@@ -448,7 +451,7 @@
                             <p class="chapter-desc">${finalDesc}</p>
                             
                             <div class="hero-actions">
-                                <a href="index.html?id=${firstPostId}" class="start-btn">
+                                <a href="${firstPostTarget}?id=${firstPost.id}" class="start-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <polygon points="5 3 19 12 5 21 5 3"></polygon>
                                     </svg>
