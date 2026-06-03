@@ -508,7 +508,7 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             };
 
-            const renderError = (code, subtitle, desc) => {
+            const renderError = (code, subtitle, desc, linkHref = "main.html", linkText = "RETURN_TO_MAIN") => {
                 document.title = `${code} - JFB`;
                 loaderState.style.display = 'none';
                 labContent.innerHTML = `
@@ -516,7 +516,7 @@
                         <h1 class="system-message-title">${code}</h1>
                         <h2 class="system-message-subtitle">${subtitle}</h2>
                         <p class="system-message-desc">${desc}</p>
-                        <a href="main.html" class="return-home-btn">> RETURN_TO_MAIN_</a>
+                        <a href="${linkHref}" class="return-home-btn">> ${linkText}_</a>
                     </div>`;
                 labContent.classList.add('loaded');
             };
@@ -533,6 +533,12 @@
                 const currentPost = posts.find(p => p.id === postId);
 
                 if (!currentPost) return renderError("404", "LAB_NOT_FOUND", "요청하신 실습 문서가 존재하지 않습니다.");
+                
+                // [보안 강화] 타입 검증: 일반 문서(doc)는 index.html에서 열람해야 함
+                if (currentPost.type !== 'lab') {
+                    return renderError("ACCESS_DENIED", "NOT_A_LAB_DOCUMENT", "이 문서는 일반 문서 뷰어에서 열람해야 합니다.", `index.html?id=${postId}`, "OPEN_IN_DOC_VIEWER");
+                }
+
                 if (!currentPost.path.startsWith('./script/')) return renderError("SECURE_ERR", "UNAUTHORIZED_PATH", "허용되지 않은 경로입니다.");
 
                 document.title = `${currentPost.title} (Lab) - JFB`;
