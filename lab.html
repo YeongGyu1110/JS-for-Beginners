@@ -508,6 +508,18 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             };
 
+            // 검색 폼 제출 이벤트 가로채기
+            const searchInput = uiSearch ? uiSearch.querySelector('.search-input') : null;
+            if (uiSearch && searchInput) {
+                uiSearch.addEventListener('submit', (e) => {
+                    const query = searchInput.value.trim();
+                    if (query === '') {
+                        e.preventDefault();
+                        showToast('검색어를 입력해주세요.');
+                    }
+                });
+            }
+
             const renderError = (code, subtitle, desc, linkHref = "main.html", linkText = "RETURN_TO_MAIN") => {
                 document.title = `${code} - JFB`;
                 loaderState.style.display = 'none';
