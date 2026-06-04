@@ -282,6 +282,20 @@
             background-color: var(--surface-color);
         }
 
+        .lab-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 8px;
+            vertical-align: middle;
+            letter-spacing: 0.5px;
+            background-color: rgba(255, 107, 0, 0.1);
+        }
+
         /* =========================================
            5. 에러 메시지
            ========================================= */
@@ -428,11 +442,12 @@
                 // 모듈 카드 HTML 생성 (카드는 div, 타이틀과 태그는 a 태그)
                 const modulesHTML = chapterPosts.map((post, index) => {
                     const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
+                    const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
                     return `
                     <div class="module-card">
                         <div class="module-number">${String(index + 1).padStart(2, '0')}</div>
                         <div class="module-content">
-                            <a href="${targetPage}?id=${post.id}" class="module-title">${post.title}</a>
+                            <a href="${targetPage}?id=${post.id}" class="module-title">${post.title}${labBadge}</a>
                             <p class="module-desc">${post.description || '상세 설명이 제공되지 않은 문서입니다.'}</p>
                             <div class="module-tags">
                                 ${(post.tags || []).map(tag => 

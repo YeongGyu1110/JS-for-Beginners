@@ -250,6 +250,20 @@
         }
         .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
+        .lab-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 6px;
+            vertical-align: middle;
+            letter-spacing: 0.5px;
+            background-color: rgba(255, 107, 0, 0.1);
+        }
+
         /* 챕터 통계 뱃지 */
         .stats-badge {
             font-family: 'Fira Code', monospace;
@@ -590,8 +604,8 @@
                     card.className = 'chapter-card';
                     const listHTML = items.map(item => {
                         const targetPage = item.type === 'lab' ? 'lab.html' : 'index.html';
-                        const labBadge = item.type === 'lab' ? `<span style="color:var(--accent-color); font-size:0.6rem; margin-left:6px; vertical-align:middle;">[LAB]</span>` : '';
-                        return `<li><a href="${targetPage}?id=${item.id}">${item.title} ${labBadge}</a></li>`;
+                        const labBadge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                        return `<li><a href="${targetPage}?id=${item.id}">${item.title}${labBadge}</a></li>`;
                     }).join('');
 
                     card.innerHTML = `

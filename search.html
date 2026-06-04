@@ -139,6 +139,20 @@
         }
         .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
+        .lab-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 8px;
+            vertical-align: middle;
+            letter-spacing: 0.5px;
+            background-color: rgba(255, 107, 0, 0.1);
+        }
+
         /* =========================================
            4. 검색 결과 리스트
            ========================================= */
@@ -317,9 +331,10 @@
                 } else {
                     resultsContainer.innerHTML = filteredResults.map(post => {
                     const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
+                    const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
                     return `
                         <article class="search-result-item">
-                            <a href="${targetPage}?id=${post.id}" class="search-result-title">${post.title}</a>
+                            <a href="${targetPage}?id=${post.id}" class="search-result-title">${post.title}${labBadge}</a>
                             <p class="search-result-summary">${post.description}</p>
                             <div class="search-result-meta">
                                 ${post.tags.map(tag => `<button class="tag result-tag" data-tag="#${tag}">#${tag}</button>`).join('')}
