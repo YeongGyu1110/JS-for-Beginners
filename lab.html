@@ -253,7 +253,38 @@
 
         @keyframes pulseTimer { 0% { opacity: 1; } 100% { opacity: 0.6; } }
 
-        .dashboard-box { background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; }
+        .dashboard-box { background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; transition: all 0.2s ease; }
+        
+        .sidebar-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background-color: var(--bg-color);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.8rem 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-action-btn:hover {
+            background-color: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255, 107, 0, 0.3); 
+        }
+
+        .sidebar-action-btn:active {
+            background-color: #e66000;
+            box-shadow: none;
+        }
+
         .dash-label { font-size: 0.75rem; color: var(--text-secondary); font-family: 'Fira Code', monospace; margin-bottom: 0.5rem; display: block; }
         .dash-value { font-size: 1.5rem; color: var(--text-heading); font-family: 'Fira Code', monospace; font-weight: 700; }
         .dash-value span { color: var(--accent-color); }
@@ -313,12 +344,67 @@
         }
         .lab-action-btn:hover { background-color: var(--accent-color); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2); }
 
-        .lab-intro, .lab-outro {
+        .lab-outro {
             text-align: center; padding: 4rem 2rem; border: 1px dashed var(--border-color); border-radius: var(--radius-md);
             background-color: var(--surface-color); margin-bottom: 3rem; transition: opacity 0.5s;
         }
-        .lab-intro h1, .lab-outro h1 { color: var(--text-heading); font-family: 'Fira Code', monospace; font-size: 2rem; margin-bottom: 1rem; letter-spacing: -1px; }
-        .lab-intro p { color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; }
+        .lab-outro h1 { color: var(--text-heading); font-family: 'Fira Code', monospace; font-size: 2rem; margin-bottom: 1rem; letter-spacing: -1px; }
+
+        .lab-terminal {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-color);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 2.5rem;
+            font-family: 'Fira Code', monospace;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.85rem;
+        }
+
+        .status-tag {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .status-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .terminal-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.5rem 1.2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: var(--radius-sm);
+        }
+
+        .terminal-btn:hover {
+            background-color: var(--accent-color);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+        }
 
         .lab-task-btn {
             display: flex; align-items: center; width: 100%; padding: 1.2rem 1.5rem; margin: 2rem 0;
@@ -412,24 +498,16 @@
                 [Loading document database...]
             </div>
 
-            <!-- 인트로 (Standby 모드에서만 보임) -->
-            <section id="lab-intro" class="lab-intro ui-element" style="display: none;">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:1rem;">
-                    <polyline points="16 18 22 12 16 6"></polyline>
-                    <polyline points="8 6 2 12 8 18"></polyline>
-                </svg>
-                <h1>LAB ENVIRONMENT</h1>
-                <p id="lab-intro-desc">본 실습은 일회성 환경이며, 이탈 시 기록이 초기화됩니다.<br>코드 열람 및 실습 진행을 위해 워크스페이스를 초기화하십시오.</p>
-                <button id="btn-start-lab" class="lab-action-btn">> INITIALIZE_WORKSPACE_</button>
-            </section>
+            <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;">
+                <div class="terminal-status">
+                    <span class="status-tag">[SYSTEM_READY]</span>
+                    <span class="status-text">STBY_ENVIRONMENT_LOADED</span>
+                </div>
+                <button id="btn-start-lab" class="terminal-btn">> INITIALIZE_WORKSPACE_</button>
+            </div>
 
             <!-- 마크다운 본문 영역 -->
             <article id="lab-content" class="markdown-body"></article>
-
-            <!-- 제출 버튼 (Active 모드에서만 활성화 됨. 마크다운 맨 아래에 위치) -->
-            <button id="btn-end-lab" class="lab-action-btn ui-element hidden" style="margin-top: 4rem;">
-                > TERMINATE_AND_SUBMIT_
-            </button>
 
             <!-- 아웃트로 (완료 후 보임) -->
             <section id="lab-outro" class="lab-outro ui-element hidden" style="display: none; position: relative;">
@@ -462,13 +540,12 @@
 
             <!-- [Active 모드] 대시보드 (기본 숨김) -->
             <div id="ui-dashboard" class="ui-element hidden">
-                <div class="dashboard-box">
-                    <span class="dash-label">ENVIRONMENT</span>
-                    <div style="font-family: 'Fira Code', monospace; font-size: 0.9rem; display: flex; align-items: center; color: var(--text-heading);">
-                        <span class="status-indicator active"></span>
-                        <span style="color: #10b981;">ONLINE_STABLE</span>
-                    </div>
-                </div>
+                <button class="sidebar-action-btn" id="btn-end-lab" title="실습 종료 및 결과 제출">
+                    <svg width="14" heibtn-end-labght="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    </svg>
+                    TERMINATE_SESSION_
+                </button>
 
                 <div class="dashboard-box">
                     <span class="dash-label">MISSIONS_COMPLETED</span>
@@ -493,7 +570,7 @@
             // DOM Elements
             const body = document.body;
             const loaderState = document.getElementById('loader-state');
-            const labIntro = document.getElementById('lab-intro');
+            const labTerminal = document.getElementById('lab-terminal');
             const labContent = document.getElementById('lab-content');
             const labOutro = document.getElementById('lab-outro');
             const btnStart = document.getElementById('btn-start-lab');
@@ -655,7 +732,7 @@
 
                 // 화면 노출
                 loaderState.style.display = 'none';
-                labIntro.style.display = 'block';
+                labTerminal.style.display = 'flex';
                 labContent.classList.add('loaded');
 
             } catch (e) {
@@ -673,9 +750,8 @@
                 body.classList.remove('lab-state-standby');
                 body.classList.add('lab-state-active');
 
-                // 인트로 숨기기
-                labIntro.style.opacity = '0';
-                setTimeout(() => labIntro.style.display = 'none', 400);
+                labTerminal.style.opacity = '0';
+                setTimeout(() => labTerminal.style.display = 'none', 400);
 
                 // 사이드바 UI 교체 (페이드 효과)
                 uiSearch.classList.add('hidden');
@@ -693,7 +769,6 @@
                     
                     uiTimer.classList.remove('hidden');
                     uiDashboard.classList.remove('hidden');
-                    btnEnd.classList.remove('hidden'); // 종료 버튼 노출
                 }, 400);
 
                 // 타이머 시작 (예: 45분)
