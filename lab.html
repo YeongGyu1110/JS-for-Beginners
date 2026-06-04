@@ -783,7 +783,7 @@
                 }, 400);
 
                 // 타이머 시작 (예: 45분)
-                startTimer(45);
+                startTimer(.1);
                 showToast("워크스페이스가 활성화되었습니다.");
 
                 // 태스크 버튼 이벤트 바인딩 (활성화 후 작동)
@@ -812,12 +812,17 @@
                 });
             });
 
-            // 3. 실습 종료
-            btnEnd.addEventListener('click', () => {
-                if (completedTasks < totalTasks) {
+            // 3. 실습 종료 로직 (함수로 분리)
+            const terminateLab = (isTimeout = false) => {
+                // 수동 종료 시에만 미완료 미션 확인
+                if (!isTimeout && completedTasks < totalTasks) {
                     if (!confirm(`아직 해결하지 않은 미션이 ${totalTasks - completedTasks}개 있습니다. 완료하시겠습니까?`)) return;
                 }
                 
+                if (isTimeout) {
+                    showToast("제한 시간이 초과되어 실습이 종료되었습니다.");
+                }
+
                 isLabActive = false;
                 clearInterval(timerInterval);
 
@@ -825,7 +830,16 @@
                 labContent.style.display = 'none';
                 btnEnd.style.display = 'none';
                 
-                // 아웃트로 노출
+                // 아웃트로 노출 및 상태 업데이트
+                const outroTitle = document.getElementById('scramble-success');
+                if (isTimeout) {
+                    outroTitle.textContent = "LAB_TIMEOUT";
+                    outroTitle.style.color = "var(--accent-color)";
+                } else {
+                    outroTitle.textContent = "LAB_COMPLETED";
+                    outroTitle.style.color = "var(--text-heading)";
+                }
+
                 labOutro.style.display = 'block';
                 setTimeout(() => labOutro.classList.remove('hidden'), 50);
 
@@ -844,7 +858,9 @@
 
                 document.getElementById('final-score').textContent = `${completedTasks} / ${totalTasks} MISSIONS`;
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+            };
+
+            btnEnd.addEventListener('click', () => terminateLab(false));
 
             // 4. 스크롤 진행률 & 타이머 함수
             window.addEventListener('scroll', () => {
@@ -868,7 +884,7 @@
                     
                     if (time <= 0) {
                         clearInterval(timerInterval);
-                        btnEnd.click(); // 자동 제출
+                        terminateLab(true); // 자동 제출 (확인 창 없음)
                     }
                     time--;
                 }, 1000);
