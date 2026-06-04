@@ -247,7 +247,18 @@
             padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 2.5rem; text-align: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .timer-label { font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--text-secondary); display: block; margin-bottom: 0.5rem; letter-spacing: 1px; }
+        .timer-label { 
+            font-family: 'Fira Code', monospace; 
+            font-size: 0.7rem; 
+            color: var(--text-secondary); 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            letter-spacing: 1px; 
+            text-align: center;
+            width: 100%;
+            word-break: break-all; /* 언더바로 연결된 긴 텍스트 줄바꿈 허용 */
+            line-height: 1.4;
+        }
         .timer-display { font-family: 'Fira Code', monospace; font-size: 2.2rem; font-weight: 700; color: #10b981; line-height: 1; letter-spacing: -1px; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3); transition: color 0.3s; }
         .timer-display.warning { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); animation: pulseTimer 1s infinite alternate; }
 
