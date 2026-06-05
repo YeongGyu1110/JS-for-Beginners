@@ -250,6 +250,20 @@
         }
         .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
+        .lab-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 1px 4px;
+            border-radius: 2px;
+            margin-left: 6px;
+            vertical-align: middle;
+            letter-spacing: 0.5px;
+            background-color: rgba(255, 107, 0, 0.1);
+        }
+
         /* 챕터 통계 뱃지 */
         .stats-badge {
             font-family: 'Fira Code', monospace;
@@ -524,7 +538,7 @@
                 const posts = await postsRes.json();
                 const chaptersData = await chaptersRes.json();
 
-                // 2. 통계 업데이트 및 시작 버튼 링크 설정
+                // 2. 통계 업데이트 및 시작 버튼 링크 설정 (수정됨)
                 if (posts.length > 0) {
                     const sortedPosts = [...posts].sort((a, b) => {
                         if(a.chapter !== b.chapter) return a.chapter.localeCompare(b.chapter);
@@ -532,7 +546,8 @@
                     });
                     
                     const firstPost = sortedPosts[0];
-                    enterBtn.href = `chapter.html?id=${firstPost.chapter}`; 
+                    const targetPage = firstPost.type === 'lab' ? 'lab.html' : 'index.html';
+                    enterBtn.href = `${targetPage}?id=${firstPost.id}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
                     enterBtn.innerText = "> NO_DATA_";
@@ -562,7 +577,7 @@
                     ).join('');
                 }
 
-                // 4. 챕터 렌더링
+                // 4. 챕터 렌더링 (수정됨: items 배열은 여기서 생성됨)
                 const chaptersObj = {};
                 posts.forEach(post => {
                     if (!post.chapter) return;
@@ -587,7 +602,11 @@
 
                     const card = document.createElement('div');
                     card.className = 'chapter-card';
-                    const listHTML = items.map(item => `<li><a href="index.html?id=${item.id}">${item.title}</a></li>`).join('');
+                    const listHTML = items.map(item => {
+                        const targetPage = item.type === 'lab' ? 'lab.html' : 'index.html';
+                        const labBadge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                        return `<li><a href="${targetPage}?id=${item.id}">${item.title}${labBadge}</a></li>`;
+                    }).join('');
 
                     card.innerHTML = `
                         <span class="chapter-meta">${chapterInfo.meta}</span>

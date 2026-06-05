@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Environment - JFB</title>
+    
+    <!-- 코드 하이라이팅 테마 (Tomorrow Night) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <!-- 웹 폰트: Pretendard (본문용), Fira Code (코드용) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <style>
+        /* =========================================
+           1. 공통 테마 변수 (Sharp & Industrial)
+           ========================================= */
+        :root {
+            --bg-color: #0c0d0f;
+            --surface-color: #13151a;
+            --surface-hover: #191c22;
+            --text-heading: #f8fafc;
+            --text-primary: #cbd5e1;
+            --text-secondary: #64748b;
+            --accent-color: #ff6b00; 
+            --border-color: #22252e;
+            --radius-md: 4px;
+            --radius-sm: 2px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Pretendard', sans-serif;
+            font-size: 15px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-attachment: fixed; 
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* =========================================
+           2. 공통 UI (헤더, 진행률 바)
+           ========================================= */
+        .progress-container { width: 100%; height: 2px; background: transparent; position: fixed; top: 0; z-index: 1001; }
+        .progress-bar { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.1s ease-out; }
+
+        .header {
+            padding: 1rem 2rem; position: sticky; top: 0; z-index: 100;
+            background-color: rgba(12, 13, 15, 0.9); backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo { font-family: 'Fira Code', monospace; font-size: 1.15rem; font-weight: 700; color: var(--text-heading); letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; text-decoration: none; }
+        .logo span { color: var(--accent-color); animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* =========================================
+           3. 3단 레이아웃
+           ========================================= */
+        .layout-container {
+            display: grid;
+            grid-template-columns: 200px minmax(0, 760px) 200px;
+            gap: 4rem;
+            max-width: 1360px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            align-items: start;
+            justify-content: center;
+        }
+
+        /* 사이드바 가로 스크롤 원천 차단 및 스티키 설정 */
+        .sidebar { 
+            position: sticky; 
+            top: 100px; 
+            max-height: calc(100vh - 120px); 
+            overflow-y: auto; 
+            overflow-x: hidden;
+            /* sticky 자체가 absolute 자식의 기준점(positioning context)이 됩니다. */
+        }
+
+        /* 긴 목차 텍스트가 삐져나가지 않고 예쁘게 줄바꿈 되도록 처리 */
+        
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .sidebar-title {
+            font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 600;
+            color: var(--text-secondary); margin-bottom: 1.2rem; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* UI 전환 트랜지션용 클래스 */
+        .ui-element { 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+            opacity: 1; 
+            transform: translateY(0); 
+            width: 100%;
+        }
+        .ui-element.hidden { 
+            opacity: 0; 
+            transform: translateY(10px); 
+            pointer-events: none; 
+            position: absolute; 
+            visibility: hidden; 
+            top: 0; 
+            left: 0; 
+            right: 0;
+            height: 0;         /* 높이를 0으로 만들어 스크롤바 유발 차단 */
+            overflow: hidden;  /* 내부 콘텐츠 넘침 차단 */
+        }
+
+        /* =========================================
+           4. 좌우 사이드바 요소 (검색, 목차, 챕터, 태그)
+           ========================================= */
+        /* 검색폼 (index.html, search.html 스타일 완벽 복사) */
+        .search-form { margin-bottom: 2.5rem; position: relative; }
+        .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.8rem; outline: none; transition: all 0.2s ease; }
+        .search-input::placeholder { color: var(--text-secondary); opacity: 0.5; }
+        .search-input:focus { border-color: var(--text-secondary); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.9rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
+        .search-icon::before { content: "·"; }
+        .search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: 600; }
+        .search-input:focus ~ .search-icon::before { content: ">"; }
+
+        /* 목차 (ToC) */
+        .toc-container a { 
+            display: block; color: var(--text-secondary); text-decoration: none; 
+            margin-bottom: 0.6rem; font-size: 0.8rem; font-family: 'Fira Code', monospace; 
+            transition: color 0.15s ease; position: relative; padding-left: 12px;
+            word-break: keep-all;         /* 추가됨 */
+            overflow-wrap: break-word;    /* 추가됨 */
+            line-height: 1.4;             /* 추가됨 */
+        }
+        .toc-container a::before { content: "·"; position: absolute; left: 0; opacity: 0.5; }
+        .toc-container a:hover { color: var(--text-heading); }
+        .toc-container a.active { color: var(--accent-color); font-weight: 500; }
+        .toc-container a.active::before { content: ">"; color: var(--accent-color); opacity: 1; }
+        .toc-h2 { margin-left: 0; }
+        .toc-h3 { margin-left: 10px; font-size: 0.75rem !important; }
+
+        /* 우측 챕터 링크 */
+        .sidebar-title-link {
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 2rem;
+            margin-bottom: 1.2rem;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar-title-link:hover {
+            opacity: 0.7;
+        }
+
+        .sidebar-title-link .sidebar-title {
+            margin-bottom: 0; /* 링크 내부이므로 하단 여백 제거 */
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+
+        .sidebar-title-link:hover .sidebar-title {
+            color: var(--accent-color);
+        }
+
+        /* [ 1/5 ] 같은 카운터 뱃지 */
+        .chapter-count {
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+
+        .right-toc-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 2.5rem;
+        }
+
+        .right-toc-container a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 0.6rem;
+            font-size: 0.8rem;
+            font-family: 'Fira Code', monospace;
+            transition: color 0.15s ease;
+            position: relative;
+            padding-left: 14px;
+
+            /* 너비가 좁을 때 텍스트가 줄바꿈되지 않고 '...'으로 처리되게 함 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 기본 마커: 점(·) */
+        .right-toc-container a::before {
+            content: "·";
+            position: absolute;
+            left: 0;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .right-toc-container a:hover {
+            color: var(--text-heading);
+        }
+
+        /* 현재 읽고 있는 문서 액티브 효과 */
+        .right-toc-container a.active {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* 액티브 마커: 꺾쇠(>) */
+        .right-toc-container a.active::before {
+            content: ">";
+            color: var(--accent-color);
+            opacity: 1;
+        }
+
+        /* 태그 */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .tag { font-family: 'Fira Code', monospace; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-secondary); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); font-size: 0.75rem; transition: all 0.15s ease; }
+        .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        /* =========================================
+           5. 실습 특수 UI (타이머 & 대시보드)
+           ========================================= */
+        .lab-timer-box {
+            background-color: var(--surface-color); border: 1px solid var(--border-color);
+            padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 2.5rem; text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .timer-label { 
+            font-family: 'Fira Code', monospace; 
+            font-size: 0.7rem; 
+            color: var(--text-secondary); 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            letter-spacing: 1px; 
+            text-align: center;
+            width: 100%;
+            word-break: break-all; /* 언더바로 연결된 긴 텍스트 줄바꿈 허용 */
+            line-height: 1.4;
+        }
+        .timer-display { font-family: 'Fira Code', monospace; font-size: 2.2rem; font-weight: 700; color: #10b981; line-height: 1; letter-spacing: -1px; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3); transition: color 0.3s; }
+        .timer-display.warning { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); animation: pulseTimer 1s infinite alternate; }
+
+        @keyframes pulseTimer { 0% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        .dashboard-box { background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; transition: all 0.2s ease; }
+        
+        .sidebar-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background-color: var(--bg-color);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.8rem 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-action-btn:hover {
+            background-color: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255, 107, 0, 0.3); 
+        }
+
+        .sidebar-action-btn:active {
+            background-color: #e66000;
+            box-shadow: none;
+        }
+
+        .dash-label { font-size: 0.75rem; color: var(--text-secondary); font-family: 'Fira Code', monospace; margin-bottom: 0.5rem; display: block; }
+        .dash-value { font-size: 1.5rem; color: var(--text-heading); font-family: 'Fira Code', monospace; font-weight: 700; }
+        .dash-value span { color: var(--accent-color); }
+        .status-indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: var(--text-secondary); margin-right: 8px; }
+        .status-indicator.active { background-color: #10b981; box-shadow: 0 0 8px #10b981; animation: blink 2s infinite; }
+
+        /* =========================================
+           6. 마크다운 본문 및 코드 잠금 효과
+           ========================================= */
+        .content { padding: 0 0 4rem 0; }
+        .markdown-body { opacity: 0; transform: translateY(10px); transition: opacity 0.4s ease, transform 0.4s ease; }
+        .markdown-body.loaded { opacity: 1; transform: translateY(0); }
+
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 { color: var(--text-heading); font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; letter-spacing: -0.5px; scroll-margin-top: 90px; }
+        .markdown-body h1 { font-size: 2.2rem; margin-top: 1rem; }
+        .markdown-body h2 { font-size: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+        .markdown-body h3 { font-size: 1.2rem; }
+        .markdown-body p { margin-bottom: 1.6rem; font-size: 0.98rem; word-break: keep-all; }
+
+        /* 인라인 코드 */
+        :not(pre) > code { background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.2em 0.4em; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.88em; }
+
+        /* 블럭 코드 */
+        .markdown-body pre { background-color: var(--surface-color) !important; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin: 2.5rem 0 !important; padding: 1.25rem !important; position: relative; overflow: hidden; }
+        .markdown-body pre code { font-family: 'Fira Code', monospace !important; font-size: 0.9rem; transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .copy-button { position: absolute; top: 10px; right: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; cursor: pointer; opacity: 0; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 4px; font-family: 'Fira Code', monospace; z-index: 5; }
+        .markdown-body pre:hover .copy-button { opacity: 1; }
+        .copy-button:hover { background-color: var(--surface-hover); color: var(--text-heading); }
+        .copy-button.copied { background-color: var(--accent-color); border-color: var(--accent-color); color: #fff; }
+
+        /* 🔒 실습 모드 (Standby) - 코드 잠금 기믹 */
+        .lab-state-standby .markdown-body pre code { filter: blur(6px); user-select: none; }
+        .lab-state-standby .copy-button { display: none !important; }
+        .lab-state-standby .lab-task-btn { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        
+        .code-lock-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10;
+            background: rgba(12, 13, 15, 0.4); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-secondary); font-family: 'Fira Code', monospace; font-size: 0.85rem;
+            transition: opacity 0.5s ease;
+        }
+        .code-lock-overlay svg { margin-bottom: 8px; stroke: var(--text-secondary); }
+        
+        /* 실습 활성화 시 오버레이 해제 */
+        .lab-state-active .code-lock-overlay { opacity: 0; pointer-events: none; }
+
+        /* =========================================
+           7. 실습 상호작용 요소 (인트로, 아웃트로, 태스크 버튼)
+           ========================================= */
+        .lab-action-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 1rem 2rem; background-color: var(--bg-color); border: 1px solid var(--accent-color);
+            color: var(--accent-color); font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 600;
+            border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; margin-top: 2rem; width: 100%;
+        }
+        .lab-action-btn:hover { background-color: var(--accent-color); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2); }
+
+        .lab-outro {
+            text-align: center; padding: 4rem 2rem; border: 1px dashed var(--border-color); border-radius: var(--radius-md);
+            background-color: var(--surface-color); margin-bottom: 3rem; transition: opacity 0.5s;
+        }
+        .lab-outro h1 { color: var(--text-heading); font-family: 'Fira Code', monospace; font-size: 2rem; margin-bottom: 1rem; letter-spacing: -1px; }
+
+        .lab-terminal {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-color);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 2.5rem;
+            font-family: 'Fira Code', monospace;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.85rem;
+        }
+
+        .status-tag {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .status-text {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .terminal-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0.5rem 1.2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-radius: var(--radius-sm);
+        }
+
+        .terminal-btn:hover {
+            background-color: var(--accent-color);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+        }
+
+        .lab-task-btn {
+            display: flex; align-items: center; width: 100%; padding: 1.2rem 1.5rem; margin: 2rem 0;
+            background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+            cursor: pointer; transition: all 0.2s ease; text-align: left; font-family: 'Fira Code', monospace; font-size: 0.9rem; color: var(--text-primary);
+        }
+        .lab-task-btn .status-box { font-weight: bold; margin-right: 15px; color: var(--text-secondary); width: 40px; }
+        .lab-task-btn .task-text { flex: 1; transition: color 0.2s ease; }
+        .lab-task-btn:hover:not(.loading):not(.completed) { border-color: var(--text-secondary); background-color: var(--surface-hover); }
+        
+        .lab-task-btn.loading { border-color: var(--text-secondary); cursor: wait; animation: pulseBg 1s infinite alternate; }
+        .lab-task-btn.loading .status-box, .lab-task-btn.loading .task-text { color: var(--text-heading); }
+        @keyframes pulseBg { 0% { background-color: var(--bg-color); } 100% { background-color: var(--surface-color); } }
+
+        .lab-task-btn.completed { border-color: var(--accent-color); background-color: rgba(255, 107, 0, 0.05); cursor: default; }
+        .lab-task-btn.completed .status-box { color: var(--accent-color); }
+        .lab-task-btn.completed .task-text { color: var(--text-secondary); text-decoration: line-through; }
+
+        /* =========================================
+           8. 시스템 메시지 & 기타
+           ========================================= */
+        .system-message-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center; font-family: 'Fira Code', monospace; }
+        .system-message-title { color: var(--accent-color); font-size: 4rem; margin-bottom: 1rem; line-height: 1; }
+        .system-message-subtitle {
+            color: var(--text-heading);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .system-message-desc { color: var(--text-secondary); margin-bottom: 3rem; font-family: 'Pretendard', sans-serif; font-size: 0.95rem; opacity: 0.7; }
+        .system-message-icon { margin-bottom: 1.5rem; opacity: 0.5; color: var(--text-secondary); }
+        .return-home-btn { display: inline-block; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color); background-color: var(--surface-color); padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); transition: all 0.2s ease; }
+        .return-home-btn:hover { color: var(--accent-color); border-color: var(--accent-color); transform: translateY(-2px); }
+
+        .toast-notification { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background-color: var(--surface-color); border: 1px solid var(--accent-color); color: var(--text-heading); padding: 0.8rem 1.5rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.85rem; z-index: 9999; opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; }
+        .toast-notification::before { content: "[!] "; color: var(--accent-color); font-weight: bold; }
+        .toast-notification.show { bottom: 40px; opacity: 1; }
+
+        @media (max-width: 1024px) {
+            .layout-container { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; margin: 1.5rem auto; }
+            .sidebar { position: static; max-height: none; }
+            .left-sidebar { order: -1; }
+            .right-sidebar { order: 2; border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 1rem; }
+        }
+
+        .content p {
+            margin-bottom: 1.6rem;
+            font-size: 0.98rem;
+            color: var(--text-primary);
+            word-break: keep-all;
+        }
+    </style>
+</head>
+<!-- Body에 기본 상태인 lab-state-standby 클래스 부여 -->
+<body class="lab-state-standby">
+    <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
+    
+    <header class="header">
+        <a href="main.html" class="logo">JFB<span>_</span></a>
+    </header>
+
+    <div class="layout-container">
+        <!-- =========================================
+             좌측 사이드바
+             ========================================= -->
+        <aside class="sidebar left-sidebar">
+            
+            <!-- [Standby 모드] 검색창 -->
+            <form action="search.html" method="GET" class="search-form ui-element" id="ui-search">
+                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off">
+                <span class="search-icon"></span>
+            </form>
+
+            <!-- [Active 모드] 타이머 (기본 숨김) -->
+            <div class="lab-timer-box ui-element hidden" id="ui-timer">
+                <span class="timer-label">SESSION_TIME_REMAINING</span>
+                <div class="timer-display" id="timer-display">45:00</div>
+            </div>
+
+            <!-- 목차 (항상 노출) -->
+            <h3 class="sidebar-title">On this page</h3>
+            <nav id="toc" class="toc-container"></nav>
+        </aside>
+
+        <!-- =========================================
+             중앙 본문
+             ========================================= -->
+        <main class="content">
+            <!-- 로딩 바인더 -->
+            <div id="loader-state" style="font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 30vh; color: var(--text-secondary); font-size: 0.9rem;">
+                [Loading document database...]
+            </div>
+
+            <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;">
+                <div class="terminal-status">
+                    <span class="status-tag">[SYSTEM_READY]</span>
+                    <span class="status-text">STBY_ENVIRONMENT_LOADED</span>
+                </div>
+                <button id="btn-start-lab" class="terminal-btn">> INITIALIZE_WORKSPACE_</button>
+            </div>
+
+            <!-- 마크다운 본문 영역 -->
+            <article id="lab-content" class="markdown-body"></article>
+
+            <!-- 아웃트로 (완료 후 보임) -->
+            <section id="lab-outro" class="lab-outro ui-element hidden" style="display: none; position: relative;">
+                <h1 id="scramble-success">LAB_COMPLETED</h1>
+                <p style="color: var(--text-primary); font-family: 'Fira Code', monospace; margin-bottom: 2rem;">
+                    FINAL_SCORE: <span id="final-score" style="color: var(--accent-color); font-weight: bold;"></span>
+                </p>
+                <a href="main.html" class="lab-action-btn" style="width: auto;">> RETURN_TO_MAIN_</a>
+            </section>
+        </main>
+
+        <!-- =========================================
+             우측 사이드바
+             ========================================= -->
+        <aside class="sidebar right-sidebar">
+            
+            <!-- [Standby 모드] 챕터 목록 및 태그 -->
+            <div id="ui-chapter-tags" class="ui-element">
+                <a href="#" id="side-chapter-title-link" class="sidebar-title-link" title="해당 챕터 전체 보기">
+                    <h3 class="sidebar-title">
+                        <span id="side-chapter-title">Chapter</span> 
+                        <span class="chapter-count" id="side-chapter-count">[0/0]</span>
+                    </h3>
+                </a>
+                <nav id="chapter-nav" class="right-toc-container"></nav>
+                
+                <h3 class="sidebar-title">Tags</h3>
+                <div class="tags-container" id="tags-container"></div>
+            </div>
+
+            <!-- [Active 모드] 대시보드 (기본 숨김) -->
+            <div id="ui-dashboard" class="ui-element hidden">
+                <button class="sidebar-action-btn" id="btn-end-lab" title="실습 종료 및 결과 제출">
+                    <svg width="14" heibtn-end-labght="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    </svg>
+                    TERMINATE_SESSION_
+                </button>
+
+                <div class="dashboard-box">
+                    <span class="dash-label">MISSIONS_COMPLETED</span>
+                    <div class="dash-value">
+                        <span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 스크립트 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+
+            // DOM Elements
+            const body = document.body;
+            const loaderState = document.getElementById('loader-state');
+            const labTerminal = document.getElementById('lab-terminal');
+            const labContent = document.getElementById('lab-content');
+            const labOutro = document.getElementById('lab-outro');
+            const btnStart = document.getElementById('btn-start-lab');
+            const btnEnd = document.getElementById('btn-end-lab');
+
+            // UI Elements to Toggle
+            const uiSearch = document.getElementById('ui-search');
+            const uiChapterTags = document.getElementById('ui-chapter-tags');
+            const uiTimer = document.getElementById('ui-timer');
+            const uiDashboard = document.getElementById('ui-dashboard');
+
+            let isLabActive = false;
+            let totalTasks = 0;
+            let completedTasks = 0;
+            let timerInterval;
+
+            const showToast = (msg) => {
+                let existing = document.querySelector('.toast-notification');
+                if (existing) existing.remove();
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                toast.textContent = msg;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.classList.add('show'), 10);
+                setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
+            };
+
+            // 검색 폼 제출 이벤트 가로채기
+            const searchInput = uiSearch ? uiSearch.querySelector('.search-input') : null;
+            if (uiSearch && searchInput) {
+                uiSearch.addEventListener('submit', (e) => {
+                    const query = searchInput.value.trim();
+                    if (query === '') {
+                        e.preventDefault();
+                        showToast('검색어를 입력해주세요.');
+                    }
+                });
+            }
+
+            const renderError = (code, subtitle, desc, linkHref = "main.html", linkText = "RETURN_TO_MAIN") => {
+                const badgeContainer = document.getElementById('tags-container');
+                
+                // 1. 브라우저 탭 및 배지 설정
+                if (code === '404') {
+                    document.title = "404 Not Found - JFB";
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
+                } else if (code === 'EMPTY') {
+                    document.title = "Lab Environment - JFB";
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary);">[WAITING_FOR_INPUT]</span>`;
+                } else if (code === 'ACCESS_DENIED') {
+                    document.title = "Access Denied - JFB";
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[TYPE_MISMATCH]</span>`;
+                } else {
+                    document.title = `${code} - JFB`;
+                    if (badgeContainer) badgeContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[${code}]</span>`;
+                }
+
+                // 2. 아이콘 선택
+                let iconSVG = '';
+                if (code === '404') {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`;
+                } else if (code === 'EMPTY') {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
+                } else if (code === 'ACCESS_DENIED' || code === 'SECURE_ERR') {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`;
+                } else {
+                    iconSVG = `<svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+                }
+
+                const subtitleStyle = code === 'EMPTY' ? 'style="font-size: 1.2rem;"' : '';
+                const descStyle = code === 'EMPTY' ? 'style="opacity: 0.7; margin-bottom: 2.5rem;"' : 'style="opacity: 0.7;"';
+
+                loaderState.style.display = 'none';
+                labContent.innerHTML = `
+                    <div class="system-message-container">
+                        ${iconSVG}
+                        ${(code !== 'EMPTY' && code !== 'ACCESS_DENIED' && code !== 'SECURE_ERR') ? `<h1 class="system-message-title">${code}</h1>` : ''}
+                        <h2 class="system-message-subtitle" ${subtitleStyle}>${subtitle}</h2>
+                        <p class="system-message-desc" ${descStyle}>${desc}</p>
+                        <a href="${linkHref}" class="return-home-btn">> ${linkText}_</a>
+                    </div>`;
+                labContent.classList.add('loaded');
+            };
+
+            if (!postId) return renderError("EMPTY", "NO_FILE_SELECTED", "읽을 문서를 선택하거나 검색해주세요.", "search.html", "OPEN_SEARCH");
+
+            // 1. 데이터 로드 및 초기 렌더링 (Standby 모드 유지)
+            try {
+                const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json')]);
+                if (!postsRes.ok || !chaptersRes.ok) throw new Error();
+
+                const posts = await postsRes.json();
+                const chapters = await chaptersRes.json();
+                const currentPost = posts.find(p => p.id === postId);
+
+                if (!currentPost) return renderError("404", "FILE_NOT_FOUND", "요청하신 문서를 찾을 수 없거나 삭제되었습니다.", "index.html", "RETURN_TO_HOME");
+                
+                // [보안 강화] 타입 검증: 일반 문서(doc)는 index.html에서 열람해야 함
+                if (currentPost.type !== 'lab') {
+                    return renderError("ACCESS_DENIED", "INVALID_VIEWER_TYPE", "이 문서는 일반 문서 전용 환경에서 열람해야 합니다.", `index.html?id=${postId}`, "OPEN_IN_CORRECT_VIEWER");
+                }
+
+                if (!currentPost.path.startsWith('./script/')) return renderError("SECURE_ERR", "UNAUTHORIZED_PATH", "허용되지 않은 경로입니다.");
+
+                document.title = `${currentPost.title} (Lab) - JFB`;
+
+                // 우측 사이드바 데이터 바인딩
+                const chapterId = currentPost.chapter;
+                const chapterInfo = chapters[chapterId];
+                const chapterPosts = posts.filter(p => p.chapter === chapterId).sort((a, b) => a.order - b.order);
+
+                if (chapterInfo) {
+                    document.getElementById('side-chapter-title').textContent = chapterInfo.title;
+                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${chapterId}`;
+                }
+
+                document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
+                    const num = String(i + 1).padStart(2, '0');
+                    const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
+                    return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
+                }).join('');
+
+                const currentIndex = chapterPosts.findIndex(p => p.id === postId) + 1;
+                document.getElementById('side-chapter-count').textContent = `[${currentIndex}/${chapterPosts.length}]`;
+
+                if (currentPost.tags) {
+                    document.getElementById('tags-container').innerHTML = currentPost.tags.map(tag => 
+                        `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`
+                    ).join('');
+                }
+
+                // 마크다운 로드 및 파싱 (Standby 모드이므로 코드는 자동으로 CSS에 의해 잠김)
+                const mdRes = await fetch(currentPost.path);
+                if (!mdRes.ok) throw new Error();
+                labContent.innerHTML = marked.parse(await mdRes.text());
+                
+                Prism.highlightAll();
+
+                // 코드 블럭에 자물쇠 오버레이 추가
+                document.querySelectorAll('.markdown-body pre').forEach(pre => {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'code-lock-overlay';
+                    overlay.innerHTML = `
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <span>[CODE_LOCKED]</span>
+                    `;
+                    pre.appendChild(overlay);
+                });
+
+                createCopyButtons();
+                buildToC();
+
+                // 태스크 갯수 계산
+                const taskBtns = document.querySelectorAll('.lab-task-btn');
+                totalTasks = taskBtns.length;
+                document.getElementById('dash-total').textContent = totalTasks;
+
+                // 화면 노출
+                loaderState.style.display = 'none';
+                labTerminal.style.display = 'flex';
+                labContent.classList.add('loaded');
+
+            } catch (e) {
+                return renderError("SYS_ERR", "LOAD_FAILURE", "데이터를 불러오는 중 문제가 발생했습니다.", {
+                    badgeText: "[SYS_ERR: LOAD]",
+                    titlePrefix: "System Error"
+                });
+            }
+
+            // 2. 실습 시작 (UI 트랜지션 및 코드 잠금 해제)
+            btnStart.addEventListener('click', () => {
+                isLabActive = true;
+                
+                // 본문 잠금 클래스 교체 (이것만으로 코드 블러와 오버레이가 사라짐)
+                body.classList.remove('lab-state-standby');
+                body.classList.add('lab-state-active');
+
+                labTerminal.style.opacity = '0';
+                setTimeout(() => labTerminal.style.display = 'none', 400);
+
+                // 사이드바 UI 교체 (페이드 효과)
+                uiSearch.classList.add('hidden');
+                uiChapterTags.classList.add('hidden');
+                
+                setTimeout(() => {
+                    uiSearch.style.display = 'none';
+                    uiChapterTags.style.display = 'none';
+                    
+                    uiTimer.style.display = 'block';
+                    uiDashboard.style.display = 'block';
+                    
+                    // reflow
+                    void uiTimer.offsetWidth; 
+                    
+                    uiTimer.classList.remove('hidden');
+                    uiDashboard.classList.remove('hidden');
+                }, 400);
+
+                // 타이머 시작 (예: 45분)
+                startTimer(45);
+                showToast("워크스페이스가 활성화되었습니다.");
+
+                // 태스크 버튼 이벤트 바인딩 (활성화 후 작동)
+                document.querySelectorAll('.lab-task-btn').forEach(btn => {
+                    btn.addEventListener('click', async function() {
+                        if(!isLabActive || this.classList.contains('loading') || this.classList.contains('completed')) return;
+
+                        this.classList.add('loading');
+                        const statusBox = this.querySelector('.status-box');
+                        const textBox = this.querySelector('.task-text');
+                        const originalText = textBox.innerText;
+
+                        statusBox.innerText = '[-]';
+                        textBox.innerText = 'SYSTEM_CHECKING..._';
+
+                        await new Promise(r => setTimeout(r, 1200));
+
+                        this.classList.remove('loading');
+                        this.classList.add('completed');
+                        statusBox.innerHTML = '✔';
+                        textBox.innerText = originalText;
+
+                        completedTasks++;
+                        document.getElementById('dash-completed').textContent = completedTasks;
+                    });
+                });
+            });
+
+            // 3. 실습 종료 로직 (함수로 분리)
+            const terminateLab = (isTimeout = false) => {
+                // 수동 종료 시에만 미완료 미션 확인
+                if (!isTimeout && completedTasks < totalTasks) {
+                    if (!confirm(`아직 해결하지 않은 미션이 ${totalTasks - completedTasks}개 있습니다. 완료하시겠습니까?`)) return;
+                }
+                
+                if (isTimeout) {
+                    showToast("제한 시간이 초과되어 실습이 종료되었습니다.");
+                }
+
+                isLabActive = false;
+                clearInterval(timerInterval);
+
+                // UI 비활성화
+                labContent.style.display = 'none';
+                btnEnd.style.display = 'none';
+                
+                // 아웃트로 노출 및 상태 업데이트
+                const outroTitle = document.getElementById('scramble-success');
+                if (isTimeout) {
+                    outroTitle.textContent = "LAB_TIMEOUT";
+                    outroTitle.style.color = "var(--accent-color)";
+                } else {
+                    outroTitle.textContent = "LAB_COMPLETED";
+                    outroTitle.style.color = "var(--text-heading)";
+                }
+
+                labOutro.style.display = 'block';
+                setTimeout(() => labOutro.classList.remove('hidden'), 50);
+
+                // 사이드바 복구 (Standby 모드로)
+                uiTimer.classList.add('hidden');
+                uiDashboard.classList.add('hidden');
+                setTimeout(() => {
+                    uiTimer.style.display = 'none';
+                    uiDashboard.style.display = 'none';
+                    uiSearch.style.display = 'block';
+                    uiChapterTags.style.display = 'block';
+                    void uiSearch.offsetWidth;
+                    uiSearch.classList.remove('hidden');
+                    uiChapterTags.classList.remove('hidden');
+                }, 400);
+
+                document.getElementById('final-score').textContent = `${completedTasks} / ${totalTasks} MISSIONS`;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            btnEnd.addEventListener('click', () => terminateLab(false));
+
+            // 4. 스크롤 진행률 & 타이머 함수
+            window.addEventListener('scroll', () => {
+                const scrolled = ((document.documentElement.scrollTop) / (document.documentElement.scrollHeight - document.documentElement.clientHeight)) * 100;
+                document.getElementById("myBar").style.width = scrolled + "%";
+            });
+
+            window.addEventListener('beforeunload', (e) => {
+                if (isLabActive) { e.preventDefault(); e.returnValue = ''; }
+            });
+
+            function startTimer(minutes) {
+                let time = minutes * 60;
+                const display = document.getElementById('timer-display');
+                timerInterval = setInterval(() => {
+                    const m = String(Math.floor(time / 60)).padStart(2, '0');
+                    const s = String(time % 60).padStart(2, '0');
+                    display.textContent = `${m}:${s}`;
+                    
+                    if(time === 300) display.classList.add('warning'); // 5분 남으면 빨간색 깜빡임
+                    
+                    if (time <= 0) {
+                        clearInterval(timerInterval);
+                        terminateLab(true); // 자동 제출 (확인 창 없음)
+                    }
+                    time--;
+                }, 1000);
+            }
+
+            function buildToC() {
+                const headings = labContent.querySelectorAll('h2, h3');
+                const tocContainer = document.getElementById('toc');
+                headings.forEach((heading, index) => {
+                    if (!heading.id) heading.id = `heading-${index}`;
+                    const link = document.createElement('a');
+                    link.href = `#${heading.id}`;
+                    link.textContent = heading.textContent;
+                    link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
+                    tocContainer.appendChild(link);
+                });
+                
+                // 스크롤 스파이
+                const observer = new IntersectionObserver(entries => {
+                    const visible = entries.filter(e => e.isIntersecting);
+                    if(visible.length > 0) {
+                        document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+                        const activeLink = document.querySelector(`.toc-link[href="#${visible[0].target.id}"]`);
+                        if(activeLink) activeLink.classList.add('active');
+                    }
+                }, { rootMargin: "-80px 0px -80% 0px" });
+                headings.forEach(h => observer.observe(h));
+            }
+        });
+
+        // Copy button 로직 (index.html 동일)
+        function createCopyButtons() {
+            document.querySelectorAll('.markdown-body pre').forEach(pre => {
+                if (pre.querySelector('.copy-button')) return;
+                const button = document.createElement('button');
+                button.className = 'copy-button';
+                button.innerHTML = `<span>COPY</span>`;
+                pre.appendChild(button);
+                button.addEventListener('click', async () => {
+                    const code = pre.querySelector('code');
+                    if (!code || document.body.classList.contains('lab-state-standby')) return;
+                    try {
+                        await navigator.clipboard.writeText(code.innerText);
+                        button.classList.add('copied'); button.innerHTML = `<span>DONE</span>`;
+                        setTimeout(() => { button.classList.remove('copied'); button.innerHTML = `<span>COPY</span>`; }, 1500);
+                    } catch (err) {}
+                });
+            });
+        }
+    </script>
+</body>
+</html>

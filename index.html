@@ -544,6 +544,7 @@
             margin-bottom: 3rem;
             font-family: 'Pretendard', sans-serif;
             font-size: 0.95rem;
+            opacity: 0.7;
         }
 
         .system-message-icon {
@@ -799,10 +800,35 @@
                 tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
                 contentArea.innerHTML = `
                     <div class="system-message-container">
+                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
                         <h1 class="system-message-title">404</h1>
                         <h2 class="system-message-subtitle">FILE_NOT_FOUND</h2>
-                        <p class="system-message-desc">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
-                        <a href="main.html" class="return-home-btn">> RETURN_TO_HOME_</a>
+                        <p class="system-message-desc" style="opacity: 0.7;">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
+                        <a href="index.html" class="return-home-btn">> RETURN_TO_HOME_</a>
+                    </div>
+                `;
+                contentArea.classList.add('loaded');
+            };
+
+            // [함수 3] 타입 불일치 에러 화면 렌더링
+            const renderErrorWrongType = (id, type) => {
+                const targetPage = type === 'lab' ? 'lab.html' : 'index.html';
+                const typeName = type === 'lab' ? '실습(Lab)' : '일반 문서(Doc)';
+                
+                document.title = "Access Denied - JFB";
+                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[TYPE_MISMATCH]</span>`;
+                contentArea.innerHTML = `
+                    <div class="system-message-container">
+                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <h2 class="system-message-subtitle">INVALID_VIEWER_TYPE</h2>
+                        <p class="system-message-desc" style="opacity: 0.7;">이 문서는 ${typeName} 전용 환경에서 열람해야 합니다.</p>
+                        <a href="${targetPage}?id=${id}" class="return-home-btn">> OPEN_IN_CORRECT_VIEWER_</a>
                     </div>
                 `;
                 contentArea.classList.add('loaded');
@@ -834,6 +860,12 @@
                     return;
                 }
 
+                // [보안 강화] 타입 검증: 실습(lab) 타입은 전용 뷰어에서만 열람 가능
+                if (currentPost.type === 'lab') {
+                    renderErrorWrongType(postId, 'lab');
+                    return;
+                }
+
                 // 정상 매칭 시 데이터 세팅
                 targetMdPath = currentPost.path;
                 
@@ -860,8 +892,9 @@
                 const chapterNav = document.getElementById('chapter-nav');
                 chapterNav.innerHTML = chapterPosts.map((p, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
+                    const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
                     // 글자가 잘려도 마우스를 올리면 전체 제목이 보이도록 title 속성 추가
-                    return `<a href="index.html?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
+                    return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
                 }).join('');
 
                 // 3. 전체 포스트 중 현재 위치 계산 (우측 상단 뱃지용)

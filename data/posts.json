@@ -3,6 +3,7 @@
     "id": "post1",
     "title": "마크다운(Markdown) 완벽 가이드",
     "description": "마크다운의 기본 문법부터 코드 하이라이팅, 테이블 작성 등 심화 문법까지 한 번에 정리합니다.",
+    "type": "doc",
     "tags": ["markdown", "web-design"],
     "path": "./script/markdown-guide.md",
     "chapter": "1",
@@ -12,6 +13,7 @@
     "id": "post2",
     "title": "자바스크립트 비동기 처리: async와 await",
     "description": "Promise의 지옥에서 벗어나 깔끔한 비동기 코드를 작성하는 방법. async/await의 동작 원리를 파헤칩니다.",
+    "type": "doc",
     "tags": ["javascript", "async"],
     "path": "./script/async.md",
     "chapter": "2",
@@ -21,9 +23,20 @@
     "id": "post3",
     "title": "다크 테마 디자인 시스템 구축하기",
     "description": "텍스트 가독성을 높이고 눈의 피로를 줄이는 인더스트리얼 테크 감성의 다크 모드 CSS 설계 방법론.",
+    "type": "doc",
     "tags": ["web-design", "css"],
     "path": "./script/dark-theme.md",
     "chapter": "1",
     "order": 2
+  },
+  {
+    "id": "post4",
+    "title": "자바스크립트 비동기 처리: async와 await",
+    "description": "Promise의 지옥에서 벗어나 깔끔한 비동기 코드를 작성하는 방법. async/await의 동작 원리를 파헤칩니다.",
+    "type": "lab",
+    "tags": ["javascript", "async"],
+    "path": "./script/lab.md",
+    "chapter": "1",
+    "order": 3
   }
 ]
