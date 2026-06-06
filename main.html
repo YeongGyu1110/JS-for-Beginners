@@ -546,8 +546,7 @@
                     });
                     
                     const firstPost = sortedPosts[0];
-                    const targetPage = firstPost.type === 'lab' ? 'lab.html' : 'index.html';
-                    enterBtn.href = `${targetPage}?id=${firstPost.id}`;
+                    enterBtn.href = `chapter.html?id=${firstPost.chapter}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
                     enterBtn.innerText = "> NO_DATA_";
