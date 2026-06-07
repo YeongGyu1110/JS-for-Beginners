@@ -383,6 +383,9 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             };
 
+            const searchForm = document.querySelector('.search-form');
+            const searchInput = document.querySelector('.search-input');
+
             if (searchForm && searchInput) {
                 searchForm.addEventListener('submit', (e) => {
                     const query = searchInput.value.trim();
