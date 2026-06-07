@@ -383,6 +383,16 @@
                 setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
             };
 
+            if (searchForm && searchInput) {
+                searchForm.addEventListener('submit', (e) => {
+                    const query = searchInput.value.trim();
+                    if (query === '') {
+                        e.preventDefault(); // 폼 전송(페이지 이동) 막기
+                        showToast('검색어를 입력해주세요.');
+                    }
+                });
+            }
+
             // [함수 1] 빈 문서(NO_FILE) 화면 렌더링 (index.html 동기화)
             const renderEmptyState = () => {
                 document.title = "Lab Environment - JFB";
@@ -472,7 +482,11 @@
                 document.title = `${currentPost.title} (Lab) - JFB`;
 
                 const chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a,b) => a.order - b.order);
-                document.getElementById('side-chapter-title').textContent = chapters[currentPost.chapter]?.title || "Chapter";
+                const chapterInfo = chapters[currentPost.chapter];
+                if (chapterInfo) {
+                    document.getElementById('side-chapter-title').textContent = chapterInfo.title;
+                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${currentPost.chapter}`;
+                }
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
                     const target = p.type === 'lab' ? 'lab.html' : 'index.html';
                     return `<a href="${target}?id=${p.id}" class="${p.id === postId ? 'active' : ''}">${String(i+1).padStart(2,'0')}. ${p.title}</a>`;
