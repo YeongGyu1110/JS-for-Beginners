@@ -88,7 +88,6 @@
             top: 100px; 
             max-height: calc(100vh - 120px); 
             overflow-y: auto; 
-            overflow-x: hidden;
         }
         .sidebar::-webkit-scrollbar { width: 0; }
 
@@ -112,13 +111,22 @@
         .search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: 600; }
         .search-input:focus ~ .search-icon::before { content: ">"; }
 
+        .toc-container {
+            position: relative;
+        }
+
         .toc-container a { 
             display: block; color: var(--text-secondary); text-decoration: none; 
             margin-bottom: 0.6rem; font-size: 0.8rem; font-family: 'Fira Code', monospace; 
             transition: color 0.15s ease; position: relative; padding-left: 12px;
-            word-break: keep-all; overflow-wrap: break-word; line-height: 1.4;
         }
-        .toc-container a::before { content: "·"; position: absolute; left: 0; opacity: 0.5; }
+        .toc-container a::before { 
+            content: "·"; 
+            position: absolute; 
+            left: 0; 
+            color: var(--text-secondary);
+            opacity: 0.5; 
+        }
         .toc-container a:hover { color: var(--text-heading); }
         .toc-container a.active { color: var(--accent-color); font-weight: 500; }
         .toc-container a.active::before { content: ">"; color: var(--accent-color); opacity: 1; }
