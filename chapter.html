@@ -304,7 +304,24 @@
             height: 60vh; text-align: center; font-family: 'Fira Code', monospace;
         }
         .system-message-title { color: var(--accent-color); font-size: 4rem; margin-bottom: 1rem; line-height: 1; }
-        .system-message-desc { color: var(--text-secondary); margin-bottom: 3rem; font-family: 'Pretendard', sans-serif; }
+        .system-message-subtitle {
+            color: var(--text-heading);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .system-message-desc { 
+            color: var(--text-secondary); 
+            margin-bottom: 3rem; 
+            font-family: 'Pretendard', sans-serif;
+            font-size: 0.95rem;
+            opacity: 0.7;
+        }
+        .system-message-icon {
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+            color: var(--text-secondary);
+        }
         .return-home-btn {
             display: inline-block; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color);
             background-color: var(--surface-color); padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); transition: all 0.2s ease;
@@ -395,18 +412,38 @@
             const urlParams = new URLSearchParams(window.location.search);
             const chapterId = urlParams.get('id');
 
+            const renderEmptyState = () => {
+                document.title = "Chapter Preview - JFB";
+                container.innerHTML = `
+                    <div class="system-message-container">
+                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                        <h2 class="system-message-subtitle" style="font-size: 1.2rem;">NO_CHAPTER_SELECTED</h2>
+                        <p class="system-message-desc" style="opacity: 0.7; margin-bottom: 2.5rem;">조회할 챕터를 선택해주세요.</p>
+                        <a href="main.html" class="return-home-btn">> GO_TO_CURRICULUM_</a>
+                    </div>
+                `;
+            };
+
             const renderError = () => {
                 document.title = "404 - JFB";
                 container.innerHTML = `
                     <div class="system-message-container">
+                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
                         <h1 class="system-message-title">404</h1>
+                        <h2 class="system-message-subtitle">CHAPTER_NOT_FOUND</h2>
                         <p class="system-message-desc">요청하신 챕터를 찾을 수 없거나 데이터베이스에 존재하지 않습니다.</p>
                         <a href="main.html" class="return-home-btn">> RETURN_TO_MAIN_</a>
                     </div>
                 `;
             };
 
-            if (!chapterId) return renderError();
+            if (!chapterId) return renderEmptyState();
 
             try {
                 // 데이터 병렬 로드
