@@ -285,6 +285,107 @@
             font-size: 0.88em;
         }
 
+        .content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            border-bottom: 1px dashed rgba(255, 107, 0, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .content a:hover {
+            color: var(--text-heading);
+            border-bottom-style: solid;
+            border-bottom-color: var(--accent-color);
+        }
+
+        /* =========================================
+           Footnotes (각주) 스타일
+           ========================================= */
+        .footnotes {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .footnotes ol {
+            padding-left: 1.5rem;
+        }
+
+        .footnotes li {
+            margin-bottom: 0.8rem;
+        }
+
+        /* 각주 번호 링크 */
+        .footnote-ref {
+            font-size: 0.75rem;
+            vertical-align: super;
+            margin-left: 2px;
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-color) !important;
+            border-bottom: none !important;
+        }
+
+        /* 각주 하단 돌아가기 링크 */
+        .footnote-backref {
+            text-decoration: none;
+            margin-left: 4px;
+            color: var(--accent-color) !important;
+            border-bottom: none !important;
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* =========================================
+           Callouts (Admonitions) 스타일
+           ========================================= */
+        .callout {
+            margin: 2rem 0;
+            padding: 1.2rem 1.5rem;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--text-secondary);
+            background-color: var(--surface-color);
+            position: relative;
+        }
+
+        .callout-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .callout-title::before {
+            content: "[!]";
+            font-weight: 900;
+        }
+
+        .callout.note { border-left-color: #3b82f6; }
+        .callout.note .callout-title { color: #3b82f6; }
+
+        .callout.tip { border-left-color: #10b981; }
+        .callout.tip .callout-title { color: #10b981; }
+
+        .callout.important { border-left-color: #8b5cf6; }
+        .callout.important .callout-title { color: #8b5cf6; }
+
+        .callout.warning { border-left-color: #f59e0b; }
+        .callout.warning .callout-title { color: #f59e0b; }
+
+        .callout.caution { border-left-color: #ef4444; }
+        .callout.caution .callout-title { color: #ef4444; }
+
+        .callout p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
         /* =========================================
            6. 코드 블럭 및 복사 버튼
            ========================================= */
@@ -724,6 +825,7 @@
 
     <!-- 라이브러리 스크립트 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
@@ -920,6 +1022,27 @@
 
             // 3. 마크다운 파일 가져오기 및 렌더링 (targetMdPath가 유효할 때만 실행됨)
             if (!targetMdPath) return; // 2차 안전장치
+
+            // [추가] marked 렌더러 커스텀 (Callouts 지원)
+            const renderer = {
+                blockquote(token) {
+                    const text = token.text || "";
+                    const reg = /\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i;
+                    const match = text.match(reg);
+                    
+                    if (match) {
+                        const type = match[1].toLowerCase();
+                        // 자식 토큰들을 파싱하여 HTML로 변환
+                        let body = this.parser.parse(token.tokens);
+                        // [!TYPE] 표시를 결과물에서 제거
+                        const cleanBody = body.replace(match[0], '').replace(/<p>\s*<\/p>/g, '').trim();
+                        return `<div class="callout ${type}"><div class="callout-title">${match[1]}</div>${cleanBody}</div>`;
+                    }
+                    return `<blockquote>${this.parser.parse(token.tokens)}</blockquote>`;
+                }
+            };
+            marked.use(markedFootnote());
+            marked.use({ renderer });
 
             try {
                 const response = await fetch(targetMdPath);

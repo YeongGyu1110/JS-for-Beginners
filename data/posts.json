@@ -38,5 +38,25 @@
     "path": "./script/lab.md",
     "chapter": "1",
     "order": 3
+  },
+  {
+    "id": "post5",
+    "title": "마크다운 스타일 테스트",
+    "description": "index.html 및 lab.html의 마크다운 렌더링 품질과 CSS 스타일을 점검하기 위한 테스트용 문서입니다.",
+    "type": "doc",
+    "tags": ["markdown", "test", "styling"],
+    "path": "./script/style-test.md",
+    "chapter": "2",
+    "order": 2
+  },
+  {
+    "id": "post6",
+    "title": "마크다운 스타일 테스트",
+    "description": "index.html 및 lab.html의 마크다운 렌더링 품질과 CSS 스타일을 점검하기 위한 테스트용 문서입니다.",
+    "type": "lab",
+    "tags": ["markdown", "test", "styling"],
+    "path": "./script/style-test.md",
+    "chapter": "2",
+    "order": 2
   }
 ]
