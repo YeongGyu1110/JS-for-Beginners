@@ -268,6 +268,70 @@
         .toast-notification { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background-color: var(--surface-color); border: 1px solid var(--accent-color); color: var(--text-heading); padding: 0.8rem 1.5rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.85rem; z-index: 9999; opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; }
         .toast-notification.show { bottom: 40px; opacity: 1; }
 
+        /* =========================================
+           7. 포스트 네비게이션 (이전/다음 버튼)
+           ========================================= */
+        .post-navigation {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 3rem;
+        }
+
+        .markdown-body .nav-btn {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.8rem;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color) !important;
+            border-radius: var(--radius-md);
+            text-decoration: none !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 0;
+            color: inherit !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .markdown-body .nav-btn:hover {
+            border-color: var(--accent-color) !important;
+            background-color: var(--surface-hover);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-btn .nav-label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+        }
+
+        .nav-btn .nav-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .nav-btn:hover .nav-label { color: var(--accent-color); }
+        .nav-btn:hover .nav-title { color: #fff; }
+
+        .nav-btn.prev { text-align: left; align-items: flex-start; }
+        .nav-btn.next { text-align: right; align-items: flex-end; }
+
+        @media (max-width: 600px) {
+            .post-navigation { flex-direction: column; }
+        }
+
         @media (max-width: 1024px) { .layout-container { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; } .sidebar { position: static; max-height: none; } }
     </style>
 </head>
@@ -526,6 +590,46 @@
 
                 createCopyButtons();
                 buildToC();
+
+                // [추가] 이전/다음 포스트 네비게이션 생성
+                const sortedPosts = [...posts].sort((a, b) => {
+                    const chA = parseInt(a.chapter);
+                    const chB = parseInt(b.chapter);
+                    if (chA !== chB) return chA - chB;
+                    return a.order - b.order;
+                });
+                
+                const currentIndex = sortedPosts.findIndex(p => p.id === postId);
+                if (currentIndex !== -1) {
+                    const prevPost = sortedPosts[currentIndex - 1];
+                    const nextPost = sortedPosts[currentIndex + 1];
+
+                    if (prevPost || nextPost) {
+                        const navContainer = document.createElement('div');
+                        navContainer.className = 'post-navigation';
+
+                        if (prevPost) {
+                            const prevTarget = prevPost.type === 'lab' ? 'lab.html' : 'index.html';
+                            navContainer.innerHTML += `
+                                <a href="${prevTarget}?id=${prevPost.id}" class="nav-btn prev">
+                                    <span class="nav-label">< PREVIOUS</span>
+                                    <span class="nav-title">${prevPost.title}</span>
+                                </a>
+                            `;
+                        }
+
+                        if (nextPost) {
+                            const nextTarget = nextPost.type === 'lab' ? 'lab.html' : 'index.html';
+                            navContainer.innerHTML += `
+                                <a href="${nextTarget}?id=${nextPost.id}" class="nav-btn next">
+                                    <span class="nav-label">NEXT ></span>
+                                    <span class="nav-title">${nextPost.title}</span>
+                                </a>
+                            `;
+                        }
+                        labContent.appendChild(navContainer);
+                    }
+                }
 
                 totalTasks = document.querySelectorAll('.lab-task-btn').length;
                 document.getElementById('dash-total').textContent = totalTasks;
