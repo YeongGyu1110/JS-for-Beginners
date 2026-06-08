@@ -373,6 +373,12 @@
             .post-navigation { flex-direction: column; }
         }
 
+        /* 🔒 실습 활성 상태일 때 네비게이션 숨김 */
+        .lab-state-active .post-navigation,
+        .lab-state-active .side-nav-btn {
+            display: none !important;
+        }
+
         @media (max-width: 1024px) { .layout-container { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; } .sidebar { position: static; max-height: none; } }
     </style>
 </head>
