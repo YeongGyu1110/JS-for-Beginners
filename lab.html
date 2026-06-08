@@ -337,7 +337,7 @@
             transform: translateY(-50%);
             width: 48px;
             height: 100px;
-            background-color: rgba(19, 21, 26, 0.5);
+            background-color: rgba(19, 21, 26, 0.4);
             backdrop-filter: blur(8px);
             border: 1px solid var(--border-color);
             display: flex;
@@ -345,17 +345,34 @@
             justify-content: center;
             color: var(--text-secondary);
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.1s ease;
             z-index: 999;
-            opacity: 0.6;
+            opacity: 0.5;
+            overflow: hidden;
         }
+
+        .side-nav-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: width 0.1s ease;
+        }
+
+        .side-nav-btn.prev::before { left: 0; }
+        .side-nav-btn.next::before { right: 0; }
 
         .side-nav-btn:hover {
             opacity: 1;
             background-color: var(--surface-hover);
             color: var(--accent-color);
             border-color: var(--accent-color);
-            width: 60px;
+        }
+
+        .side-nav-btn:hover::before {
+            width: 4px;
         }
 
         .side-nav-btn.prev { left: 0; border-radius: 0 4px 4px 0; border-left: none; }
@@ -647,6 +664,9 @@
                 });
                 
                 const currentIndex = sortedPosts.findIndex(p => p.id === postId);
+                let prevUrl = null;
+                let nextUrl = null;
+
                 if (currentIndex !== -1) {
                     const prevPost = sortedPosts[currentIndex - 1];
                     const nextPost = sortedPosts[currentIndex + 1];
@@ -657,7 +677,7 @@
 
                         if (prevPost) {
                             const prevTarget = prevPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            const prevUrl = `${prevTarget}?id=${prevPost.id}`;
+                            prevUrl = `${prevTarget}?id=${prevPost.id}`;
 
                             navContainer.innerHTML += `
                                 <a href="${prevUrl}" class="nav-btn prev">
@@ -669,14 +689,14 @@
                             const sidePrev = document.createElement('a');
                             sidePrev.href = prevUrl;
                             sidePrev.className = 'side-nav-btn prev';
-                            sidePrev.title = `이전 글: ${prevPost.title}`;
+                            sidePrev.title = `이전 글: ${prevPost.title} (Ctrl + ←)`;
                             sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
                             document.body.appendChild(sidePrev);
                         }
 
                         if (nextPost) {
                             const nextTarget = nextPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            const nextUrl = `${nextTarget}?id=${nextPost.id}`;
+                            nextUrl = `${nextTarget}?id=${nextPost.id}`;
 
                             navContainer.innerHTML += `
                                 <a href="${nextUrl}" class="nav-btn next">
@@ -688,13 +708,27 @@
                             const sideNext = document.createElement('a');
                             sideNext.href = nextUrl;
                             sideNext.className = 'side-nav-btn next';
-                            sideNext.title = `다음 글: ${nextPost.title}`;
+                            sideNext.title = `다음 글: ${nextPost.title} (Ctrl + →)`;
                             sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
                             document.body.appendChild(sideNext);
                         }
                         labContent.appendChild(navContainer);
                     }
                 }
+
+                // 단축키 이벤트 추가 (Ctrl + ArrowLeft/Right)
+                window.addEventListener('keydown', (e) => {
+                    // 실습 활성화 상태에서는 작동 방지
+                    if (isLabActive) return;
+
+                    if (e.ctrlKey) {
+                        if (e.key === 'ArrowLeft' && prevUrl) {
+                            window.location.href = prevUrl;
+                        } else if (e.key === 'ArrowRight' && nextUrl) {
+                            window.location.href = nextUrl;
+                        }
+                    }
+                });
 
                 totalTasks = document.querySelectorAll('.lab-task-btn').length;
                 document.getElementById('dash-total').textContent = totalTasks;
