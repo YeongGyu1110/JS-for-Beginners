@@ -328,6 +328,47 @@
         .nav-btn.prev { text-align: left; align-items: flex-start; }
         .nav-btn.next { text-align: right; align-items: flex-end; }
 
+        /* =========================================
+           8. 사이드 플로팅 네비게이션
+           ========================================= */
+        .side-nav-btn {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 100px;
+            background-color: rgba(19, 21, 26, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            opacity: 0.6;
+        }
+
+        .side-nav-btn:hover {
+            opacity: 1;
+            background-color: var(--surface-hover);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            width: 60px;
+        }
+
+        .side-nav-btn.prev { left: 0; border-radius: 0 4px 4px 0; border-left: none; }
+        .side-nav-btn.next { right: 0; border-radius: 4px 0 0 4px; border-right: none; }
+
+        .side-nav-btn svg { width: 24px; height: 24px; transition: transform 0.2s ease; }
+        .side-nav-btn.prev:hover svg { transform: translateX(-4px); }
+        .side-nav-btn.next:hover svg { transform: translateX(4px); }
+
+        @media (max-width: 1200px) {
+            .side-nav-btn { display: none; }
+        }
+
         @media (max-width: 600px) {
             .post-navigation { flex-direction: column; }
         }
@@ -610,22 +651,40 @@
 
                         if (prevPost) {
                             const prevTarget = prevPost.type === 'lab' ? 'lab.html' : 'index.html';
+                            const prevUrl = `${prevTarget}?id=${prevPost.id}`;
+
                             navContainer.innerHTML += `
-                                <a href="${prevTarget}?id=${prevPost.id}" class="nav-btn prev">
+                                <a href="${prevUrl}" class="nav-btn prev">
                                     <span class="nav-label">< PREVIOUS</span>
                                     <span class="nav-title">${prevPost.title}</span>
                                 </a>
                             `;
+
+                            const sidePrev = document.createElement('a');
+                            sidePrev.href = prevUrl;
+                            sidePrev.className = 'side-nav-btn prev';
+                            sidePrev.title = `이전 글: ${prevPost.title}`;
+                            sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+                            document.body.appendChild(sidePrev);
                         }
 
                         if (nextPost) {
                             const nextTarget = nextPost.type === 'lab' ? 'lab.html' : 'index.html';
+                            const nextUrl = `${nextTarget}?id=${nextPost.id}`;
+
                             navContainer.innerHTML += `
-                                <a href="${nextTarget}?id=${nextPost.id}" class="nav-btn next">
+                                <a href="${nextUrl}" class="nav-btn next">
                                     <span class="nav-label">NEXT ></span>
                                     <span class="nav-title">${nextPost.title}</span>
                                 </a>
                             `;
+
+                            const sideNext = document.createElement('a');
+                            sideNext.href = nextUrl;
+                            sideNext.className = 'side-nav-btn next';
+                            sideNext.title = `다음 글: ${nextPost.title}`;
+                            sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+                            document.body.appendChild(sideNext);
                         }
                         labContent.appendChild(navContainer);
                     }
