@@ -58,5 +58,35 @@
     "path": "./script/style-test.md",
     "chapter": "2",
     "order": 2
+  },
+  {
+    "id": "01",
+    "title": "Hello, JavaScript!",
+    "description": "프로그래밍의 기본 개념과 자바스크립트라는 언어의 정체성을 이해하기 위한 입문자용 문서입니다.",
+    "type": "doc",
+    "tags": ["javascript"],
+    "path": "./script/chapter01/01.md",
+    "chapter": "3",
+    "order": 1
+  },
+  {
+    "id": "02",
+    "title": "브라우저와 대화하기: 콘솔(Console)과 팝업, 그리고 알림",
+    "description": "브라우저와의 상호작용을 이해하고, 콘솔을 사용하여 디버깅하는 방법을 배웁니다.",
+    "type": "doc",
+    "tags": ["javascript", "alert", "confirm", "개발자도구"],
+    "path": "./script/chapter01/02.md",
+    "chapter": "3",
+    "order": 2
+  },
+  {
+    "id": "03",
+    "title": "자바스크립트 개발 환경 구축하기",
+    "description": "VS Code와 Node.js를 설치하고, 자바스크립트 개발 환경을 구축하는 방법을 배웁니다.",
+    "type": "doc",
+    "tags": ["Visual_Studio_Code", "VS_Code", "Node.js", "npm"],
+    "path": "./script/chapter01/03.md",
+    "chapter": "3",
+    "order": 3
   }
 ]
