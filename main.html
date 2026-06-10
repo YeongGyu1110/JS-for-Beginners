@@ -10,78 +10,9 @@
     
     <link rel="icon" href="favicon.png" type="image/png">
 
+    <link rel="stylesheet" href="./common/common.css">
+    
     <style>
-        /* =========================================
-           1. 공통 테마 변수
-           ========================================= */
-        :root {
-            --bg-color: #0c0d0f;
-            --surface-color: #13151a;
-            --surface-hover: #191c22;
-            --text-heading: #f8fafc;
-            --text-primary: #cbd5e1;
-            --text-secondary: #64748b;
-            --accent-color: #ff6b00; 
-            --border-color: #22252e;
-            --radius-md: 4px;
-            --radius-sm: 2px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Pretendard', sans-serif;
-            font-size: 15px;
-            line-height: 1.75;
-            -webkit-font-smoothing: antialiased;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-            background-size: 32px 32px;
-            background-attachment: fixed;
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
-
-        /* =========================================
-           2. 공통 상단 헤더
-           ========================================= */
-        .header {
-            padding: 1rem 2rem;
-            position: sticky; 
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            background-color: rgba(12, 13, 15, 0.9);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            letter-spacing: -0.5px;
-        }
-        
-        .logo span { 
-            color: var(--accent-color); 
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink { 50% { opacity: 0; } }
 
         /* =========================================
            3. 히어로 섹션 (높이 및 여백 축소)
@@ -206,62 +137,9 @@
             margin-bottom: 1rem;
         }
 
-        .search-input {
-            width: 100%;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-heading);
-            padding: 0.85rem 1.25rem 0.85rem 2.2rem;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .search-input::placeholder { color: var(--text-secondary); opacity: 0.5; }
-        .search-input:focus { border-color: var(--text-secondary); }
-
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-family: 'Fira Code', monospace;
-            pointer-events: none;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-        }
-
-        .search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: bold; }
-        .search-icon::before { content: "·"; }
-        .search-input:focus ~ .search-icon::before { content: ">"; }
-
         /* 추천 태그 */
         .suggested-tags { 
             display: flex; flex-wrap: wrap; gap: 0.5rem; 
-        }
-        .tag {
-            font-family: 'Fira Code', monospace; background-color: var(--surface-color); border: 1px solid var(--border-color);
-            color: var(--text-secondary); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
-            font-size: 0.75rem; transition: all 0.15s ease; cursor: pointer;
-        }
-        .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
-
-        .lab-badge {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.6rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            border: 1px solid var(--accent-color);
-            padding: 1px 4px;
-            border-radius: 2px;
-            margin-left: 6px;
-            vertical-align: middle;
-            letter-spacing: 0.5px;
-            background-color: rgba(255, 107, 0, 0.1);
         }
 
         /* 챕터 통계 뱃지 */

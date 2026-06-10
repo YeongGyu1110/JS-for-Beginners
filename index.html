@@ -14,108 +14,10 @@
 
     <link rel="icon" href="favicon.png" type="image/png">
 
+    <link rel="stylesheet" href="./common/common.css">
+
     <style>
-        /* =========================================
-           1. 테크니컬 다크 테마 변수 (Sharp & Industrial)
-           ========================================= */
-        :root {
-            --bg-color: #0c0d0f;
-            --surface-color: #13151a;
-            --surface-hover: #191c22;
-            
-            --text-heading: #f8fafc;
-            --text-primary: #cbd5e1;
-            --text-secondary: #64748b;
-            
-            --accent-color: #ff6b00; /* 강렬하고 명확한 인더스트리얼 오렌지 */
-            
-            --border-color: #22252e;
-            --radius-md: 4px; /* 더 단단하고 각진 각도 */
-            --radius-sm: 2px;
-        }
 
-        /* =========================================
-           2. 기본 설정 및 타이포그래피
-           ========================================= */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            font-size: 15px; /* 약간 촘촘한 글씨가 고밀도 테크니컬 느낌을 줍니다 */
-            line-height: 1.75;
-            -webkit-font-smoothing: antialiased;
-
-            /* 은은한 기술 설계용 그리드 배경 */
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-            background-size: 32px 32px;
-            background-attachment: fixed; 
-        }
-
-        /* =========================================
-           3. UI 컴포넌트 (헤더, 진행률 바)
-           ========================================= */
-        .progress-container {
-            width: 100%;
-            height: 2px;
-            background: transparent;
-            position: fixed;
-            top: 0;
-            z-index: 1001;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--accent-color);
-            width: 0%;
-            transition: width 0.1s ease-out;
-        }
-
-        .header {
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background-color: rgba(12, 13, 15, 0.9);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .logo span { 
-            color: var(--accent-color); 
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        /* =========================================
-           4. 레이아웃
-           ========================================= */
         .layout-container {
             display: grid;
             grid-template-columns: 200px minmax(0, 760px) 200px;
@@ -444,13 +346,6 @@
             color: #ffffff;
             font-weight: 500;
         }
-
-        /* 스크롤바 정밀화 */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
-
         /* =========================================
            7. 좌우 사이드바 (ToC & 태그)
            ========================================= */
@@ -502,23 +397,6 @@
             gap: 0.4rem;
         }
 
-        .tag {
-            font-family: 'Fira Code', monospace;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            text-decoration: none;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            transition: all 0.15s ease;
-        }
-
-        .tag:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
         /* =========================================
            8. 반응형 (모바일)
            ========================================= */
@@ -544,147 +422,6 @@
         .search-form {
             margin-bottom: 2.5rem;
             position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-heading);
-            padding: 0.75rem 1rem 0.75rem 2rem;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.8rem;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .search-input::placeholder { 
-            color: var(--text-secondary); 
-            opacity: 0.5; /* 너무 튀지 않게 반투명 처리 */
-        }
-        
-        .search-input:focus { border-color: var(--text-secondary); }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-family: 'Fira Code', monospace;
-            pointer-events: none;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-        }
-
-        /* 기본 상태는 점(·) */
-        .search-icon::before { content: "·"; }
-
-        /* [수정됨] 텍스트 입력 여부와 상관없이 오직 ':focus' 상태일 때만 꺾쇠(>) 적용 */
-        .search-input:focus ~ .search-icon {
-            color: var(--accent-color);
-            opacity: 1;
-            font-weight: 600;
-        }
-
-        .search-input:focus ~ .search-icon::before {
-            content: ">";
-        }
-
-        /* 404 에러 페이지 돌아가기 버튼 */
-        .return-home-btn {
-            display: inline-block;
-            color: var(--text-primary);
-            text-decoration: none;
-            border: 1px solid var(--border-color);
-            background-color: var(--surface-color);
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--radius-sm);
-            transition: all 0.2s ease;
-        }
-
-        .return-home-btn:hover {
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-            /* 버튼이 살짝 위로 뜨는 효과를 주면 더 클릭하고 싶어집니다 */
-            transform: translateY(-2px); 
-        }
-
-        /* =========================================
-           10. 시스템 메시지 (404 에러 및 빈 문서 화면)
-           ========================================= */
-        .system-message-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 60vh;
-            text-align: center;
-            font-family: 'Fira Code', monospace;
-        }
-
-        .system-message-title {
-            color: var(--accent-color);
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            letter-spacing: -2px;
-            line-height: 1;
-        }
-
-        .system-message-subtitle {
-            color: var(--text-heading);
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .system-message-desc {
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            font-family: 'Pretendard', sans-serif;
-            font-size: 0.95rem;
-            opacity: 0.7;
-        }
-
-        .system-message-icon {
-            margin-bottom: 1.5rem;
-            opacity: 0.5;
-            color: var(--text-secondary);
-        }
-
-        /* =========================================
-           하단 알림창 (Toast Notification) 스타일
-           ========================================= */
-        .toast-notification {
-            position: fixed;
-            bottom: -60px; /* 초기에는 화면 아래에 숨김 */
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--surface-color);
-            border: 1px solid var(--accent-color);
-            color: var(--text-heading);
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            z-index: 9999;
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 탄력있는 애니메이션 */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-        }
-
-        .toast-notification::before {
-            content: "[!] ";
-            color: var(--accent-color);
-            font-weight: bold;
-        }
-
-        .toast-notification.show {
-            bottom: 40px; /* 화면 위로 올라옴 */
-            opacity: 1;
         }
 
         /* =========================================

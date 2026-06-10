@@ -11,46 +11,15 @@
 
     <link rel="icon" href="favicon.png" type="image/png">
 
-    <style>
-        :root {
-            --bg-color: #0c0d0f;
-            --surface-color: #13151a;
-            --surface-hover: #191c22;
-            --text-heading: #f8fafc;
-            --text-primary: #cbd5e1;
-            --text-secondary: #64748b;
-            --accent-color: #ff6b00; 
-            --border-color: #22252e;
-            --radius-md: 4px;
-            --radius-sm: 2px;
-        }
+    <link rel="stylesheet" href="./common/common.css">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+    <style>
         
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: var(--bg-color); color: var(--text-primary);
-            font-family: 'Pretendard', -apple-system, sans-serif; font-size: 15px; line-height: 1.75;
-            -webkit-font-smoothing: antialiased;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-            background-size: 32px 32px; background-attachment: fixed; 
         }
-
-        .header {
-            padding: 1rem 2rem; position: sticky; top: 0; z-index: 100;
-            background-color: rgba(12, 13, 15, 0.9); backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .logo {
-            font-family: 'Fira Code', monospace; font-size: 1.15rem; font-weight: 700;
-            color: var(--text-heading); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
-            letter-spacing: -0.5px;
-        }
-        .logo span { color: var(--accent-color); animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
 
         /* =========================================
            2. 레이아웃
@@ -64,95 +33,10 @@
             width: 100%;
         }
 
-        /* =========================================
-           3. 중앙 검색창 (차분하고 정제된 사이즈)
-           ========================================= */
-        .hero-search-container {
-            margin-bottom: 3.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center; /* 폼을 가운데 정렬 */
-        }
-
-        .hero-search-form {
-            position: relative;
-            width: 100%;
-            max-width: 600px; /* 검색바 길이를 제어하여 부담감을 줄임 */
-            margin-bottom: 1.2rem;
-        }
-
-        .hero-search-input {
-            width: 100%;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color); /* 2px에서 1px로 줄임 */
-            color: var(--text-heading);
-            padding: 0.85rem 1.25rem 0.85rem 2.2rem; /* 여백 축소 */
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.95rem; /* 폰트 크기 확 축소 */
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .hero-search-input::placeholder { 
-            color: var(--text-secondary); 
-            opacity: 0.5; 
-        }
-
-        .hero-search-input:focus { border-color: var(--text-secondary); }
-
-        .hero-search-icon {
-            position: absolute; 
-            left: 14px; 
-            top: 50%; 
-            transform: translateY(-50%);
-            color: var(--text-secondary); 
-            font-size: 0.95rem; 
-            font-family: 'Fira Code', monospace; 
-            pointer-events: none;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-        }
-
-        /* 기본 상태는 점(·) */
-        .hero-search-icon::before { content: "·"; }
-
-        /* [수정됨] 텍스트 입력 여부와 상관없이 오직 ':focus' 상태일 때만 꺾쇠(>) 적용 */
-        .hero-search-input:focus ~ .hero-search-icon {
-            color: var(--accent-color);
-            opacity: 1;
-            font-weight: 600;
-        }
-
-        .hero-search-input:focus ~ .hero-search-icon::before {
-            content: ">";
-        }
-
         /* 추천 태그 */
         .suggested-tags { 
             display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; 
         }
-        .tag {
-            font-family: 'Fira Code', monospace; background-color: var(--surface-color); border: 1px solid var(--border-color);
-            color: var(--text-secondary); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
-            font-size: 0.75rem; transition: all 0.15s ease; cursor: pointer;
-        }
-        .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
-
-        .lab-badge {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            border: 1px solid var(--accent-color);
-            padding: 1px 4px;
-            border-radius: 2px;
-            margin-left: 8px;
-            vertical-align: middle;
-            letter-spacing: 0.5px;
-            background-color: rgba(255, 107, 0, 0.1);
-        }
-
         /* =========================================
            4. 검색 결과 리스트
            ========================================= */
@@ -180,43 +64,19 @@
             text-align: center; padding: 4rem 0; color: var(--text-secondary); font-family: 'Fira Code', monospace; font-size: 0.85rem;
         }
 
-        /* =========================================
-           하단 알림창 (Toast Notification) 스타일
-           ========================================= */
-        .toast-notification {
-            position: fixed;
-            bottom: -60px; /* 초기에는 화면 아래에 숨김 */
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--surface-color);
-            border: 1px solid var(--accent-color);
-            color: var(--text-heading);
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            z-index: 9999;
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 탄력있는 애니메이션 */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
+        .search-container {
+            margin-bottom: 3.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 폼을 가운데 정렬 */
         }
 
-        .toast-notification::before {
-            content: "[!] ";
-            color: var(--accent-color);
-            font-weight: bold;
+        .search-form {
+            position: relative; /* 핵심: 아이콘(absolute)의 위치 기준점이 됨 */
+            width: 100%;
+            max-width: 600px;   /* 검색바가 너무 길어지지 않게 제한 */
+            margin-bottom: 1.2rem;
         }
-
-        .toast-notification.show {
-            bottom: 40px; /* 화면 위로 올라옴 */
-            opacity: 1;
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -227,12 +87,12 @@
 
     <div class="layout-container">
         
-        <section class="hero-search-container">
+        <section class="search-container">
             <!-- 구조 순서: input 먼저, icon 나중 -->
-            <form id="search-form" class="hero-search-form">
+            <form id="search-form" class="search-form">
                 <!-- placeholder 값 필수로 입력해두어야 :not(:placeholder-shown) 문법이 정상작동함 -->
-                <input type="text" id="hero-search-input" class="hero-search-input" placeholder="Query" autocomplete="off" autofocus>
-                <span class="hero-search-icon"></span>
+                <input type="text" id="search-input" class="search-input" placeholder="Query" autocomplete="off" autofocus>
+                <span class="search-icon"></span>
             </form>
             
             <div class="suggested-tags" id="suggested-tags"></div>
@@ -255,7 +115,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const searchForm = document.getElementById('search-form');
-            const searchInput = document.getElementById('hero-search-input');
+            const searchInput = document.getElementById('search-input');
             const resultsContainer = document.getElementById('search-results-container');
             const searchStatus = document.getElementById('search-status');
             const queryDisplay = document.getElementById('query-display');
