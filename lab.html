@@ -247,6 +247,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 
+    <script src="./common/common.js"></script>
+    <script src="./common/doc.js"></script>
+
+    <!-- 커스텀 자바스크립트 -->
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -263,121 +267,50 @@
             const uiChapterTags = document.getElementById('ui-chapter-tags');
             const uiTimer = document.getElementById('ui-timer');
             const uiDashboard = document.getElementById('ui-dashboard');
+            const tagsContainer = document.getElementById('tags-container');
 
             let isLabActive = false;
             let totalTasks = 0, completedTasks = 0;
             let timerInterval;
 
-            const showToast = (msg) => {
-                let existing = document.querySelector('.toast-notification');
-                if (existing) existing.remove();
-                const toast = document.createElement('div');
-                toast.className = 'toast-notification';
-                toast.textContent = msg;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.classList.add('show'), 10);
-                setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2500);
-            };
+            // 1. 공통 유틸리티 초기화
+            initProgressBar();
+            DocCore.initMarked();
 
             const searchForm = document.querySelector('.search-form');
             const searchInput = document.querySelector('.search-input');
-
             if (searchForm && searchInput) {
                 searchForm.addEventListener('submit', (e) => {
-                    const query = searchInput.value.trim();
-                    if (query === '') {
-                        e.preventDefault(); // 폼 전송(페이지 이동) 막기
+                    if (searchInput.value.trim() === '') {
+                        e.preventDefault();
                         showToast('검색어를 입력해주세요.');
                     }
                 });
             }
 
-            // [함수 1] 빈 문서(NO_FILE) 화면 렌더링 (index.html 동기화)
-            const renderEmptyState = () => {
-                document.title = "Lab Environment - JFB";
-                const tagsContainer = document.getElementById('tags-container');
-                if (tagsContainer) tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary);">[WAITING_FOR_INPUT]</span>`;
-                labContent.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="9" y1="15" x2="15" y2="15"></line>
-                        </svg>
-                        <h2 class="system-message-subtitle" style="font-size: 1.2rem;">NO_FILE_SELECTED</h2>
-                        <p class="system-message-desc" style="opacity: 0.7; margin-bottom: 2.5rem;">실습할 문서를 선택하거나 검색해주세요.</p>
-                        <a href="search.html" class="return-home-btn">> OPEN_SEARCH_</a>
-                    </div>
-                `;
-                loaderState.style.display = 'none';
-                labContent.classList.add('loaded');
-            };
-
-            // [함수 2] 404 에러 화면 렌더링 (index.html 동기화)
-            const renderError404 = () => {
-                document.title = "404 Not Found - JFB";
-                const tagsContainer = document.getElementById('tags-container');
-                if (tagsContainer) tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
-                labContent.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <h1 class="system-message-title">404</h1>
-                        <h2 class="system-message-subtitle">FILE_NOT_FOUND</h2>
-                        <p class="system-message-desc" style="opacity: 0.7;">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
-                        <a href="main.html" class="return-home-btn">> RETURN_TO_HOME_</a>
-                    </div>
-                `;
-                loaderState.style.display = 'none';
-                labContent.classList.add('loaded');
-            };
-
-            // [함수 3] 타입 불일치 에러 화면 렌더링 (index.html 동기화)
-            const renderErrorWrongType = (id, type) => {
-                const targetPage = type === 'lab' ? 'lab.html' : 'index.html';
-                const typeName = type === 'lab' ? '실습(Lab)' : '일반 문서(Doc)';
-                
-                document.title = "Access Denied - JFB";
-                const tagsContainer = document.getElementById('tags-container');
-                if (tagsContainer) tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[TYPE_MISMATCH]</span>`;
-                labContent.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        <h2 class="system-message-subtitle">INVALID_VIEWER_TYPE</h2>
-                        <p class="system-message-desc" style="opacity: 0.7;">이 문서는 ${typeName} 전용 환경에서 열람해야 합니다.</p>
-                        <a href="${targetPage}?id=${id}" class="return-home-btn">> OPEN_IN_CORRECT_VIEWER_</a>
-                    </div>
-                `;
-                loaderState.style.display = 'none';
-                labContent.classList.add('loaded');
-            };
-
+            // 파라미터가 없으면 빈 화면 출력
             if (!postId) {
-                renderEmptyState();
-                return;
+                loaderState.style.display = 'none';
+                return DocCore.renderSystemMessage('empty', labContent, tagsContainer);
             }
 
             try {
+                // 2. 데이터 로드 및 검증
                 const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json')]);
                 const posts = await postsRes.json();
                 const chapters = await chaptersRes.json();
                 const currentPost = posts.find(p => p.id === postId);
 
                 if (!currentPost) {
-                    renderError404();
-                    return;
+                    loaderState.style.display = 'none';
+                    return DocCore.renderSystemMessage('404', labContent, tagsContainer);
                 }
-
                 if (currentPost.type !== 'lab') {
-                    renderErrorWrongType(postId, 'doc');
-                    return;
+                    loaderState.style.display = 'none';
+                    return DocCore.renderSystemMessage('wrong_type', labContent, tagsContainer, postId);
                 }
 
+                // 3. UI 업데이트 (사이드바, 태그, 제목)
                 document.title = `${currentPost.title} (Lab) - JFB`;
 
                 const chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a,b) => a.order - b.order);
@@ -386,33 +319,26 @@
                     document.getElementById('side-chapter-title').textContent = chapterInfo.title;
                     document.getElementById('side-chapter-title-link').href = `chapter.html?id=${currentPost.chapter}`;
                 }
+                
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
                     const target = p.type === 'lab' ? 'lab.html' : 'index.html';
                     return `<a href="${target}?id=${p.id}" class="${p.id === postId ? 'active' : ''}">${String(i+1).padStart(2,'0')}. ${p.title}</a>`;
                 }).join('');
+                
                 document.getElementById('side-chapter-count').textContent = `[${chapterPosts.findIndex(p=>p.id===postId)+1}/${chapterPosts.length}]`;
-                document.getElementById('tags-container').innerHTML = (currentPost.tags || []).map(t => `<a href="search.html?q=%23${t}" class="tag">#${t}</a>`).join('');
+                
+                if (currentPost.tags) {
+                    tagsContainer.innerHTML = currentPost.tags.map(t => `<a href="search.html?q=%23${t}" class="tag">#${t}</a>`).join('');
+                }
 
-                const renderer = {
-                    blockquote(token) {
-                        const text = token.text || "";
-                        const reg = /\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i;
-                        const match = text.match(reg);
-                        if (match) {
-                            const type = match[1].toLowerCase();
-                            const cleanBody = this.parser.parse(token.tokens).replace(match[0], '').replace(/<p>\s*<\/p>/g, '').trim();
-                            return `<div class="callout ${type}"><div class="callout-title">${match[1]}</div>${cleanBody}</div>`;
-                        }
-                        return `<blockquote>${this.parser.parse(token.tokens)}</blockquote>`;
-                    }
-                };
-                marked.use(markedFootnote());
-                marked.use({ renderer });
-
+                // 4. 마크다운 렌더링
                 const mdRes = await fetch(currentPost.path);
+                if (!mdRes.ok) throw new Error("MD_LOAD_FAIL");
                 labContent.innerHTML = marked.parse(await mdRes.text());
+                
                 Prism.highlightAll();
 
+                // 🔒 랩 전용: 시작 전 코드 잠금 오버레이 추가
                 document.querySelectorAll('.markdown-body pre').forEach(pre => {
                     const overlay = document.createElement('div');
                     overlay.className = 'code-lock-overlay';
@@ -420,84 +346,12 @@
                     pre.appendChild(overlay);
                 });
 
-                createCopyButtons();
-                buildToC();
+                // 5. 공통 기능 부착
+                DocCore.createCopyButtons(labContent);
+                DocCore.buildToC(labContent, 'toc');
+                DocCore.buildNavigation(postId, posts, labContent);
 
-                // [추가] 이전/다음 포스트 네비게이션 생성
-                const sortedPosts = [...posts].sort((a, b) => {
-                    const chA = parseInt(a.chapter);
-                    const chB = parseInt(b.chapter);
-                    if (chA !== chB) return chA - chB;
-                    return a.order - b.order;
-                });
-                
-                const currentIndex = sortedPosts.findIndex(p => p.id === postId);
-                let prevUrl = null;
-                let nextUrl = null;
-
-                if (currentIndex !== -1) {
-                    const prevPost = sortedPosts[currentIndex - 1];
-                    const nextPost = sortedPosts[currentIndex + 1];
-
-                    if (prevPost || nextPost) {
-                        const navContainer = document.createElement('div');
-                        navContainer.className = 'post-navigation';
-
-                        if (prevPost) {
-                            const prevTarget = prevPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            prevUrl = `${prevTarget}?id=${prevPost.id}`;
-
-                            navContainer.innerHTML += `
-                                <a href="${prevUrl}" class="nav-btn prev">
-                                    <span class="nav-label">< PREVIOUS</span>
-                                    <span class="nav-title">${prevPost.title}</span>
-                                </a>
-                            `;
-
-                            const sidePrev = document.createElement('a');
-                            sidePrev.href = prevUrl;
-                            sidePrev.className = 'side-nav-btn prev';
-                            sidePrev.title = `이전 글: ${prevPost.title} (Ctrl + ←)`;
-                            sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
-                            document.body.appendChild(sidePrev);
-                        }
-
-                        if (nextPost) {
-                            const nextTarget = nextPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            nextUrl = `${nextTarget}?id=${nextPost.id}`;
-
-                            navContainer.innerHTML += `
-                                <a href="${nextUrl}" class="nav-btn next">
-                                    <span class="nav-label">NEXT ></span>
-                                    <span class="nav-title">${nextPost.title}</span>
-                                </a>
-                            `;
-
-                            const sideNext = document.createElement('a');
-                            sideNext.href = nextUrl;
-                            sideNext.className = 'side-nav-btn next';
-                            sideNext.title = `다음 글: ${nextPost.title} (Ctrl + →)`;
-                            sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
-                            document.body.appendChild(sideNext);
-                        }
-                        labContent.appendChild(navContainer);
-                    }
-                }
-
-                // 단축키 이벤트 추가 (Ctrl + ArrowLeft/Right)
-                window.addEventListener('keydown', (e) => {
-                    // 실습 활성화 상태에서는 작동 방지
-                    if (isLabActive) return;
-
-                    if (e.ctrlKey) {
-                        if (e.key === 'ArrowLeft' && prevUrl) {
-                            window.location.href = prevUrl;
-                        } else if (e.key === 'ArrowRight' && nextUrl) {
-                            window.location.href = nextUrl;
-                        }
-                    }
-                });
-
+                // 랩 전용 미션 개수 파악
                 totalTasks = document.querySelectorAll('.lab-task-btn').length;
                 document.getElementById('dash-total').textContent = totalTasks;
 
@@ -506,9 +360,16 @@
                 setTimeout(() => labContent.classList.add('loaded'), 100);
 
             } catch (e) {
-                renderError("SYS_ERR", "LOAD_FAILURE", "문서를 불러올 수 없습니다.");
+                console.error(e);
+                loaderState.style.display = 'none';
+                DocCore.renderSystemMessage('404', labContent, tagsContainer);
             }
 
+            // =========================================
+            // 랩(Lab) 전용 상호작용 로직
+            // =========================================
+            
+            // 실습 시작 버튼
             btnStart.addEventListener('click', () => {
                 isLabActive = true;
                 body.classList.remove('lab-state-standby');
@@ -516,14 +377,17 @@
                 labTerminal.style.display = 'none';
                 uiSearch.classList.add('hidden');
                 uiChapterTags.classList.add('hidden');
+                
                 setTimeout(() => {
                     uiSearch.style.display = 'none'; uiChapterTags.style.display = 'none';
                     uiTimer.style.display = 'block'; uiDashboard.style.display = 'block';
                     setTimeout(() => { uiTimer.classList.remove('hidden'); uiDashboard.classList.remove('hidden'); }, 50);
                 }, 400);
-                startTimer(45);
+                
+                startTimer(45); // 타이머 45분
                 showToast("실습 세션이 시작되었습니다.");
 
+                // 미션 버튼 클릭 로직
                 document.querySelectorAll('.lab-task-btn').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         if (!isLabActive || this.classList.contains('completed')) return;
@@ -540,8 +404,9 @@
                 });
             });
 
+            // 실습 종료 프로세스
             const terminateLab = (isTimeout = false) => {
-                if (!isTimeout && completedTasks < totalTasks && !confirm("종료하시겠습니까?")) return;
+                if (!isTimeout && completedTasks < totalTasks && !confirm("모든 미션을 완료하지 않았습니다. 정말 종료하시겠습니까?")) return;
                 isLabActive = false;
                 clearInterval(timerInterval);
                 labContent.style.display = 'none';
@@ -554,69 +419,21 @@
 
             btnEnd.addEventListener('click', () => terminateLab(false));
 
+            // 타이머 함수
             function startTimer(min) {
                 let sec = min * 60;
                 const display = document.getElementById('timer-display');
                 timerInterval = setInterval(() => {
                     const m = String(Math.floor(sec/60)).padStart(2,'0'), s = String(sec%60).padStart(2,'0');
                     display.textContent = `${m}:${s}`;
+                    
+                    if (sec <= 300 && !display.classList.contains('warning')) {
+                        display.classList.add('warning'); // 5분 남으면 빨간색 점멸
+                    }
                     if (sec <= 0) terminateLab(true);
                     sec--;
                 }, 1000);
             }
-
-            function createCopyButtons() {
-                document.querySelectorAll('.markdown-body pre').forEach(pre => {
-                    const btn = document.createElement('button');
-                    btn.className = 'copy-button';
-                    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
-                    pre.appendChild(btn);
-                    btn.addEventListener('click', async () => {
-                        if (body.classList.contains('lab-state-standby')) return;
-                        await navigator.clipboard.writeText(pre.querySelector('code').innerText);
-                        btn.classList.add('copied'); btn.querySelector('span').innerText = 'DONE';
-                        setTimeout(() => { btn.classList.remove('copied'); btn.querySelector('span').innerText = 'COPY'; }, 1500);
-                    });
-                });
-            }
-
-            function buildToC() {
-                const headings = labContent.querySelectorAll('h2, h3');
-                const toc = document.getElementById('toc');
-                toc.innerHTML = ''; 
-                headings.forEach((heading, index) => {
-                    heading.id = heading.id || `heading-${index}`;
-                    const link = document.createElement('a');
-                    link.href = `#${heading.id}`; link.textContent = heading.textContent; link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
-                    toc.appendChild(link);
-                });
-                const tocLinks = document.querySelectorAll('.toc-link');
-                const activeHeadings = new Set();
-                const observer = new IntersectionObserver(entries => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) activeHeadings.add(entry.target);
-                        else activeHeadings.delete(entry.target);
-                    });
-                    if (activeHeadings.size > 0) {
-                        let topHeading = null, minTop = Infinity;
-                        activeHeadings.forEach(h => {
-                            const rect = h.getBoundingClientRect();
-                            if (rect.top < minTop) { minTop = rect.top; topHeading = h; }
-                        });
-                        if (topHeading) {
-                            tocLinks.forEach(l => l.classList.remove('active'));
-                            const activeLink = document.querySelector(`.toc-link[href="#${topHeading.id}"]`);
-                            if (activeLink) activeLink.classList.add('active');
-                        }
-                    }
-                }, { rootMargin: "-85px 0px -70% 0px" });
-                headings.forEach(h => observer.observe(h));
-            }
-
-            window.addEventListener('scroll', () => {
-                const p = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-                document.getElementById('myBar').style.width = p + "%";
-            });
         });
     </script>
 </body>

@@ -339,61 +339,9 @@
         </div>
     </footer>
 
-    <script>
-        class TextScrambler {
-            constructor(el) {
-                this.el = el;
-                this.chars = '!<>-_\\/[]{}—=+*^?#@&%0123456789';
-                this.update = this.update.bind(this);
-            }
-            setText(newText) {
-                const oldText = this.el.innerText;
-                const length = Math.max(oldText.length, newText.length);
-                const promise = new Promise((resolve) => (this.resolve = resolve));
-                this.queue = [];
-                for (let i = 0; i < length; i++) {
-                    const from = oldText[i] || '';
-                    const to = newText[i] || '';
-                    const start = Math.floor(Math.random() * 40);
-                    const end = start + Math.floor(Math.random() * 40);
-                    this.queue.push({ from, to, start, end });
-                }
-                cancelAnimationFrame(this.frameRequest);
-                this.frame = 0;
-                this.update();
-                return promise;
-            }
-            update() {
-                let output = '';
-                let complete = 0;
-                for (let i = 0, n = this.queue.length; i < n; i++) {
-                    let { from, to, start, end, char } = this.queue[i];
-                    if (this.frame >= end) {
-                        complete++;
-                        output += to;
-                    } else if (this.frame >= start) {
-                        if (!char || Math.random() < 0.28) {
-                            char = this.randomChar();
-                            this.queue[i].char = char;
-                        }
-                        output += `<span style="color: var(--accent-color)">${char}</span>`;
-                    } else {
-                        output += from;
-                    }
-                }
-                this.el.innerHTML = output;
-                if (complete === this.queue.length) {
-                    this.resolve();
-                } else {
-                    this.frameRequest = requestAnimationFrame(this.update);
-                    this.frame++;
-                }
-            }
-            randomChar() {
-                return this.chars[Math.floor(Math.random() * this.chars.length)];
-            }
-        }
+    <script src="./common/common.js"></script>
 
+    <script>
         async function loadData() {
             const grid = document.getElementById('chapter-grid');
             const enterBtn = document.getElementById('enter-btn');
@@ -405,112 +353,77 @@
             document.getElementById('footer-sync').innerHTML = `LAST_SYNC: <span class="highlight">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}</span>`;
 
             try {
-                // 1. 데이터 병렬 로드
-                const [postsRes, chaptersRes] = await Promise.all([
-                    fetch('./data/posts.json'),
-                    fetch('./data/chapters.json')
-                ]);
-
-                if (!postsRes.ok || !chaptersRes.ok) throw new Error('데이터베이스 로드 실패');
+                // 데이터 병렬 로드
+                const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json')]);
+                if (!postsRes.ok || !chaptersRes.ok) throw new Error('DB_LOAD_FAIL');
                 
                 const posts = await postsRes.json();
                 const chaptersData = await chaptersRes.json();
 
-                // 2. 통계 업데이트 및 시작 버튼 링크 설정 (수정됨)
+                // 시작 버튼 설정
                 if (posts.length > 0) {
-                    const sortedPosts = [...posts].sort((a, b) => {
-                        if(a.chapter !== b.chapter) return a.chapter.localeCompare(b.chapter);
-                        return a.order - b.order;
-                    });
-                    
-                    const firstPost = sortedPosts[0];
-                    enterBtn.href = `chapter.html?id=${firstPost.chapter}`;
+                    const sortedPosts = [...posts].sort((a, b) => a.chapter !== b.chapter ? a.chapter.localeCompare(b.chapter) : a.order - b.order);
+                    enterBtn.href = `chapter.html?id=${sortedPosts[0].chapter}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
                     enterBtn.innerText = "> NO_DATA_";
                 }
 
-                // 3. 태그 추출 및 렌더링
+                // 태그 추출 및 무작위 4개 렌더링
                 const tagCounts = {};
-                posts.forEach(post => {
-                    if (post.tags) {
-                        post.tags.forEach(tag => {
-                            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                        });
-                    }
-                });
-
-                const tagArray = Object.keys(tagCounts);
-                for (let i = tagArray.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [tagArray[i], tagArray[j]] = [tagArray[j], tagArray[i]];
-                }
-                tagArray.sort((a, b) => tagCounts[b] - tagCounts[a]);
-
-                const topTags = tagArray.slice(0, 4);
+                posts.forEach(p => (p.tags || []).forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+                const topTags = Object.keys(tagCounts).sort(() => Math.random() - 0.5).sort((a, b) => tagCounts[b] - tagCounts[a]).slice(0, 4);
+                
                 if (suggestedTagsContainer) {
-                    suggestedTagsContainer.innerHTML = topTags.map(tag => 
-                        `<a href="search.html?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`
-                    ).join('');
+                    suggestedTagsContainer.innerHTML = topTags.map(tag => `<a href="search.html?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`).join('');
                 }
 
-                // 4. 챕터 렌더링 (수정됨: items 배열은 여기서 생성됨)
+                // 챕터 그리드 렌더링
                 const chaptersObj = {};
-                posts.forEach(post => {
-                    if (!post.chapter) return;
-                    if (!chaptersObj[post.chapter]) {
-                        chaptersObj[post.chapter] = [];
-                    }
-                    chaptersObj[post.chapter].push(post);
+                posts.forEach(p => {
+                    if (!p.chapter) return;
+                    (chaptersObj[p.chapter] = chaptersObj[p.chapter] || []).push(p);
                 });
 
-                const totalChapters = Object.keys(chaptersObj).length;
-                statsBadge.innerHTML = `[ TOTAL_CHAPTERS: <span>${totalChapters}</span> | DOCS_LOADED: <span>${posts.length}</span> ]`;
+                statsBadge.innerHTML = `[ TOTAL_CHAPTERS: <span>${Object.keys(chaptersObj).length}</span> | DOCS_LOADED: <span>${posts.length}</span> ]`;
 
-                grid.innerHTML = '';
-                const sortedChapters = Object.keys(chaptersObj).sort();
-
-                sortedChapters.forEach(chapterKey => {
+                grid.innerHTML = Object.keys(chaptersObj).sort().map(chapterKey => {
                     const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
-                    const chapterInfo = chaptersData[chapterKey] || { 
-                        meta: `SECTION ${chapterKey}`, 
-                        title: `Chapter ${chapterKey}` 
-                    };
-
-                    const card = document.createElement('div');
-                    card.className = 'chapter-card';
+                    const info = chaptersData[chapterKey] || { meta: `SECTION ${chapterKey}`, title: `Chapter ${chapterKey}` };
+                    
                     const listHTML = items.map(item => {
-                        const targetPage = item.type === 'lab' ? 'lab.html' : 'index.html';
-                        const labBadge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                        return `<li><a href="${targetPage}?id=${item.id}">${item.title}${labBadge}</a></li>`;
+                        const target = item.type === 'lab' ? 'lab.html' : 'index.html';
+                        const badge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                        return `<li><a href="${target}?id=${item.id}">${item.title}${badge}</a></li>`;
                     }).join('');
 
-                    card.innerHTML = `
-                        <span class="chapter-meta">${chapterInfo.meta}</span>
-                        <a href="chapter.html?id=${chapterKey}" style="text-decoration:none; display:block;">
-                            <h3 class="chapter-title">${chapterInfo.title}</h3>
-                        </a>
-                        <ul class="chapter-list">${listHTML}</ul>
+                    return `
+                        <div class="chapter-card">
+                            <span class="chapter-meta">${info.meta}</span>
+                            <a href="chapter.html?id=${chapterKey}" style="text-decoration:none; display:block;">
+                                <h3 class="chapter-title">${info.title}</h3>
+                            </a>
+                            <ul class="chapter-list">${listHTML}</ul>
+                        </div>
                     `;
-                    grid.appendChild(card);
-                });
+                }).join('');
 
-            } catch (error) {
-                console.error(error);
+            } catch (e) {
+                console.error(e);
                 grid.innerHTML = `<p style="color: var(--accent-color); font-family: 'Fira Code', monospace;">[SYS_ERR: 데이터베이스를 불러올 수 없습니다.]</p>`;
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const el = document.getElementById('scramble-text');
-            const fx = new TextScrambler(el);
             const subDesc = document.getElementById('sub-desc');
             const enterBtn = document.getElementById('enter-btn');
 
             loadData();
 
+            // TextScrambler는 common.js에 정의되어 있음
             setTimeout(() => {
-                fx.setText('JavaScript for Beginners').then(() => {
+                new TextScrambler(el).setText('JavaScript for Beginners').then(() => {
                     subDesc.classList.add('show');
                     enterBtn.classList.add('show');
                 });

@@ -112,6 +112,8 @@
         <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
 
+    <script src="./common/common.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const searchForm = document.getElementById('search-form');
@@ -119,49 +121,26 @@
             const resultsContainer = document.getElementById('search-results-container');
             const searchStatus = document.getElementById('search-status');
             const queryDisplay = document.getElementById('query-display');
-            const suggestedTagsContainer = document.getElementById('suggested-tags'); // 동적 렌더링용
+            const suggestedTagsContainer = document.getElementById('suggested-tags');
             
             let postsDatabase = [];
 
-            // 1. json 파일 비동기 호출 및 추천 태그 동적 생성
             try {
                 const res = await fetch('./data/posts.json');
                 if(res.ok) {
                     postsDatabase = await res.json();
                     
-                    // 모든 포스트에서 태그 추출 및 빈도수 계산
                     const tagCounts = {};
-                    postsDatabase.forEach(post => {
-                        if (post.tags) {
-                            post.tags.forEach(tag => {
-                                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                            });
-                        }
-                    });
+                    postsDatabase.forEach(p => (p.tags || []).forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
 
-                    // 태그 목록을 배열로 변환 후 무작위 섞기 (Fisher-Yates)
-                    const tagArray = Object.keys(tagCounts);
-                    for (let i = tagArray.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [tagArray[i], tagArray[j]] = [tagArray[j], tagArray[i]];
-                    }
-
-                    // 빈도수 기준으로 정렬 (이미 섞인 상태라 빈도수 같으면 랜덤 순서 유지)
-                    tagArray.sort((a, b) => tagCounts[b] - tagCounts[a]);
-
-                    // 상위 4개 추출 및 렌더링
-                    const topTags = tagArray.slice(0, 4);
+                    const topTags = Object.keys(tagCounts).sort(()=>Math.random()-0.5).sort((a,b)=>tagCounts[b]-tagCounts[a]).slice(0, 4);
+                    
                     if (suggestedTagsContainer) {
-                        suggestedTagsContainer.innerHTML = topTags.map(tag => 
-                            `<button class="tag" data-tag="#${tag}">#${tag}</button>`
-                        ).join('');
+                        suggestedTagsContainer.innerHTML = topTags.map(tag => `<button class="tag" data-tag="#${tag}">#${tag}</button>`).join('');
                     }
                 }
-            } catch(e) {
-                console.error("데이터베이스를 불러올 수 없습니다.", e);
-            }
+            } catch(e) { console.error(e); }
 
-            // 2. 검색 실행 및 렌더링 함수
             const renderSearch = (query) => {
                 if (!query.trim()) {
                     searchStatus.style.display = 'none';
@@ -172,123 +151,72 @@
                 searchStatus.style.display = 'block';
                 queryDisplay.textContent = query;
 
-                const isTagStrictSearch = query.startsWith('#');
-                const lowerQuery = isTagStrictSearch ? query.substring(1).toLowerCase() : query.toLowerCase();
+                const isTag = query.startsWith('#');
+                const lowerQ = isTag ? query.substring(1).toLowerCase() : query.toLowerCase();
 
-                const filteredResults = postsDatabase.filter(post => {
-                    if (isTagStrictSearch) {
-                        return post.tags && post.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
-                    } else {
-                        const inTitle = post.title && post.title.toLowerCase().includes(lowerQuery);
-                        const inDesc = post.description && post.description.toLowerCase().includes(lowerQuery);
-                        const inTags = post.tags && post.tags.some(tag => tag.toLowerCase().includes(lowerQuery));
-                        return inTitle || inDesc || inTags;
-                    }
+                const filtered = postsDatabase.filter(post => {
+                    if (isTag) return post.tags && post.tags.some(t => t.toLowerCase().includes(lowerQ));
+                    return (post.title && post.title.toLowerCase().includes(lowerQ)) || 
+                           (post.description && post.description.toLowerCase().includes(lowerQ)) || 
+                           (post.tags && post.tags.some(t => t.toLowerCase().includes(lowerQ)));
                 });
 
-                if (filteredResults.length === 0) {
+                if (filtered.length === 0) {
                     resultsContainer.innerHTML = `<div class="no-results">[SYS] 404_NOT_FOUND: 일치하는 문서를 찾을 수 없습니다.</div>`;
                 } else {
-                    resultsContainer.innerHTML = filteredResults.map(post => {
-                    const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
-                    const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                    return `
-                        <article class="search-result-item">
-                            <a href="${targetPage}?id=${post.id}" class="search-result-title">${post.title}${labBadge}</a>
-                            <p class="search-result-summary">${post.description}</p>
-                            <div class="search-result-meta">
-                                ${post.tags.map(tag => `<button class="tag result-tag" data-tag="#${tag}">#${tag}</button>`).join('')}
-                            </div>
-                        </article>
-                    `;
-                }).join('');
+                    resultsContainer.innerHTML = filtered.map(post => {
+                        const target = post.type === 'lab' ? 'lab.html' : 'index.html';
+                        const badge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                        const tagsHtml = post.tags.map(t => `<button class="tag result-tag" data-tag="#${t}">#${t}</button>`).join('');
+                        return `
+                            <article class="search-result-item">
+                                <a href="${target}?id=${post.id}" class="search-result-title">${post.title}${badge}</a>
+                                <p class="search-result-summary">${post.description}</p>
+                                <div class="search-result-meta">${tagsHtml}</div>
+                            </article>`;
+                    }).join('');
                 }
             };
 
-            // 3. 초기 세팅 (URL 파라미터 읽기 및 포커스)
-            const urlParams = new URLSearchParams(window.location.search);
-            const initialQuery = urlParams.get('q') || '';
-            
-            if (initialQuery) {
-                searchInput.value = initialQuery;
-                renderSearch(initialQuery);
-            } else {
-                renderSearch(''); 
-            }
+            const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
+            searchInput.value = initialQuery;
+            renderSearch(initialQuery);
 
             const keepFocus = () => {
                 searchInput.focus();
                 const val = searchInput.value;
-                searchInput.value = '';
-                searchInput.value = val;
+                searchInput.value = ''; searchInput.value = val;
             };
             keepFocus();
 
-            // ==========================================
-            // 4. 이벤트 리스너 바인딩 (이벤트 위임 활용)
-            // ==========================================
-
-            // 폼 제출 (엔터)
-            const showToast = (message) => {
-                let existingToast = document.querySelector('.toast-notification');
-                if (existingToast) existingToast.remove();
-
-                const toast = document.createElement('div');
-                toast.className = 'toast-notification';
-                toast.textContent = message;
-                document.body.appendChild(toast);
-
-                setTimeout(() => toast.classList.add('show'), 10);
-
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => toast.remove(), 300);
-                }, 2500);
-            };
-
-            // 폼 제출 (엔터) 로직 수정
             searchForm.addEventListener('submit', (e) => {
                 e.preventDefault(); 
-                const query = searchInput.value.trim(); // 좌우 공백 제거
-
-                // 빈 검색어 방지 로직
+                const query = searchInput.value.trim();
                 if (query === '') {
-                    showToast('검색어를 입력해주세요.');
-                    searchInput.value = ''; // 스페이스바만 입력한 경우 초기화
-                    searchInput.focus();
-                    return; // 검색 실행 중단
+                    window.showToast('검색어를 입력해주세요.'); // common.js의 함수 호출
+                    searchInput.value = '';
+                    return searchInput.focus();
                 }
-
                 renderSearch(query);
                 const newUrl = query ? `?q=${encodeURIComponent(query)}` : window.location.pathname;
                 window.history.pushState({ path: newUrl }, '', newUrl);
                 keepFocus(); 
             });
 
-            // 태그 클릭 통합 관리 (추천 태그 & 결과 태그 모두 처리)
             document.addEventListener('click', (e) => {
                 if (e.target.classList.contains('tag') && e.target.hasAttribute('data-tag')) {
                     const tagQuery = e.target.getAttribute('data-tag');
                     searchInput.value = tagQuery;
                     renderSearch(tagQuery);
-                    
-                    const newUrl = `?q=${encodeURIComponent(tagQuery)}`;
-                    window.history.pushState({ path: newUrl }, '', newUrl);
-                    
-                    // 결과 태그(result-tag)를 클릭한 경우 부드럽게 위로 스크롤
-                    if (e.target.classList.contains('result-tag')) {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
+                    window.history.pushState({ path: `?q=${encodeURIComponent(tagQuery)}` }, '', `?q=${encodeURIComponent(tagQuery)}`);
+                    if (e.target.classList.contains('result-tag')) window.scrollTo({ top: 0, behavior: 'smooth' });
                     keepFocus();
                 }
             });
 
-            // 브라우저 뒤로가기
             window.addEventListener('popstate', () => {
-                const params = new URLSearchParams(window.location.search);
-                const q = params.get('q') || '';
-                searchInput.value = q;
-                renderSearch(q);
+                const q = new URLSearchParams(window.location.search).get('q') || '';
+                searchInput.value = q; renderSearch(q);
             });
         });
     </script>

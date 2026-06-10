@@ -276,42 +276,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    
+        
+    <script src="./common/common.js"></script>
+    <script src="./common/doc.js"></script>
+
+    <!-- 커스텀 자바스크립트 -->
     <!-- 커스텀 자바스크립트 -->
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const contentArea = document.getElementById('post-content');
             const tagsContainer = document.querySelector('.right-sidebar .tags-container');
-            
             const searchForm = document.querySelector('.search-form');
             const searchInput = document.querySelector('.search-input');
 
-            // 알림창 띄우는 함수
-            const showToast = (message) => {
-                let existingToast = document.querySelector('.toast-notification');
-                if (existingToast) existingToast.remove(); // 기존 알림창 제거
+            // 1. 공통 유틸리티 초기화
+            initProgressBar();
+            DocCore.initMarked(); // 마크다운 렌더러 설정
 
-                const toast = document.createElement('div');
-                toast.className = 'toast-notification';
-                toast.textContent = message;
-                document.body.appendChild(toast);
-
-                // 애니메이션 트리거
-                setTimeout(() => toast.classList.add('show'), 10);
-
-                // 2.5초 후 사라짐
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => toast.remove(), 300);
-                }, 2500);
-            };
-
-            // 검색 폼 제출 이벤트 가로채기
             if (searchForm && searchInput) {
                 searchForm.addEventListener('submit', (e) => {
-                    const query = searchInput.value.trim();
-                    if (query === '') {
-                        e.preventDefault(); // 폼 전송(페이지 이동) 막기
+                    if (searchInput.value.trim() === '') {
+                        e.preventDefault();
                         showToast('검색어를 입력해주세요.');
                     }
                 });
@@ -320,368 +305,70 @@
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
 
-            let posts = [];
-            let chapters = {};
-            let targetMdPath = null; // null로 초기화하여 버그 방지
-            let pageTitle = 'JavaScript for Beginners';
-            let pageTags = [];
+            // 파라미터가 없으면 빈 화면 출력
+            if (!postId) return DocCore.renderSystemMessage('empty', contentArea, tagsContainer);
 
-            // [함수 1] 빈 문서(NO_FILE) 화면 렌더링
-            const renderEmptyState = () => {
-                document.title = "Viewer - JFB";
-                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary);">[WAITING_FOR_INPUT]</span>`;
-                contentArea.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="9" y1="15" x2="15" y2="15"></line>
-                        </svg>
-                        <h2 class="system-message-subtitle" style="font-size: 1.2rem;">NO_FILE_SELECTED</h2>
-                        <p class="system-message-desc" style="opacity: 0.7; margin-bottom: 2.5rem;">읽을 문서를 선택하거나 검색해주세요.</p>
-                        <a href="search.html" class="return-home-btn">> OPEN_SEARCH_</a>
-                    </div>
-                `;
-                contentArea.classList.add('loaded');
-            };
-
-            // [함수 2] 404 에러 화면 렌더링
-            const renderError404 = () => {
-                document.title = "404 Not Found - JFB";
-                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
-                contentArea.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <h1 class="system-message-title">404</h1>
-                        <h2 class="system-message-subtitle">FILE_NOT_FOUND</h2>
-                        <p class="system-message-desc" style="opacity: 0.7;">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
-                        <a href="main.html" class="return-home-btn">> RETURN_TO_HOME_</a>
-                    </div>
-                `;
-                contentArea.classList.add('loaded');
-            };
-
-            // [함수 3] 타입 불일치 에러 화면 렌더링
-            const renderErrorWrongType = (id, type) => {
-                const targetPage = type === 'lab' ? 'lab.html' : 'index.html';
-                const typeName = type === 'lab' ? '실습(Lab)' : '일반 문서(Doc)';
-                
-                document.title = "Access Denied - JFB";
-                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[TYPE_MISMATCH]</span>`;
-                contentArea.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        <h2 class="system-message-subtitle">INVALID_VIEWER_TYPE</h2>
-                        <p class="system-message-desc" style="opacity: 0.7;">이 문서는 ${typeName} 전용 환경에서 열람해야 합니다.</p>
-                        <a href="${targetPage}?id=${id}" class="return-home-btn">> OPEN_IN_CORRECT_VIEWER_</a>
-                    </div>
-                `;
-                contentArea.classList.add('loaded');
-            };
-
-            // 1. JSON 데이터 가져오기 및 분기 처리
             try {
-                // 파라미터가 없으면 즉시 빈 화면 출력 후 종료
-                if (!postId) {
-                    renderEmptyState();
-                    return; 
-                }
-
-                // 데이터 병렬 로드
+                // 2. 데이터 로드
                 const [postsResponse, chaptersResponse] = await Promise.all([
                     fetch('./data/posts.json'),
                     fetch('./data/chapters.json')
                 ]);
 
-                if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('데이터베이스 로드 실패');
+                if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('DB_LOAD_FAIL');
                 
-                posts = await postsResponse.json();
-                chapters = await chaptersResponse.json();
+                const posts = await postsResponse.json();
+                const chapters = await chaptersResponse.json();
                 const currentPost = posts.find(p => p.id === postId);
                 
-                // 파라미터는 있는데 매칭되는 데이터가 없으면 404 출력 후 종료
-                if (!currentPost) {
-                    renderError404();
-                    return;
-                }
+                // 데이터 검증 및 에러 처리
+                if (!currentPost) return DocCore.renderSystemMessage('404', contentArea, tagsContainer);
+                if (currentPost.type === 'lab') return DocCore.renderSystemMessage('wrong_type', contentArea, tagsContainer, postId);
+                if (!currentPost.path.startsWith('./script/')) throw new Error('INVALID_PATH');
 
-                // [보안 강화] 타입 검증: 실습(lab) 타입은 전용 뷰어에서만 열람 가능
-                if (currentPost.type === 'lab') {
-                    renderErrorWrongType(postId, 'lab');
-                    return;
-                }
-
-                // 정상 매칭 시 데이터 세팅
-                targetMdPath = currentPost.path;
+                // 3. UI 업데이트 (사이드바, 태그, 제목)
+                document.title = currentPost.title + " - JFB";
                 
-                // [보안 강화] 경로 검증: 반드시 ./script/ 로 시작해야 함
-                if (!targetMdPath.startsWith('./script/')) {
-                    console.error('허용되지 않은 경로 접근 시도:', targetMdPath);
-                    renderError404(); 
-                    return;
+                if (currentPost.tags && currentPost.tags.length > 0) {
+                    tagsContainer.innerHTML = currentPost.tags.map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                 }
 
-                pageTitle = currentPost.title + " - JFB";
-                pageTags = currentPost.tags;
-
-                // 챕터 정보 업데이트
-                const chapterId = currentPost.chapter;
-                const chapterInfo = chapters[chapterId];
-                const chapterPosts = posts.filter(p => p.chapter === chapterId).sort((a, b) => a.order - b.order);
+                const chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a, b) => a.order - b.order);
+                const chapterInfo = chapters[currentPost.chapter];
+                
                 if (chapterInfo) {
                     document.getElementById('side-chapter-title').textContent = chapterInfo.title;
-                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${chapterId}`;
+                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${currentPost.chapter}`;
                 }
                 
-                // 2. 챕터 포스트 렌더링 (번호 수동 부여 01. 02.)
-                const chapterNav = document.getElementById('chapter-nav');
-                chapterNav.innerHTML = chapterPosts.map((p, idx) => {
+                document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
                     const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
-                    // 글자가 잘려도 마우스를 올리면 전체 제목이 보이도록 title 속성 추가
                     return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
                 }).join('');
 
-                // 3. 전체 포스트 중 현재 위치 계산 (우측 상단 뱃지용)
-                const currentIndex = chapterPosts.findIndex(p => p.id === postId) + 1;
                 const countBadge = document.getElementById('side-chapter-count');
-                if(countBadge) {
-                    countBadge.textContent = `[${currentIndex}/${chapterPosts.length}]`;
-                }
+                if(countBadge) countBadge.textContent = `[${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}]`;
 
-            } catch (error) {
-                console.error('데이터베이스 통신 오류:', error);
-                renderError404(); // 파일이 없거나 JSON 파싱 에러 시에도 404 처리
-                return;
-            }
+                // 4. 마크다운 파일 렌더링
+                const mdResponse = await fetch(currentPost.path);
+                if (!mdResponse.ok) throw new Error('MD_LOAD_FAIL');
 
-            // 2. 동적 메타데이터(타이틀 및 태그) 업데이트
-            document.title = pageTitle;
-            if (pageTags.length > 0) {
-                tagsContainer.innerHTML = pageTags.map(tag => 
-                    `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`
-                ).join('');
-            }
+                contentArea.innerHTML = marked.parse(await mdResponse.text());
 
-            // 3. 마크다운 파일 가져오기 및 렌더링 (targetMdPath가 유효할 때만 실행됨)
-            if (!targetMdPath) return; // 2차 안전장치
-
-            // [추가] marked 렌더러 커스텀 (Callouts 지원)
-            const renderer = {
-                blockquote(token) {
-                    const text = token.text || "";
-                    const reg = /\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i;
-                    const match = text.match(reg);
-                    
-                    if (match) {
-                        const type = match[1].toLowerCase();
-                        // 자식 토큰들을 파싱하여 HTML로 변환
-                        let body = this.parser.parse(token.tokens);
-                        // [!TYPE] 표시를 결과물에서 제거
-                        const cleanBody = body.replace(match[0], '').replace(/<p>\s*<\/p>/g, '').trim();
-                        return `<div class="callout ${type}"><div class="callout-title">${match[1]}</div>${cleanBody}</div>`;
-                    }
-                    return `<blockquote>${this.parser.parse(token.tokens)}</blockquote>`;
-                }
-            };
-            marked.use(markedFootnote());
-            marked.use({ renderer });
-
-            try {
-                const response = await fetch(targetMdPath);
-                if (!response.ok) throw new Error(`[404] 마크다운 파일을 불러오는데 실패했습니다: ${targetMdPath}`);
-
-                const mdSource = await response.text();
-                contentArea.innerHTML = marked.parse(mdSource);
-
+                // 5. 부가 기능 초기화 (하이라이팅, 복사, 목차, 네비게이션)
                 Prism.highlightAll();
-                createCopyButtons();
-
-                // [추가] 7. 이전/다음 포스트 네비게이션 생성
-                const sortedPosts = [...posts].sort((a, b) => {
-                    const chA = parseInt(a.chapter);
-                    const chB = parseInt(b.chapter);
-                    if (chA !== chB) return chA - chB;
-                    return a.order - b.order;
-                });
-                
-                const currentIndex = sortedPosts.findIndex(p => p.id === postId);
-                let prevUrl = null;
-                let nextUrl = null;
-
-                if (currentIndex !== -1) {
-                    const prevPost = sortedPosts[currentIndex - 1];
-                    const nextPost = sortedPosts[currentIndex + 1];
-
-                    if (prevPost || nextPost) {
-                        const navContainer = document.createElement('div');
-                        navContainer.className = 'post-navigation';
-
-                        if (prevPost) {
-                            const prevTarget = prevPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            prevUrl = `${prevTarget}?id=${prevPost.id}`;
-                            
-                            // 하단 버튼
-                            navContainer.innerHTML += `
-                                <a href="${prevUrl}" class="nav-btn prev">
-                                    <span class="nav-label">< PREVIOUS</span>
-                                    <span class="nav-title">${prevPost.title}</span>
-                                </a>
-                            `;
-
-                            // 사이드 버튼 추가
-                            const sidePrev = document.createElement('a');
-                            sidePrev.href = prevUrl;
-                            sidePrev.className = 'side-nav-btn prev';
-                            sidePrev.title = `이전 글: ${prevPost.title} (Ctrl + ←)`;
-                            sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
-                            document.body.appendChild(sidePrev);
-                        }
-
-                        if (nextPost) {
-                            const nextTarget = nextPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            nextUrl = `${nextTarget}?id=${nextPost.id}`;
-
-                            // 하단 버튼
-                            navContainer.innerHTML += `
-                                <a href="${nextUrl}" class="nav-btn next">
-                                    <span class="nav-label">NEXT ></span>
-                                    <span class="nav-title">${nextPost.title}</span>
-                                </a>
-                            `;
-
-                            // 사이드 버튼 추가
-                            const sideNext = document.createElement('a');
-                            sideNext.href = nextUrl;
-                            sideNext.className = 'side-nav-btn next';
-                            sideNext.title = `다음 글: ${nextPost.title} (Ctrl + →)`;
-                            sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
-                            document.body.appendChild(sideNext);
-                        }
-                        contentArea.appendChild(navContainer);
-                    }
-                }
-
-                // 8. 단축키 이벤트 추가 (Ctrl + ArrowLeft/Right)
-                window.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey) {
-                        if (e.key === 'ArrowLeft' && prevUrl) {
-                            window.location.href = prevUrl;
-                        } else if (e.key === 'ArrowRight' && nextUrl) {
-                            window.location.href = nextUrl;
-                        }
-                    }
-                });
-
-                // 4. 목차(ToC) 생성
-                const headings = contentArea.querySelectorAll('h1, h2, h3');
-                const tocContainer = document.getElementById('toc');
-                tocContainer.innerHTML = ''; 
-
-                headings.forEach((heading, index) => {
-                    if (heading.tagName === 'H1') return;
-                    if (!heading.id) heading.id = `heading-${index}`;
-
-                    const link = document.createElement('a');
-                    link.href = `#${heading.id}`;
-                    link.textContent = heading.textContent;
-                    link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
-                    tocContainer.appendChild(link);
-                });
-
-                // 5. 스크롤 스파이 적용
-                const tocLinks = document.querySelectorAll('.toc-link');
-                const observerOptions = { root: null, rootMargin: "-85px 0px -70% 0px", threshold: 0 };
-                const activeHeadings = new Set();
-                
-                const observer = new IntersectionObserver(entries => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) activeHeadings.add(entry.target);
-                        else activeHeadings.delete(entry.target);
-                    });
-
-                    if (activeHeadings.size > 0) {
-                        let topHeading = null;
-                        let minTop = Infinity;
-                        activeHeadings.forEach(heading => {
-                            const rect = heading.getBoundingClientRect();
-                            if (rect.top < minTop) { minTop = rect.top; topHeading = heading; }
-                        });
-                        if (topHeading) {
-                            tocLinks.forEach(link => link.classList.remove('active'));
-                            const activeLink = document.querySelector(`.toc-link[href="#${topHeading.id}"]`);
-                            if (activeLink) activeLink.classList.add('active');
-                        }
-                    }
-                }, observerOptions);
-
-                headings.forEach(heading => { if (heading.tagName !== 'H1') observer.observe(heading); });
+                DocCore.createCopyButtons(contentArea);
+                DocCore.buildToC(contentArea, 'toc');
+                DocCore.buildNavigation(postId, posts, contentArea);
 
                 setTimeout(() => contentArea.classList.add('loaded'), 100);
 
             } catch (error) {
                 console.error(error);
-                contentArea.innerHTML = `<p style="font-family: 'Fira Code', monospace; color: var(--accent-color); padding: 2rem;">[SYS_ERROR: ${error.message}]</p>`;
-                contentArea.classList.add('loaded');
+                DocCore.renderSystemMessage('404', contentArea, tagsContainer); 
             }
-
-            // 6. 스크롤 진행률 바
-            window.addEventListener('scroll', () => {
-                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (winScroll / height) * 100;
-                document.getElementById("myBar").style.width = scrolled + "%";
-            });
         });
-
-        function createCopyButtons() {
-            const preElements = document.querySelectorAll('.content pre');
-            preElements.forEach((pre) => {
-                if (pre.querySelector('.copy-button')) return;
-                const button = document.createElement('button');
-                button.className = 'copy-button';
-                button.innerHTML = `
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                    <span>COPY</span>
-                `;
-                pre.appendChild(button);
-                button.addEventListener('click', async () => {
-                    const codeElement = pre.querySelector('code');
-                    if (!codeElement) return;
-                    try {
-                        await navigator.clipboard.writeText(codeElement.innerText);
-                        button.classList.add('copied');
-                        button.innerHTML = `
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            <span>DONE</span>
-                        `;
-                        setTimeout(() => {
-                            button.classList.remove('copied');
-                            button.innerHTML = `
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                </svg>
-                                <span>COPY</span>
-                            `;
-                        }, 1500);
-                    } catch (err) {
-                        button.innerText = 'ERR';
-                    }
-                });
-            });
-        }
     </script>
 </body>
 </html>
