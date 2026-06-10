@@ -15,6 +15,7 @@
     <link rel="icon" href="favicon.png" type="image/png">
 
     <link rel="stylesheet" href="./common/common.css">
+    <link rel="stylesheet" href="./common/markdown.css">
 
     <style>
         body {
@@ -123,65 +124,6 @@
            6. 마크다운 본문 스타일 (Unified)
            ========================================= */
         .content { padding: 0 0 4rem 0; }
-        .markdown-body { opacity: 0; transform: translateY(10px); transition: opacity 0.4s ease, transform 0.4s ease; }
-        .markdown-body.loaded { opacity: 1; transform: translateY(0); }
-
-        .markdown-body h1, .markdown-body h2, .markdown-body h3 { color: var(--text-heading); font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; letter-spacing: -0.5px; scroll-margin-top: 90px; }
-        .markdown-body h1 { font-size: 2.2rem; margin-top: 1rem; }
-        .markdown-body h2 { font-size: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
-        .markdown-body h3 { font-size: 1.2rem; }
-        .markdown-body p { margin-bottom: 1.6rem; font-size: 0.98rem; color: var(--text-primary); word-break: keep-all; }
-
-        .markdown-body blockquote { margin: 2rem 0; padding: 1.2rem 1.5rem; background-color: var(--surface-color); border-left: 2px solid var(--accent-color); border-radius: var(--radius-sm); color: var(--text-secondary); }
-        .markdown-body blockquote p { margin-bottom: 0; font-size: 0.95rem; }
-
-        .markdown-body ul { list-style: none; margin-bottom: 1.6rem; padding-left: 0; }
-        .markdown-body ul li { position: relative; padding-left: 1.2rem; margin-bottom: 0.5rem; }
-        .markdown-body ul li::before { content: "■"; position: absolute; left: 0; top: 2px; font-size: 0.55rem; color: var(--text-primary); }
-
-        .markdown-body ol { margin-bottom: 1.6rem; padding-left: 1.2rem; }
-        .markdown-body ol li { margin-bottom: 0.5rem; }
-
-        .markdown-body hr { border: none; height: 1px; background-color: var(--border-color); margin: 3.5rem 0; }
-        .markdown-body img { max-width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin: 2.5rem auto; display: block; }
-
-        .markdown-body table { width: 100%; border-collapse: collapse; margin: 2.5rem 0; font-size: 0.9rem; }
-        .markdown-body th { background-color: var(--surface-color); color: var(--text-heading); font-weight: 600; border-top: 1px solid var(--border-color); border-bottom: 2px solid var(--border-color); padding: 10px 14px; text-align: left; }
-        .markdown-body td { padding: 10px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
-        .markdown-body tr:hover { background-color: var(--surface-hover); }
-
-        .markdown-body a { color: var(--accent-color); text-decoration: none; border-bottom: 1px dashed rgba(255, 107, 0, 0.4); transition: all 0.2s ease; }
-        .markdown-body a:hover { color: var(--text-heading); border-bottom-style: solid; border-bottom-color: var(--accent-color); }
-
-        /* 인라인 코드 */
-        :not(pre) > code { background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.2em 0.4em; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.88em; }
-
-        /* 블럭 코드 */
-        .markdown-body pre { background-color: var(--surface-color) !important; border: 1px solid var(--border-color); border-radius: var(--radius-md); margin: 2.5rem 0 !important; padding: 1.25rem !important; position: relative; overflow: hidden; }
-        .markdown-body pre code { font-family: 'Fira Code', monospace !important; font-size: 0.9rem; transition: filter 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        .copy-button { position: absolute; top: 10px; right: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; cursor: pointer; opacity: 0; pointer-events: none; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 4px; font-family: 'Fira Code', monospace; z-index: 5; }
-        .markdown-body pre:hover .copy-button { opacity: 1; pointer-events: auto; }
-        .copy-button:hover { background-color: var(--surface-hover); border-color: var(--text-secondary); color: var(--text-heading); }
-        .copy-button.copied { background-color: var(--accent-color); border-color: var(--accent-color); color: #fff; font-weight: 500; }
-
-        /* Callouts */
-        .callout { margin: 2rem 0; padding: 1.2rem 1.5rem; border-radius: var(--radius-sm); border-left: 4px solid var(--text-secondary); background-color: var(--surface-color); position: relative; }
-        .callout-title { font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        .callout-title::before { content: "[!]"; font-weight: 900; }
-        .callout.note { border-left-color: #3b82f6; } .callout.note .callout-title { color: #3b82f6; }
-        .callout.tip { border-left-color: #10b981; } .callout.tip .callout-title { color: #10b981; }
-        .callout.important { border-left-color: #8b5cf6; } .callout.important .callout-title { color: #8b5cf6; }
-        .callout.warning { border-left-color: #f59e0b; } .callout.warning .callout-title { color: #f59e0b; }
-        .callout.caution { border-left-color: #ef4444; } .callout.caution .callout-title { color: #ef4444; }
-        .callout p { margin-bottom: 0; font-size: 0.95rem; color: var(--text-primary); }
-
-        /* Footnotes */
-        .footnotes { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary); }
-        .footnotes ol { padding-left: 1.5rem; }
-        .footnotes li { margin-bottom: 0.8rem; }
-        .footnote-ref { font-size: 0.75rem; vertical-align: super; margin-left: 2px; font-family: 'Fira Code', monospace; color: var(--accent-color) !important; border-bottom: none !important; }
-        .footnote-backref { text-decoration: none; margin-left: 4px; color: var(--accent-color) !important; border-bottom: none !important; font-family: 'Fira Code', monospace; }
 
         /* 🔒 실습 모드 특화 스타일 */
         .lab-state-standby .markdown-body pre code { filter: blur(6px); user-select: none; }
@@ -207,120 +149,6 @@
         .lab-outro { text-align: center; padding: 4rem 2rem; border: 1px dashed var(--border-color); border-radius: var(--radius-md); background-color: var(--surface-color); margin-bottom: 3rem; transition: opacity 0.5s; }
         .lab-action-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 1rem 2rem; background-color: var(--bg-color); border: 1px solid var(--accent-color); color: var(--accent-color); font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; margin-top: 2rem; width: 100%; text-decoration: none; }
         .lab-action-btn:hover { background-color: var(--accent-color); color: #fff; transform: translateY(-2px); }
-
-        /* =========================================
-           7. 포스트 네비게이션 (이전/다음 버튼)
-           ========================================= */
-        .post-navigation {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 5rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 3rem;
-        }
-
-        .markdown-body .nav-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 1.8rem;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color) !important;
-            border-radius: var(--radius-md);
-            text-decoration: none !important;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: 0;
-            color: inherit !important;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .markdown-body .nav-btn:hover {
-            border-color: var(--accent-color) !important;
-            background-color: var(--surface-hover);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-        }
-
-        .nav-btn .nav-label {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: block;
-        }
-
-        .nav-btn .nav-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
-
-        .nav-btn:hover .nav-label { color: var(--accent-color); }
-        .nav-btn:hover .nav-title { color: #fff; }
-
-        .nav-btn.prev { text-align: left; align-items: flex-start; }
-        .nav-btn.next { text-align: right; align-items: flex-end; }
-
-        /* =========================================
-           8. 사이드 플로팅 네비게이션
-           ========================================= */
-        .side-nav-btn {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 100px;
-            background-color: rgba(19, 21, 26, 0.4);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.1s ease;
-            z-index: 999;
-            opacity: 0.5;
-            overflow: hidden;
-        }
-
-        .side-nav-btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 0;
-            height: 100%;
-            background-color: var(--accent-color);
-            transition: width 0.1s ease;
-        }
-
-        .side-nav-btn.prev::before { left: 0; }
-        .side-nav-btn.next::before { right: 0; }
-
-        .side-nav-btn:hover {
-            opacity: 1;
-            background-color: var(--surface-hover);
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-
-        .side-nav-btn:hover::before {
-            width: 4px;
-        }
-
-        .side-nav-btn.prev { left: 0; border-radius: 0 4px 4px 0; border-left: none; }
-        .side-nav-btn.next { right: 0; border-radius: 4px 0 0 4px; border-right: none; }
-
-        .side-nav-btn svg { width: 24px; height: 24px; transition: transform 0.2s ease; }
-        .side-nav-btn.prev:hover svg { transform: translateX(-4px); }
-        .side-nav-btn.next:hover svg { transform: translateX(4px); }
 
         @media (max-width: 1200px) {
             .side-nav-btn { display: none; }
