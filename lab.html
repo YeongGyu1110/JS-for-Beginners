@@ -126,9 +126,15 @@
         .content { padding: 0 0 4rem 0; }
 
         /* 🔒 실습 모드 특화 스타일 */
-        .lab-state-standby .markdown-body pre code { filter: blur(6px); user-select: none; }
-        .lab-state-standby .copy-button { display: none !important; }
-        .lab-state-standby .lab-task-btn { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        .lab-state-standby .markdown-body pre code,
+        .lab-state-completed .markdown-body pre code { filter: blur(6px); user-select: none; }
+
+        .lab-state-standby .copy-button,
+        .lab-state-completed .copy-button { display: none !important; }
+
+        .lab-state-standby .lab-task-btn,
+        .lab-state-completed .lab-task-btn { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+
         .code-lock-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(12, 13, 15, 0.4); backdrop-filter: blur(2px); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-secondary); font-family: 'Fira Code', monospace; font-size: 0.85rem; transition: opacity 0.5s ease; }
         .lab-state-active .code-lock-overlay { opacity: 0; pointer-events: none; }
 
@@ -146,10 +152,6 @@
         .lab-task-btn.completed .status-box { color: var(--accent-color); }
         .lab-task-btn.completed .task-text { color: var(--text-secondary); text-decoration: line-through; }
 
-        .lab-outro { text-align: center; padding: 4rem 2rem; border: 1px dashed var(--border-color); border-radius: var(--radius-md); background-color: var(--surface-color); margin-bottom: 3rem; transition: opacity 0.5s; }
-        .lab-action-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 1rem 2rem; background-color: var(--bg-color); border: 1px solid var(--accent-color); color: var(--accent-color); font-family: 'Fira Code', monospace; font-size: 1rem; font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; margin-top: 2rem; width: 100%; text-decoration: none; }
-        .lab-action-btn:hover { background-color: var(--accent-color); color: #fff; transform: translateY(-2px); }
-
         @media (max-width: 1200px) {
             .side-nav-btn { display: none; }
         }
@@ -165,6 +167,30 @@
         }
 
         @media (max-width: 1024px) { .layout-container { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; } .sidebar { position: static; max-height: none; } }
+    
+        /* 실습 종료 시 상단 터미널 상태 변화 */
+        .lab-terminal.completed {
+            border-left-color: #10b981; /* 성공 (초록) */
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        .lab-terminal.completed .status-tag { color: #10b981; }
+
+        .lab-terminal.timeout {
+            border-left-color: #ef4444; /* 실패/타임아웃 (빨강) */
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+        .lab-terminal.timeout .status-tag { color: #ef4444; }
+
+        /* 터미널 내 재시작 버튼 스타일 */
+        #btn-restart-lab {
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+        #btn-restart-lab:hover {
+            background-color: var(--surface-hover);
+            color: var(--text-heading);
+            border-color: var(--text-heading);
+        }
     </style>
 </head>
 <body class="lab-state-standby">
@@ -197,21 +223,14 @@
 
             <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;">
                 <div class="terminal-status">
-                    <span class="status-tag">[SYSTEM_READY]</span>
-                    <span class="status-text">STBY_ENVIRONMENT_LOADED</span>
+                    <span class="status-tag" id="term-status-tag">[SYSTEM_READY]</span>
+                    <span class="status-text" id="term-status-text">STBY_ENVIRONMENT_LOADED</span>
                 </div>
                 <button id="btn-start-lab" class="terminal-btn">> INITIALIZE_WORKSPACE_</button>
+                <button id="btn-restart-lab" class="terminal-btn" style="display: none;">> REBOOT_SESSION_</button>
             </div>
 
             <article id="lab-content" class="markdown-body"></article>
-
-            <section id="lab-outro" class="lab-outro ui-element hidden" style="display: none;">
-                <h1 id="outro-title">LAB_COMPLETED</h1>
-                <p style="color: var(--text-primary); font-family: 'Fira Code', monospace; margin-bottom: 2rem;">
-                    FINAL_SCORE: <span id="final-score" style="color: var(--accent-color); font-weight: bold;"></span>
-                </p>
-                <a href="main.html" class="lab-action-btn" style="width: auto;">> RETURN_TO_MAIN_</a>
-            </section>
         </main>
 
         <aside class="sidebar right-sidebar">
@@ -260,8 +279,8 @@
             const loaderState = document.getElementById('loader-state');
             const labTerminal = document.getElementById('lab-terminal');
             const labContent = document.getElementById('lab-content');
-            const labOutro = document.getElementById('lab-outro');
             const btnStart = document.getElementById('btn-start-lab');
+            const btnRestart = document.getElementById('btn-restart-lab');
             const btnEnd = document.getElementById('btn-end-lab');
             const uiSearch = document.getElementById('ui-search');
             const uiChapterTags = document.getElementById('ui-chapter-tags');
@@ -368,13 +387,23 @@
             // =========================================
             // 랩(Lab) 전용 상호작용 로직
             // =========================================
-            
-            // 실습 시작 버튼
-            btnStart.addEventListener('click', () => {
+
+            // 실습 세션 시작/재시작 공통 함수
+            const startLabSession = (isRestart = false) => {
                 isLabActive = true;
-                body.classList.remove('lab-state-standby');
+                
+                // 1. 상태 변수 및 미션 진행도 초기화
+                completedTasks = 0;
+                document.getElementById('dash-completed').textContent = '0';
+                clearInterval(timerInterval);
+
+                // 2. 바디 상태 클래스 전환 (Standby/Completed -> Active)
+                body.classList.remove('lab-state-standby', 'lab-state-completed');
                 body.classList.add('lab-state-active');
+
+                // 3. UI 토글 (터미널/아웃트로 숨기고 -> 타이머/대시보드 표시)
                 labTerminal.style.display = 'none';
+
                 uiSearch.classList.add('hidden');
                 uiChapterTags.classList.add('hidden');
                 
@@ -383,38 +412,105 @@
                     uiTimer.style.display = 'block'; uiDashboard.style.display = 'block';
                     setTimeout(() => { uiTimer.classList.remove('hidden'); uiDashboard.classList.remove('hidden'); }, 50);
                 }, 400);
-                
-                startTimer(45); // 타이머 45분
-                showToast("실습 세션이 시작되었습니다.");
 
-                // 미션 버튼 클릭 로직
+                // 4. 미션 버튼 상태 완전 초기화
                 document.querySelectorAll('.lab-task-btn').forEach(btn => {
-                    btn.addEventListener('click', async function() {
-                        if (!isLabActive || this.classList.contains('completed')) return;
-                        const status = this.querySelector('.status-box');
-                        const text = this.querySelector('.task-text');
-                        const original = text.innerText;
-                        status.innerText = '[-]'; text.innerText = 'CHECKING...';
-                        await new Promise(r => setTimeout(r, 1000));
-                        this.classList.add('completed');
-                        status.innerText = '✔'; text.innerText = original;
-                        completedTasks++;
-                        document.getElementById('dash-completed').textContent = completedTasks;
-                    });
+                    btn.classList.remove('completed');
+                    
+                    // 버튼 내부 텍스트 요소 찾기
+                    const status = btn.querySelector('.status-box');
+                    const text = btn.querySelector('.task-text');
+                    
+                    // 원본 텍스트 백업이 없다면 최초 1회 저장
+                    if (!text.hasAttribute('data-original')) {
+                        text.setAttribute('data-original', text.innerText);
+                    }
+                    if (!status.hasAttribute('data-original')) {
+                        status.setAttribute('data-original', status.innerText);
+                    }
+
+                    // 텍스트와 아이콘을 원본으로 복원
+                    status.innerText = status.getAttribute('data-original');
+                    text.innerText = text.getAttribute('data-original');
                 });
+
+                // 5. 타이머 시작 및 스크롤 최상단 이동
+                startTimer(45); // 타이머 45분
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showToast(isRestart ? "새로운 세션으로 실습이 재시작되었습니다." : "실습 세션이 시작되었습니다.");
+            };
+
+            // 미션 버튼 이벤트 리스너 세팅 (최초 1회만 등록)
+            document.querySelectorAll('.lab-task-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    if (!isLabActive || this.classList.contains('completed')) return;
+                    
+                    const status = this.querySelector('.status-box');
+                    const text = this.querySelector('.task-text');
+                    
+                    status.innerText = '[-]'; 
+                    text.innerText = 'CHECKING...';
+                    
+                    await new Promise(r => setTimeout(r, 1000)); // 체크 딜레이 시뮬레이션
+                    
+                    this.classList.add('completed');
+                    status.innerText = '✔'; 
+                    text.innerText = text.getAttribute('data-original'); // 원본 텍스트 복원
+                    
+                    completedTasks++;
+                    document.getElementById('dash-completed').textContent = completedTasks;
+                });
+            });
+
+            // 시작 버튼 클릭
+            btnStart.addEventListener('click', () => startLabSession(false));
+
+            // 재시작 버튼 클릭 (확인 메시지 수정 및 바로 재시작)
+            btnRestart.addEventListener('click', () => {
+                if(confirm("새로운 세션으로 실습을 다시 시작하시겠습니까?")) {
+                    startLabSession(true);
+                }
             });
 
             // 실습 종료 프로세스
             const terminateLab = (isTimeout = false) => {
                 if (!isTimeout && completedTasks < totalTasks && !confirm("모든 미션을 완료하지 않았습니다. 정말 종료하시겠습니까?")) return;
+                
                 isLabActive = false;
                 clearInterval(timerInterval);
-                labContent.style.display = 'none';
-                document.getElementById('outro-title').textContent = isTimeout ? "LAB_TIMEOUT" : "LAB_COMPLETED";
-                labOutro.style.display = 'block';
-                setTimeout(() => labOutro.classList.remove('hidden'), 50);
-                document.getElementById('final-score').textContent = `${completedTasks} / ${totalTasks} MISSIONS`;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // 1. 상태 전환: Active -> Completed
+                body.classList.remove('lab-state-active');
+                body.classList.add('lab-state-completed');
+
+                // 2. 타이머 & 대시보드 숨기고 다시 검색 & 목차 띄우기
+                uiTimer.classList.add('hidden');
+                uiDashboard.classList.add('hidden');
+                
+                setTimeout(() => {
+                    uiTimer.style.display = 'none'; 
+                    uiDashboard.style.display = 'none';
+                    
+                    uiSearch.style.display = 'block'; 
+                    uiChapterTags.style.display = 'block';
+                    setTimeout(() => { 
+                        uiSearch.classList.remove('hidden'); 
+                        uiChapterTags.classList.remove('hidden'); 
+                    }, 50);
+                }, 400);
+
+                // 3. 상단 터미널 상태 변경 및 표시 (디자인 유지, 텍스트 변경)
+                const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 100;
+                const isPerfect = completedTasks === totalTasks;
+
+                labTerminal.style.display = 'flex';
+                labTerminal.className = isTimeout ? 'lab-terminal timeout ui-element' : 'lab-terminal completed ui-element';
+                
+                document.getElementById('term-status-tag').textContent = isTimeout ? '[SESSION_TIMEOUT]' : '[SESSION_TERMINATED]';
+                document.getElementById('term-status-text').textContent = `FINAL_SCORE: ${percentage}% | MISSIONS: ${completedTasks}/${totalTasks}`;
+                
+                document.getElementById('btn-start-lab').style.display = 'none';
+                document.getElementById('btn-restart-lab').style.display = 'block';
             };
 
             btnEnd.addEventListener('click', () => terminateLab(false));
@@ -423,12 +519,14 @@
             function startTimer(min) {
                 let sec = min * 60;
                 const display = document.getElementById('timer-display');
+                display.classList.remove('warning'); // 타이머 재시작 시 경고색상 초기화
+                
                 timerInterval = setInterval(() => {
                     const m = String(Math.floor(sec/60)).padStart(2,'0'), s = String(sec%60).padStart(2,'0');
                     display.textContent = `${m}:${s}`;
                     
                     if (sec <= 300 && !display.classList.contains('warning')) {
-                        display.classList.add('warning'); // 5분 남으면 빨간색 점멸
+                        display.classList.add('warning'); 
                     }
                     if (sec <= 0) terminateLab(true);
                     sec--;
