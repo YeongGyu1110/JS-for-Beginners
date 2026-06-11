@@ -10,26 +10,9 @@
     
     <link rel="icon" href="favicon.png" type="image/png">
 
-    <style>
-        /* =========================================
-           1. 공통 테마 변수
-           ========================================= */
-        :root {
-            --bg-color: #0c0d0f;
-            --surface-color: #13151a;
-            --surface-hover: #191c22;
-            --text-heading: #f8fafc;
-            --text-primary: #cbd5e1;
-            --text-secondary: #64748b;
-            --accent-color: #ff6b00; 
-            --border-color: #22252e;
-            --radius-md: 4px;
-            --radius-sm: 2px;
-        }
+    <link rel="stylesheet" href="./common/common.css">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        
+    <style>
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
@@ -43,34 +26,6 @@
             background-size: 32px 32px;
             background-attachment: fixed;
         }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
-
-        /* =========================================
-           2. 헤더
-           ========================================= */
-        .header {
-            padding: 1rem 2rem;
-            position: sticky; 
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            background-color: rgba(12, 13, 15, 0.9);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            font-family: 'Fira Code', monospace; font-size: 1.15rem; font-weight: 700;
-            color: var(--text-heading); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
-            letter-spacing: -0.5px;
-        }
-        .logo span { color: var(--accent-color); animation: blink 1s step-end infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-
         /* =========================================
            3. 챕터 히어로 섹션
            ========================================= */
@@ -264,70 +219,6 @@
             gap: 0.5rem;
         }
 
-        /* 클릭 가능한 태그 디자인 */
-        .tag {
-            font-family: 'Fira Code', monospace;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            text-decoration: none;
-            padding: 0.2rem 0.6rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            transition: all 0.15s ease;
-        }
-        .tag:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-            background-color: var(--surface-color);
-        }
-
-        .lab-badge {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.65rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            border: 1px solid var(--accent-color);
-            padding: 1px 4px;
-            border-radius: 2px;
-            margin-left: 8px;
-            vertical-align: middle;
-            letter-spacing: 0.5px;
-            background-color: rgba(255, 107, 0, 0.1);
-        }
-
-        /* =========================================
-           5. 에러 메시지
-           ========================================= */
-        .system-message-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 60vh; text-align: center; font-family: 'Fira Code', monospace;
-        }
-        .system-message-title { color: var(--accent-color); font-size: 4rem; margin-bottom: 1rem; line-height: 1; }
-        .system-message-subtitle {
-            color: var(--text-heading);
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        .system-message-desc { 
-            color: var(--text-secondary); 
-            margin-bottom: 3rem; 
-            font-family: 'Pretendard', sans-serif;
-            font-size: 0.95rem;
-            opacity: 0.7;
-        }
-        .system-message-icon {
-            margin-bottom: 1.5rem;
-            opacity: 0.5;
-            color: var(--text-secondary);
-        }
-        .return-home-btn {
-            display: inline-block; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color);
-            background-color: var(--surface-color); padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); transition: all 0.2s ease;
-        }
-        .return-home-btn:hover { color: var(--accent-color); border-color: var(--accent-color); transform: translateY(-2px); }
-
         /* 반응형 */
         @media (max-width: 768px) {
             .chapter-hero { padding: 3rem 1.5rem; }
@@ -354,188 +245,93 @@
         <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);">_</span></div>
         <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
+    
+    <script src="./common/common.js"></script>
 
     <script>
-        class TextScrambler {
-            constructor(el) {
-                this.el = el;
-                this.chars = '!<>-_\\/[]{}—=+*^?#@&%0123456789';
-                this.update = this.update.bind(this);
-            }
-            setText(newText) {
-                const oldText = this.el.innerText;
-                const length = Math.max(oldText.length, newText.length);
-                const promise = new Promise((resolve) => (this.resolve = resolve));
-                this.queue = [];
-                for (let i = 0; i < length; i++) {
-                    const from = oldText[i] || '';
-                    const to = newText[i] || '';
-                    const start = Math.floor(Math.random() * 40);
-                    const end = start + Math.floor(Math.random() * 40);
-                    this.queue.push({ from, to, start, end });
-                }
-                cancelAnimationFrame(this.frameRequest);
-                this.frame = 0;
-                this.update();
-                return promise;
-            }
-            update() {
-                let output = '';
-                let complete = 0;
-                for (let i = 0, n = this.queue.length; i < n; i++) {
-                    let { from, to, start, end, char } = this.queue[i];
-                    if (this.frame >= end) {
-                        complete++;
-                        output += to;
-                    } else if (this.frame >= start) {
-                        if (!char || Math.random() < 0.28) {
-                            char = this.chars[Math.floor(Math.random() * this.chars.length)];
-                            this.queue[i].char = char;
-                        }
-                        output += `<span style="color: var(--accent-color)">${char}</span>`;
-                    } else {
-                        output += from;
-                    }
-                }
-                this.el.innerHTML = output;
-                if (complete === this.queue.length) {
-                    this.resolve();
-                } else {
-                    this.frameRequest = requestAnimationFrame(this.update);
-                    this.frame++;
-                }
-            }
-        }
-
         document.addEventListener("DOMContentLoaded", async () => {
             const container = document.getElementById('app-container');
-            const urlParams = new URLSearchParams(window.location.search);
-            const chapterId = urlParams.get('id');
+            const chapterId = new URLSearchParams(window.location.search).get('id');
 
-            const renderEmptyState = () => {
-                document.title = "Chapter Preview - JFB";
+            const renderError = (code, msg, desc) => {
+                document.title = `${code} - JFB`;
                 container.innerHTML = `
                     <div class="system-message-container">
                         <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
-                        <h2 class="system-message-subtitle" style="font-size: 1.2rem;">NO_CHAPTER_SELECTED</h2>
-                        <p class="system-message-desc" style="opacity: 0.7; margin-bottom: 2.5rem;">조회할 챕터를 선택해주세요.</p>
-                        <a href="main.html" class="return-home-btn">> GO_TO_CURRICULUM_</a>
-                    </div>
-                `;
-            };
-
-            const renderError = () => {
-                document.title = "404 - JFB";
-                container.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <h1 class="system-message-title">404</h1>
-                        <h2 class="system-message-subtitle">CHAPTER_NOT_FOUND</h2>
-                        <p class="system-message-desc">요청하신 챕터를 찾을 수 없거나 데이터베이스에 존재하지 않습니다.</p>
+                        ${code === '404' ? '<h1 class="system-message-title">404</h1>' : ''}
+                        <h2 class="system-message-subtitle">${msg}</h2>
+                        <p class="system-message-desc">${desc}</p>
                         <a href="main.html" class="return-home-btn">> RETURN_TO_MAIN_</a>
                     </div>
                 `;
             };
 
-            if (!chapterId) return renderEmptyState();
+            if (!chapterId) return renderError('', 'NO_CHAPTER_SELECTED', '조회할 챕터를 선택해주세요.');
 
             try {
-                // 데이터 병렬 로드
-                const [postsRes, chaptersRes] = await Promise.all([
-                    fetch('./data/posts.json'),
-                    fetch('./data/chapters.json').catch(() => ({ ok: false }))
-                ]);
-
-                if (!postsRes.ok) throw new Error("Data Load Failed");
+                const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json').catch(()=>({ok:false}))]);
+                if (!postsRes.ok) throw new Error();
                 
                 const posts = await postsRes.json();
-                let chaptersData = {};
-                if (chaptersRes.ok) chaptersData = await chaptersRes.json();
-
-                // 해당 챕터의 문서 필터링
+                const chaptersData = chaptersRes.ok ? await chaptersRes.json() : {};
                 const chapterPosts = posts.filter(p => p.chapter === chapterId).sort((a, b) => a.order - b.order);
 
-                if (chapterPosts.length === 0) return renderError();
+                if (chapterPosts.length === 0) return renderError('404', 'CHAPTER_NOT_FOUND', '요청하신 챕터를 찾을 수 없거나 비어 있습니다.');
 
-                // 챕터 메타 정보 (JSON에 description이 없으면 기본 문구 출력)
-                const info = chaptersData[chapterId] || {
-                    meta: `SECTION 0${chapterId}`,
-                    title: `Chapter ${chapterId}`,
-                };
+                const info = chaptersData[chapterId] || { meta: `SECTION 0${chapterId}`, title: `Chapter ${chapterId}` };
+                const desc = info.description || "이 챕터의 상세 설명이 아직 등록되지 않았습니다. 하단의 학습 모듈을 확인하세요.";
                 
-                const fallbackDescription = "이 챕터의 상세 설명이 아직 등록되지 않았습니다. 하단의 학습 모듈을 통해 속해있는 문서를 직접 확인하고 학습을 시작하세요.";
-                const finalDesc = info.description || fallbackDescription;
-
                 document.title = `${info.title} - JFB`;
+                
                 const firstPost = chapterPosts[0];
-                const firstPostTarget = firstPost.type === 'lab' ? 'lab.html' : 'index.html';
+                const startTarget = firstPost.type === 'lab' ? 'lab.html' : 'index.html';
 
-                // 모듈 카드 HTML 생성 (카드는 div, 타이틀과 태그는 a 태그)
                 const modulesHTML = chapterPosts.map((post, index) => {
                     const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
                     const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                    const tagsHTML = (post.tags || []).map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                    
                     return `
                     <div class="module-card">
                         <div class="module-number">${String(index + 1).padStart(2, '0')}</div>
                         <div class="module-content">
                             <a href="${targetPage}?id=${post.id}" class="module-title">${post.title}${labBadge}</a>
                             <p class="module-desc">${post.description || '상세 설명이 제공되지 않은 문서입니다.'}</p>
-                            <div class="module-tags">
-                                ${(post.tags || []).map(tag => 
-                                    `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`
-                                ).join('')}
-                            </div>
+                            <div class="module-tags">${tagsHTML}</div>
                         </div>
-                    </div>
-                `}).join('');
+                    </div>`;
+                }).join('');
 
                 container.innerHTML = `
                     <section class="chapter-hero">
                         <div class="hero-content-wrapper">
                             <span class="chapter-meta-badge">${info.meta}</span>
                             <h1 class="chapter-title" id="hero-title"></h1>
-                            <p class="chapter-desc">${finalDesc}</p>
-                            
+                            <p class="chapter-desc">${desc}</p>
                             <div class="hero-actions">
-                                <a href="${firstPostTarget}?id=${firstPost.id}" class="start-btn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                    </svg>
+                                <a href="${startTarget}?id=${firstPost.id}" class="start-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                     START_CHAPTER_
                                 </a>
-                                <div class="chapter-stats">
-                                    [ TOTAL_MODULES: <span>${chapterPosts.length}</span> ]
-                                </div>
+                                <div class="chapter-stats">[ TOTAL_MODULES: <span>${chapterPosts.length}</span> ]</div>
                             </div>
                         </div>
                     </section>
-
                     <section class="curriculum-section">
                         <h2 class="section-heading">LEARNING_PATH_</h2>
-                        <div class="module-list">
-                            ${modulesHTML}
-                        </div>
+                        <div class="module-list">${modulesHTML}</div>
                     </section>
                 `;
 
-                // 타이틀 스크램블 애니메이션
                 setTimeout(() => {
                     const titleEl = document.getElementById('hero-title');
-                    if(titleEl) {
-                        const fx = new TextScrambler(titleEl);
-                        fx.setText(info.title);
-                    }
+                    if(titleEl) new TextScrambler(titleEl).setText(info.title);
                 }, 100);
 
             } catch (error) {
-                console.error(error);
-                renderError();
+                renderError('404', 'LOAD_FAILURE', '데이터베이스에 연결할 수 없습니다.');
             }
         });
     </script>

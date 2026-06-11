@@ -14,108 +14,11 @@
 
     <link rel="icon" href="favicon.png" type="image/png">
 
+    <link rel="stylesheet" href="./common/common.css">
+    <link rel="stylesheet" href="./common/markdown.css">
+
     <style>
-        /* =========================================
-           1. 테크니컬 다크 테마 변수 (Sharp & Industrial)
-           ========================================= */
-        :root {
-            --bg-color: #0c0d0f;
-            --surface-color: #13151a;
-            --surface-hover: #191c22;
-            
-            --text-heading: #f8fafc;
-            --text-primary: #cbd5e1;
-            --text-secondary: #64748b;
-            
-            --accent-color: #ff6b00; /* 강렬하고 명확한 인더스트리얼 오렌지 */
-            
-            --border-color: #22252e;
-            --radius-md: 4px; /* 더 단단하고 각진 각도 */
-            --radius-sm: 2px;
-        }
 
-        /* =========================================
-           2. 기본 설정 및 타이포그래피
-           ========================================= */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            font-size: 15px; /* 약간 촘촘한 글씨가 고밀도 테크니컬 느낌을 줍니다 */
-            line-height: 1.75;
-            -webkit-font-smoothing: antialiased;
-
-            /* 은은한 기술 설계용 그리드 배경 */
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-            background-size: 32px 32px;
-            background-attachment: fixed; 
-        }
-
-        /* =========================================
-           3. UI 컴포넌트 (헤더, 진행률 바)
-           ========================================= */
-        .progress-container {
-            width: 100%;
-            height: 2px;
-            background: transparent;
-            position: fixed;
-            top: 0;
-            z-index: 1001;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--accent-color);
-            width: 0%;
-            transition: width 0.1s ease-out;
-        }
-
-        .header {
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background-color: rgba(12, 13, 15, 0.9);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .logo span { 
-            color: var(--accent-color); 
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        /* =========================================
-           4. 레이아웃
-           ========================================= */
         .layout-container {
             display: grid;
             grid-template-columns: 200px minmax(0, 760px) 200px;
@@ -145,312 +48,6 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-
-        /* =========================================
-           5. 중앙 본문 & 마크다운 스타일
-           ========================================= */
-        .content {
-            padding: 0 0 4rem 0;
-        }
-
-        #post-content {
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-        #post-content.loaded {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .content h1, .content h2, .content h3 {
-            color: var(--text-heading);
-            font-weight: 700;
-            margin-top: 2rem; /* 위쪽 여백을 2rem으로 축소 */
-            margin-bottom: 1rem;
-            letter-spacing: -0.5px;
-            scroll-margin-top: 90px;
-        }
-
-        .content h1 { font-size: 2.2rem; margin-top: 1rem; }
-        .content h2 { 
-            font-size: 1.5rem; 
-            padding-bottom: 0.5rem; 
-            border-bottom: 1px solid var(--border-color);
-        }
-        .content h3 { font-size: 1.2rem; }
-
-        .content p {
-            margin-bottom: 1.6rem;
-            font-size: 0.98rem;
-            color: var(--text-primary);
-            word-break: keep-all;
-        }
-
-        /* 인클로저 상자 형태의 차분한 블록쿼트 */
-        .content blockquote {
-            margin: 2rem 0;
-            padding: 1.2rem 1.5rem;
-            background-color: var(--surface-color);
-            border-left: 2px solid var(--accent-color);
-            border-top: 1px solid rgba(255,255,255,0.02);
-            border-right: 1px solid rgba(255,255,255,0.02);
-            border-bottom: 1px solid rgba(255,255,255,0.02);
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
-        }
-        
-        .content blockquote p { 
-            margin-bottom: 0; 
-            font-size: 0.95rem;
-        }
-
-        /* 테크니컬 리스트 스타일 (사각 포인트) */
-        .content ul {
-            list-style: none;
-            margin-bottom: 1.6rem;
-            padding-left: 0;
-        }
-        .content ul li {
-            position: relative;
-            padding-left: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        .content ul li::before {
-            content: "■";
-            position: absolute;
-            left: 0;
-            top: 2px;
-            font-size: 0.55rem;
-            color: var(--text-primary);
-        }
-
-        .content ol {
-            margin-bottom: 1.6rem;
-            padding-left: 1.2rem;
-        }
-        .content ol li { 
-            margin-bottom: 0.5rem; 
-        }
-
-        .content hr {
-            border: none;
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 3.5rem 0;
-        }
-
-        .content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            margin: 2.5rem auto;
-            display: block;
-        }
-
-        /* 군더더기 없는 도표 디자인 */
-        .content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2.5rem 0;
-            font-size: 0.9rem;
-        }
-        .content th {
-            background-color: var(--surface-color);
-            color: var(--text-heading);
-            font-weight: 600;
-            border-top: 1px solid var(--border-color);
-            border-bottom: 2px solid var(--border-color);
-            padding: 10px 14px;
-            text-align: left;
-        }
-        .content td {
-            padding: 10px 14px;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-        .content tr:hover {
-            background-color: var(--surface-hover);
-        }
-
-        /* 인라인 코드: 차분한 다크 배경 회색톤 구성 */
-        :not(pre) > code {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-heading);
-            padding: 0.2em 0.4em;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.88em;
-        }
-
-        .content a {
-            color: var(--accent-color);
-            text-decoration: none;
-            border-bottom: 1px dashed rgba(255, 107, 0, 0.4);
-            transition: all 0.2s ease;
-        }
-
-        .content a:hover {
-            color: var(--text-heading);
-            border-bottom-style: solid;
-            border-bottom-color: var(--accent-color);
-        }
-
-        /* =========================================
-           Footnotes (각주) 스타일
-           ========================================= */
-        .footnotes {
-            margin-top: 4rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .footnotes ol {
-            padding-left: 1.5rem;
-        }
-
-        .footnotes li {
-            margin-bottom: 0.8rem;
-        }
-
-        /* 각주 번호 링크 */
-        .footnote-ref {
-            font-size: 0.75rem;
-            vertical-align: super;
-            margin-left: 2px;
-            font-family: 'Fira Code', monospace;
-            color: var(--accent-color) !important;
-            border-bottom: none !important;
-        }
-
-        /* 각주 하단 돌아가기 링크 */
-        .footnote-backref {
-            text-decoration: none;
-            margin-left: 4px;
-            color: var(--accent-color) !important;
-            border-bottom: none !important;
-            font-family: 'Fira Code', monospace;
-        }
-
-        /* =========================================
-           Callouts (Admonitions) 스타일
-           ========================================= */
-        .callout {
-            margin: 2rem 0;
-            padding: 1.2rem 1.5rem;
-            border-radius: var(--radius-sm);
-            border-left: 4px solid var(--text-secondary);
-            background-color: var(--surface-color);
-            position: relative;
-        }
-
-        .callout-title {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .callout-title::before {
-            content: "[!]";
-            font-weight: 900;
-        }
-
-        .callout.note { border-left-color: #3b82f6; }
-        .callout.note .callout-title { color: #3b82f6; }
-
-        .callout.tip { border-left-color: #10b981; }
-        .callout.tip .callout-title { color: #10b981; }
-
-        .callout.important { border-left-color: #8b5cf6; }
-        .callout.important .callout-title { color: #8b5cf6; }
-
-        .callout.warning { border-left-color: #f59e0b; }
-        .callout.warning .callout-title { color: #f59e0b; }
-
-        .callout.caution { border-left-color: #ef4444; }
-        .callout.caution .callout-title { color: #ef4444; }
-
-        .callout p {
-            margin-bottom: 0;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-        }
-
-        /* =========================================
-           6. 코드 블럭 및 복사 버튼
-           ========================================= */
-        .content pre {
-            background-color: var(--surface-color) !important;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            margin: 2.5rem 0 !important;
-            padding: 1.25rem !important;
-            max-width: 100%;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        .content pre code {
-            font-family: 'Fira Code', monospace !important;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        /* 미니멀한 모노스페이스 복사 버튼 */
-        .copy-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 4px 8px;
-            border-radius: var(--radius-sm);
-            font-size: 0.7rem;
-            cursor: pointer;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-family: 'Fira Code', monospace;
-        }
-
-        .content pre:hover .copy-button {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .copy-button:hover {
-            background-color: var(--surface-hover);
-            border-color: var(--text-secondary);
-            color: var(--text-heading);
-        }
-
-        .copy-button.copied {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        /* 스크롤바 정밀화 */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
-
         /* =========================================
            7. 좌우 사이드바 (ToC & 태그)
            ========================================= */
@@ -502,23 +99,6 @@
             gap: 0.4rem;
         }
 
-        .tag {
-            font-family: 'Fira Code', monospace;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            text-decoration: none;
-            padding: 0.25rem 0.5rem;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            transition: all 0.15s ease;
-        }
-
-        .tag:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
         /* =========================================
            8. 반응형 (모바일)
            ========================================= */
@@ -544,147 +124,6 @@
         .search-form {
             margin-bottom: 2.5rem;
             position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-heading);
-            padding: 0.75rem 1rem 0.75rem 2rem;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.8rem;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .search-input::placeholder { 
-            color: var(--text-secondary); 
-            opacity: 0.5; /* 너무 튀지 않게 반투명 처리 */
-        }
-        
-        .search-input:focus { border-color: var(--text-secondary); }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-family: 'Fira Code', monospace;
-            pointer-events: none;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-        }
-
-        /* 기본 상태는 점(·) */
-        .search-icon::before { content: "·"; }
-
-        /* [수정됨] 텍스트 입력 여부와 상관없이 오직 ':focus' 상태일 때만 꺾쇠(>) 적용 */
-        .search-input:focus ~ .search-icon {
-            color: var(--accent-color);
-            opacity: 1;
-            font-weight: 600;
-        }
-
-        .search-input:focus ~ .search-icon::before {
-            content: ">";
-        }
-
-        /* 404 에러 페이지 돌아가기 버튼 */
-        .return-home-btn {
-            display: inline-block;
-            color: var(--text-primary);
-            text-decoration: none;
-            border: 1px solid var(--border-color);
-            background-color: var(--surface-color);
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--radius-sm);
-            transition: all 0.2s ease;
-        }
-
-        .return-home-btn:hover {
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-            /* 버튼이 살짝 위로 뜨는 효과를 주면 더 클릭하고 싶어집니다 */
-            transform: translateY(-2px); 
-        }
-
-        /* =========================================
-           10. 시스템 메시지 (404 에러 및 빈 문서 화면)
-           ========================================= */
-        .system-message-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 60vh;
-            text-align: center;
-            font-family: 'Fira Code', monospace;
-        }
-
-        .system-message-title {
-            color: var(--accent-color);
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            letter-spacing: -2px;
-            line-height: 1;
-        }
-
-        .system-message-subtitle {
-            color: var(--text-heading);
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .system-message-desc {
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            font-family: 'Pretendard', sans-serif;
-            font-size: 0.95rem;
-            opacity: 0.7;
-        }
-
-        .system-message-icon {
-            margin-bottom: 1.5rem;
-            opacity: 0.5;
-            color: var(--text-secondary);
-        }
-
-        /* =========================================
-           하단 알림창 (Toast Notification) 스타일
-           ========================================= */
-        .toast-notification {
-            position: fixed;
-            bottom: -60px; /* 초기에는 화면 아래에 숨김 */
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--surface-color);
-            border: 1px solid var(--accent-color);
-            color: var(--text-heading);
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            z-index: 9999;
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 탄력있는 애니메이션 */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-        }
-
-        .toast-notification::before {
-            content: "[!] ";
-            color: var(--accent-color);
-            font-weight: bold;
-        }
-
-        .toast-notification.show {
-            bottom: 40px; /* 화면 위로 올라옴 */
-            opacity: 1;
         }
 
         /* =========================================
@@ -771,120 +210,6 @@
             color: var(--accent-color);
             opacity: 1;
         }
-        /* =========================================
-           12. 포스트 네비게이션 (이전/다음 버튼)
-           ========================================= */
-        .post-navigation {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 5rem;
-            border-top: 1px solid var(--border-color);
-            padding-top: 3rem;
-        }
-
-        /* 기존 .content a 스타일이 간섭하지 않도록 강하게 제어 */
-        .content .nav-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 1.8rem;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color) !important;
-            border-radius: var(--radius-md);
-            text-decoration: none !important;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            min-width: 0;
-            color: inherit !important;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .content .nav-btn:hover {
-            border-color: var(--accent-color) !important;
-            background-color: var(--surface-hover);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-        }
-
-        .nav-btn .nav-label {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: block;
-        }
-
-        .nav-btn .nav-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
-
-        .nav-btn:hover .nav-label { color: var(--accent-color); }
-        .nav-btn:hover .nav-title { color: #fff; }
-
-        .nav-btn.prev { text-align: left; align-items: flex-start; }
-        .nav-btn.next { text-align: right; align-items: flex-end; }
-
-        /* =========================================
-           13. 사이드 플로팅 네비게이션
-           ========================================= */
-        .side-nav-btn {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 100px;
-            background-color: rgba(19, 21, 26, 0.4);
-            backdrop-filter: blur(8px);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.1s ease;
-            z-index: 999;
-            opacity: 0.5;
-            overflow: hidden;
-        }
-
-        .side-nav-btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            width: 0;
-            height: 100%;
-            background-color: var(--accent-color);
-            transition: width 0.1s ease;
-        }
-
-        .side-nav-btn.prev::before { left: 0; }
-        .side-nav-btn.next::before { right: 0; }
-
-        .side-nav-btn:hover {
-            opacity: 1;
-            background-color: var(--surface-hover);
-            color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-
-        .side-nav-btn:hover::before {
-            width: 4px;
-        }
-
-        .side-nav-btn.prev { left: 0; border-radius: 0 4px 4px 0; border-left: none; }
-        .side-nav-btn.next { right: 0; border-radius: 4px 0 0 4px; border-right: none; }
-
-        .side-nav-btn svg { width: 24px; height: 24px; transition: transform 0.2s ease; }
-        .side-nav-btn.prev:hover svg { transform: translateX(-4px); }
-        .side-nav-btn.next:hover svg { transform: translateX(4px); }
 
         @media (max-width: 1200px) {
             .side-nav-btn { display: none; } /* 화면이 좁으면 본문 버튼만 노출 */
@@ -916,7 +241,7 @@
         </aside>
 
         <main class="content">
-            <article id="post-content">
+            <article id="post-content" class="markdown-body">
                 <div style="font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 30vh; color: var(--text-secondary); font-size: 0.9rem;">
                     [Loading document...]
                 </div>
@@ -951,42 +276,27 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    
+        
+    <script src="./common/common.js"></script>
+    <script src="./common/doc.js"></script>
+
+    <!-- 커스텀 자바스크립트 -->
     <!-- 커스텀 자바스크립트 -->
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const contentArea = document.getElementById('post-content');
             const tagsContainer = document.querySelector('.right-sidebar .tags-container');
-            
             const searchForm = document.querySelector('.search-form');
             const searchInput = document.querySelector('.search-input');
 
-            // 알림창 띄우는 함수
-            const showToast = (message) => {
-                let existingToast = document.querySelector('.toast-notification');
-                if (existingToast) existingToast.remove(); // 기존 알림창 제거
+            // 1. 공통 유틸리티 초기화
+            initProgressBar();
+            DocCore.initMarked(); // 마크다운 렌더러 설정
 
-                const toast = document.createElement('div');
-                toast.className = 'toast-notification';
-                toast.textContent = message;
-                document.body.appendChild(toast);
-
-                // 애니메이션 트리거
-                setTimeout(() => toast.classList.add('show'), 10);
-
-                // 2.5초 후 사라짐
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => toast.remove(), 300);
-                }, 2500);
-            };
-
-            // 검색 폼 제출 이벤트 가로채기
             if (searchForm && searchInput) {
                 searchForm.addEventListener('submit', (e) => {
-                    const query = searchInput.value.trim();
-                    if (query === '') {
-                        e.preventDefault(); // 폼 전송(페이지 이동) 막기
+                    if (searchInput.value.trim() === '') {
+                        e.preventDefault();
                         showToast('검색어를 입력해주세요.');
                     }
                 });
@@ -995,368 +305,70 @@
             const urlParams = new URLSearchParams(window.location.search);
             const postId = urlParams.get('id');
 
-            let posts = [];
-            let chapters = {};
-            let targetMdPath = null; // null로 초기화하여 버그 방지
-            let pageTitle = 'JavaScript for Beginners';
-            let pageTags = [];
+            // 파라미터가 없으면 빈 화면 출력
+            if (!postId) return DocCore.renderSystemMessage('empty', contentArea, tagsContainer);
 
-            // [함수 1] 빈 문서(NO_FILE) 화면 렌더링
-            const renderEmptyState = () => {
-                document.title = "Viewer - JFB";
-                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary);">[WAITING_FOR_INPUT]</span>`;
-                contentArea.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="9" y1="15" x2="15" y2="15"></line>
-                        </svg>
-                        <h2 class="system-message-subtitle" style="font-size: 1.2rem;">NO_FILE_SELECTED</h2>
-                        <p class="system-message-desc" style="opacity: 0.7; margin-bottom: 2.5rem;">읽을 문서를 선택하거나 검색해주세요.</p>
-                        <a href="search.html" class="return-home-btn">> OPEN_SEARCH_</a>
-                    </div>
-                `;
-                contentArea.classList.add('loaded');
-            };
-
-            // [함수 2] 404 에러 화면 렌더링
-            const renderError404 = () => {
-                document.title = "404 Not Found - JFB";
-                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[SYS_ERR: 404]</span>`;
-                contentArea.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <h1 class="system-message-title">404</h1>
-                        <h2 class="system-message-subtitle">FILE_NOT_FOUND</h2>
-                        <p class="system-message-desc" style="opacity: 0.7;">요청하신 문서를 찾을 수 없거나 삭제되었습니다.</p>
-                        <a href="main.html" class="return-home-btn">> RETURN_TO_HOME_</a>
-                    </div>
-                `;
-                contentArea.classList.add('loaded');
-            };
-
-            // [함수 3] 타입 불일치 에러 화면 렌더링
-            const renderErrorWrongType = (id, type) => {
-                const targetPage = type === 'lab' ? 'lab.html' : 'index.html';
-                const typeName = type === 'lab' ? '실습(Lab)' : '일반 문서(Doc)';
-                
-                document.title = "Access Denied - JFB";
-                tagsContainer.innerHTML = `<span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--accent-color);">[TYPE_MISMATCH]</span>`;
-                contentArea.innerHTML = `
-                    <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                        <h2 class="system-message-subtitle">INVALID_VIEWER_TYPE</h2>
-                        <p class="system-message-desc" style="opacity: 0.7;">이 문서는 ${typeName} 전용 환경에서 열람해야 합니다.</p>
-                        <a href="${targetPage}?id=${id}" class="return-home-btn">> OPEN_IN_CORRECT_VIEWER_</a>
-                    </div>
-                `;
-                contentArea.classList.add('loaded');
-            };
-
-            // 1. JSON 데이터 가져오기 및 분기 처리
             try {
-                // 파라미터가 없으면 즉시 빈 화면 출력 후 종료
-                if (!postId) {
-                    renderEmptyState();
-                    return; 
-                }
-
-                // 데이터 병렬 로드
+                // 2. 데이터 로드
                 const [postsResponse, chaptersResponse] = await Promise.all([
                     fetch('./data/posts.json'),
                     fetch('./data/chapters.json')
                 ]);
 
-                if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('데이터베이스 로드 실패');
+                if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('DB_LOAD_FAIL');
                 
-                posts = await postsResponse.json();
-                chapters = await chaptersResponse.json();
+                const posts = await postsResponse.json();
+                const chapters = await chaptersResponse.json();
                 const currentPost = posts.find(p => p.id === postId);
                 
-                // 파라미터는 있는데 매칭되는 데이터가 없으면 404 출력 후 종료
-                if (!currentPost) {
-                    renderError404();
-                    return;
-                }
+                // 데이터 검증 및 에러 처리
+                if (!currentPost) return DocCore.renderSystemMessage('404', contentArea, tagsContainer);
+                if (currentPost.type === 'lab') return DocCore.renderSystemMessage('wrong_type', contentArea, tagsContainer, postId);
+                if (!currentPost.path.startsWith('./script/')) throw new Error('INVALID_PATH');
 
-                // [보안 강화] 타입 검증: 실습(lab) 타입은 전용 뷰어에서만 열람 가능
-                if (currentPost.type === 'lab') {
-                    renderErrorWrongType(postId, 'lab');
-                    return;
-                }
-
-                // 정상 매칭 시 데이터 세팅
-                targetMdPath = currentPost.path;
+                // 3. UI 업데이트 (사이드바, 태그, 제목)
+                document.title = currentPost.title + " - JFB";
                 
-                // [보안 강화] 경로 검증: 반드시 ./script/ 로 시작해야 함
-                if (!targetMdPath.startsWith('./script/')) {
-                    console.error('허용되지 않은 경로 접근 시도:', targetMdPath);
-                    renderError404(); 
-                    return;
+                if (currentPost.tags && currentPost.tags.length > 0) {
+                    tagsContainer.innerHTML = currentPost.tags.map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                 }
 
-                pageTitle = currentPost.title + " - JFB";
-                pageTags = currentPost.tags;
-
-                // 챕터 정보 업데이트
-                const chapterId = currentPost.chapter;
-                const chapterInfo = chapters[chapterId];
-                const chapterPosts = posts.filter(p => p.chapter === chapterId).sort((a, b) => a.order - b.order);
+                const chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a, b) => a.order - b.order);
+                const chapterInfo = chapters[currentPost.chapter];
+                
                 if (chapterInfo) {
                     document.getElementById('side-chapter-title').textContent = chapterInfo.title;
-                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${chapterId}`;
+                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${currentPost.chapter}`;
                 }
                 
-                // 2. 챕터 포스트 렌더링 (번호 수동 부여 01. 02.)
-                const chapterNav = document.getElementById('chapter-nav');
-                chapterNav.innerHTML = chapterPosts.map((p, idx) => {
+                document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
                     const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
-                    // 글자가 잘려도 마우스를 올리면 전체 제목이 보이도록 title 속성 추가
                     return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
                 }).join('');
 
-                // 3. 전체 포스트 중 현재 위치 계산 (우측 상단 뱃지용)
-                const currentIndex = chapterPosts.findIndex(p => p.id === postId) + 1;
                 const countBadge = document.getElementById('side-chapter-count');
-                if(countBadge) {
-                    countBadge.textContent = `[${currentIndex}/${chapterPosts.length}]`;
-                }
+                if(countBadge) countBadge.textContent = `[${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}]`;
 
-            } catch (error) {
-                console.error('데이터베이스 통신 오류:', error);
-                renderError404(); // 파일이 없거나 JSON 파싱 에러 시에도 404 처리
-                return;
-            }
+                // 4. 마크다운 파일 렌더링
+                const mdResponse = await fetch(currentPost.path);
+                if (!mdResponse.ok) throw new Error('MD_LOAD_FAIL');
 
-            // 2. 동적 메타데이터(타이틀 및 태그) 업데이트
-            document.title = pageTitle;
-            if (pageTags.length > 0) {
-                tagsContainer.innerHTML = pageTags.map(tag => 
-                    `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`
-                ).join('');
-            }
+                contentArea.innerHTML = marked.parse(await mdResponse.text());
 
-            // 3. 마크다운 파일 가져오기 및 렌더링 (targetMdPath가 유효할 때만 실행됨)
-            if (!targetMdPath) return; // 2차 안전장치
-
-            // [추가] marked 렌더러 커스텀 (Callouts 지원)
-            const renderer = {
-                blockquote(token) {
-                    const text = token.text || "";
-                    const reg = /\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]/i;
-                    const match = text.match(reg);
-                    
-                    if (match) {
-                        const type = match[1].toLowerCase();
-                        // 자식 토큰들을 파싱하여 HTML로 변환
-                        let body = this.parser.parse(token.tokens);
-                        // [!TYPE] 표시를 결과물에서 제거
-                        const cleanBody = body.replace(match[0], '').replace(/<p>\s*<\/p>/g, '').trim();
-                        return `<div class="callout ${type}"><div class="callout-title">${match[1]}</div>${cleanBody}</div>`;
-                    }
-                    return `<blockquote>${this.parser.parse(token.tokens)}</blockquote>`;
-                }
-            };
-            marked.use(markedFootnote());
-            marked.use({ renderer });
-
-            try {
-                const response = await fetch(targetMdPath);
-                if (!response.ok) throw new Error(`[404] 마크다운 파일을 불러오는데 실패했습니다: ${targetMdPath}`);
-
-                const mdSource = await response.text();
-                contentArea.innerHTML = marked.parse(mdSource);
-
+                // 5. 부가 기능 초기화 (하이라이팅, 복사, 목차, 네비게이션)
                 Prism.highlightAll();
-                createCopyButtons();
-
-                // [추가] 7. 이전/다음 포스트 네비게이션 생성
-                const sortedPosts = [...posts].sort((a, b) => {
-                    const chA = parseInt(a.chapter);
-                    const chB = parseInt(b.chapter);
-                    if (chA !== chB) return chA - chB;
-                    return a.order - b.order;
-                });
-                
-                const currentIndex = sortedPosts.findIndex(p => p.id === postId);
-                let prevUrl = null;
-                let nextUrl = null;
-
-                if (currentIndex !== -1) {
-                    const prevPost = sortedPosts[currentIndex - 1];
-                    const nextPost = sortedPosts[currentIndex + 1];
-
-                    if (prevPost || nextPost) {
-                        const navContainer = document.createElement('div');
-                        navContainer.className = 'post-navigation';
-
-                        if (prevPost) {
-                            const prevTarget = prevPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            prevUrl = `${prevTarget}?id=${prevPost.id}`;
-                            
-                            // 하단 버튼
-                            navContainer.innerHTML += `
-                                <a href="${prevUrl}" class="nav-btn prev">
-                                    <span class="nav-label">< PREVIOUS</span>
-                                    <span class="nav-title">${prevPost.title}</span>
-                                </a>
-                            `;
-
-                            // 사이드 버튼 추가
-                            const sidePrev = document.createElement('a');
-                            sidePrev.href = prevUrl;
-                            sidePrev.className = 'side-nav-btn prev';
-                            sidePrev.title = `이전 글: ${prevPost.title} (Ctrl + ←)`;
-                            sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
-                            document.body.appendChild(sidePrev);
-                        }
-
-                        if (nextPost) {
-                            const nextTarget = nextPost.type === 'lab' ? 'lab.html' : 'index.html';
-                            nextUrl = `${nextTarget}?id=${nextPost.id}`;
-
-                            // 하단 버튼
-                            navContainer.innerHTML += `
-                                <a href="${nextUrl}" class="nav-btn next">
-                                    <span class="nav-label">NEXT ></span>
-                                    <span class="nav-title">${nextPost.title}</span>
-                                </a>
-                            `;
-
-                            // 사이드 버튼 추가
-                            const sideNext = document.createElement('a');
-                            sideNext.href = nextUrl;
-                            sideNext.className = 'side-nav-btn next';
-                            sideNext.title = `다음 글: ${nextPost.title} (Ctrl + →)`;
-                            sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
-                            document.body.appendChild(sideNext);
-                        }
-                        contentArea.appendChild(navContainer);
-                    }
-                }
-
-                // 8. 단축키 이벤트 추가 (Ctrl + ArrowLeft/Right)
-                window.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey) {
-                        if (e.key === 'ArrowLeft' && prevUrl) {
-                            window.location.href = prevUrl;
-                        } else if (e.key === 'ArrowRight' && nextUrl) {
-                            window.location.href = nextUrl;
-                        }
-                    }
-                });
-
-                // 4. 목차(ToC) 생성
-                const headings = contentArea.querySelectorAll('h1, h2, h3');
-                const tocContainer = document.getElementById('toc');
-                tocContainer.innerHTML = ''; 
-
-                headings.forEach((heading, index) => {
-                    if (heading.tagName === 'H1') return;
-                    if (!heading.id) heading.id = `heading-${index}`;
-
-                    const link = document.createElement('a');
-                    link.href = `#${heading.id}`;
-                    link.textContent = heading.textContent;
-                    link.className = `toc-link toc-${heading.tagName.toLowerCase()}`;
-                    tocContainer.appendChild(link);
-                });
-
-                // 5. 스크롤 스파이 적용
-                const tocLinks = document.querySelectorAll('.toc-link');
-                const observerOptions = { root: null, rootMargin: "-85px 0px -70% 0px", threshold: 0 };
-                const activeHeadings = new Set();
-                
-                const observer = new IntersectionObserver(entries => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) activeHeadings.add(entry.target);
-                        else activeHeadings.delete(entry.target);
-                    });
-
-                    if (activeHeadings.size > 0) {
-                        let topHeading = null;
-                        let minTop = Infinity;
-                        activeHeadings.forEach(heading => {
-                            const rect = heading.getBoundingClientRect();
-                            if (rect.top < minTop) { minTop = rect.top; topHeading = heading; }
-                        });
-                        if (topHeading) {
-                            tocLinks.forEach(link => link.classList.remove('active'));
-                            const activeLink = document.querySelector(`.toc-link[href="#${topHeading.id}"]`);
-                            if (activeLink) activeLink.classList.add('active');
-                        }
-                    }
-                }, observerOptions);
-
-                headings.forEach(heading => { if (heading.tagName !== 'H1') observer.observe(heading); });
+                DocCore.createCopyButtons(contentArea);
+                DocCore.buildToC(contentArea, 'toc');
+                DocCore.buildNavigation(postId, posts, contentArea);
 
                 setTimeout(() => contentArea.classList.add('loaded'), 100);
 
             } catch (error) {
                 console.error(error);
-                contentArea.innerHTML = `<p style="font-family: 'Fira Code', monospace; color: var(--accent-color); padding: 2rem;">[SYS_ERROR: ${error.message}]</p>`;
-                contentArea.classList.add('loaded');
+                DocCore.renderSystemMessage('404', contentArea, tagsContainer); 
             }
-
-            // 6. 스크롤 진행률 바
-            window.addEventListener('scroll', () => {
-                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                const scrolled = (winScroll / height) * 100;
-                document.getElementById("myBar").style.width = scrolled + "%";
-            });
         });
-
-        function createCopyButtons() {
-            const preElements = document.querySelectorAll('.content pre');
-            preElements.forEach((pre) => {
-                if (pre.querySelector('.copy-button')) return;
-                const button = document.createElement('button');
-                button.className = 'copy-button';
-                button.innerHTML = `
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                    <span>COPY</span>
-                `;
-                pre.appendChild(button);
-                button.addEventListener('click', async () => {
-                    const codeElement = pre.querySelector('code');
-                    if (!codeElement) return;
-                    try {
-                        await navigator.clipboard.writeText(codeElement.innerText);
-                        button.classList.add('copied');
-                        button.innerHTML = `
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            <span>DONE</span>
-                        `;
-                        setTimeout(() => {
-                            button.classList.remove('copied');
-                            button.innerHTML = `
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                                </svg>
-                                <span>COPY</span>
-                            `;
-                        }, 1500);
-                    } catch (err) {
-                        button.innerText = 'ERR';
-                    }
-                });
-            });
-        }
     </script>
 </body>
 </html>
