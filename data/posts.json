@@ -88,5 +88,15 @@
     "path": "./script/chapter01/03.md",
     "chapter": "3",
     "order": 3
+  },
+  {
+    "id": "04",
+    "title": "첫 번째 코드 실행하기",
+    "description":  "Node.js를 사용하여 터미널에서 자바스크립트 코드를 실행하는 방법을 배웁니다.",
+    "type": "doc",
+    "tags": ["javascript", "Node.js", "터미널"],
+    "path": "./script/chapter01/04.md",
+    "chapter": "3",
+    "order": 3
   }
 ]
