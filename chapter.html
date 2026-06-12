@@ -330,6 +330,53 @@
                     if(titleEl) new TextScrambler(titleEl).setText(info.title);
                 }, 100);
 
+                if (Object.keys(chaptersData).length > 0) {
+                    // 챕터 ID들을 정렬 (숫자형 문자열을 숫자로 변환하여 정렬)
+                    const chapterIds = Object.keys(chaptersData).sort((a, b) => {
+                        const numA = parseInt(a);
+                        const numB = parseInt(b);
+                        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                        return a.localeCompare(b);
+                    });
+
+                    const currentIndex = chapterIds.indexOf(chapterId);
+                    let prevUrl = null;
+                    let nextUrl = null;
+
+                    if (currentIndex !== -1) {
+                        // 이전 챕터 버튼 생성
+                        if (currentIndex > 0) {
+                            const prevId = chapterIds[currentIndex - 1];
+                            prevUrl = `chapter.html?id=${prevId}`;
+                            const sidePrev = document.createElement('a');
+                            sidePrev.href = prevUrl;
+                            sidePrev.className = 'side-nav-btn prev';
+                            sidePrev.title = `이전 챕터: ${chaptersData[prevId].title} (Ctrl + ←)`;
+                            sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+                            document.body.appendChild(sidePrev);
+                        }
+
+                        // 다음 챕터 버튼 생성
+                        if (currentIndex < chapterIds.length - 1) {
+                            const nextId = chapterIds[currentIndex + 1];
+                            nextUrl = `chapter.html?id=${nextId}`;
+                            const sideNext = document.createElement('a');
+                            sideNext.href = nextUrl;
+                            sideNext.className = 'side-nav-btn next';
+                            sideNext.title = `다음 챕터: ${chaptersData[nextId].title} (Ctrl + →)`;
+                            sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+                            document.body.appendChild(sideNext);
+                        }
+
+                        // 단축키 (Ctrl + 좌/우) 이벤트 리스너 추가
+                        window.addEventListener('keydown', (e) => {
+                            if (e.ctrlKey) {
+                                if (e.key === 'ArrowLeft' && prevUrl) window.location.href = prevUrl;
+                                else if (e.key === 'ArrowRight' && nextUrl) window.location.href = nextUrl;
+                            }
+                        });
+                    }
+                }
             } catch (error) {
                 renderError('404', 'LOAD_FAILURE', '데이터베이스에 연결할 수 없습니다.');
             }
