@@ -84,3 +84,48 @@ window.initProgressBar = () => {
         bar.style.width = scrolled + "%";
     });
 };
+
+// =========================================
+// 4. 커스텀 확인 창 (Confirm Dialog)
+// =========================================
+window.showConfirm = (message) => {
+    return new Promise((resolve) => {
+        // 기존 열려 있는 창이 있다면 제거
+        const existing = document.querySelector('.confirm-overlay');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.className = 'confirm-overlay';
+        overlay.innerHTML = `
+            <div class="confirm-box">
+                <p class="confirm-message">${message}</p>
+                <div class="confirm-buttons">
+                    <button class="confirm-btn no" id="confirm-btn-cancel">CANCEL</button>
+                    <button class="confirm-btn yes" id="confirm-btn-ok">CONFIRM_</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        // 표시 애니메이션 적용을 위한 딜레이
+        setTimeout(() => overlay.classList.add('show'), 10);
+
+        const handleResolve = (value) => {
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.remove();
+                resolve(value);
+            }, 200); // CSS transition 시간 매칭
+        };
+
+        // 이벤트 리스너 바인딩
+        overlay.querySelector('#confirm-btn-ok').addEventListener('click', () => handleResolve(true));
+        overlay.querySelector('#confirm-btn-cancel').addEventListener('click', () => handleResolve(false));
+        
+        // 배경을 클릭해도 취소된 것으로 처리
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) handleResolve(false);
+        });
+    });
+};

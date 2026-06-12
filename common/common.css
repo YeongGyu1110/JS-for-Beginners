@@ -125,3 +125,67 @@ body {
 .side-nav-btn.prev:hover svg { transform: translateX(-4px); }
 .side-nav-btn.next:hover svg { transform: translateX(4px); }
 @media (max-width: 1200px) { .side-nav-btn { display: none; } }
+
+/* =========================================
+   8. 커스텀 확인 창 (Custom Confirm Dialog)
+   ========================================= */
+.confirm-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(12, 13, 15, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10000;
+    opacity: 0; transition: opacity 0.2s ease;
+}
+.confirm-overlay.show { opacity: 1; }
+
+.confirm-box {
+    background-color: var(--surface-color);
+    border: 1px solid var(--accent-color);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    max-width: 420px; width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    transform: translateY(15px); transition: transform 0.2s ease;
+}
+.confirm-overlay.show .confirm-box { transform: translateY(0); }
+
+.confirm-message {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.95rem; color: var(--text-primary);
+    line-height: 1.6; margin-bottom: 2rem;
+    word-break: keep-all;
+}
+
+.confirm-buttons {
+    display: flex; gap: 10px; justify-content: flex-end;
+}
+
+.confirm-btn {
+    padding: 0.6rem 1.2rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; border-radius: var(--radius-sm);
+    transition: all 0.15s ease;
+}
+
+.confirm-btn.yes {
+    background-color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    color: #fff;
+}
+.confirm-btn.yes:hover {
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.4);
+}
+
+.confirm-btn.no {
+    background-color: transparent;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+}
+.confirm-btn.no:hover {
+    border-color: var(--text-primary);
+    color: var(--text-heading);
+}
