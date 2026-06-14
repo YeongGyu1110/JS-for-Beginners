@@ -391,16 +391,16 @@
             </div>
 
             <div id="ui-dashboard" class="ui-element hidden">
+                <div class="dashboard-box">
+                    <span class="dash-label">MISSIONS_COMPLETED</span>
+                    <div class="dash-value"><span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span></div>
+                </div>
                 <button class="sidebar-action-btn" id="btn-end-lab">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     </svg>
                     TERMINATE_SESSION_
                 </button>
-                <div class="dashboard-box">
-                    <span class="dash-label">MISSIONS_COMPLETED</span>
-                    <div class="dash-value"><span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span></div>
-                </div>
             </div>
         </aside>
     </div>
@@ -633,8 +633,33 @@
                 });
             });
 
-            // 시작 버튼 클릭
-            btnStart.addEventListener('click', () => startLabSession(false));
+            // 시작 버튼 클릭 (실제 모바일/태블릿 기기 감지 로직 적용)
+            btnStart.addEventListener('click', async () => {
+                
+                // 1. 디바이스 감지 함수 (User-Agent + Touch Points)
+                const checkIsMobileDevice = () => {
+                    const ua = navigator.userAgent.toLowerCase();
+                    // 안드로이드, iOS, 기타 모바일 OS 감지
+                    const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+                    // iPadOS 13 이상은 자신을 Mac(데스크탑)으로 위장하므로, Mac이면서 터치스크린인 경우를 태블릿으로 간주
+                    const isMacTouch = navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /macintel/i.test(navigator.platform);
+                    
+                    return isMobileUA || isMacTouch;
+                };
+
+                // 2. 모바일/태블릿 기기일 경우에만 경고창 출력
+                if (checkIsMobileDevice()) {
+                    const proceed = await showConfirm(
+                        "<span style='color: var(--accent-color); font-family: \"Fira Code\", monospace; font-weight: bold;'>[SYS_WARNING] ENV_MISMATCH</span><br><br>이 실습 세션은 물리적 키보드가 있는 데스크탑 환경에 최적화되어 있습니다.<br>현재 접속하신 터치 디바이스에서는 코드 복사 및 타이핑 등 정상적인 실습 진행이 매우 불편할 수 있습니다.<br><br>그래도 세션을 강제로 시작하시겠습니까?"
+                    );
+                    
+                    // 취소 시 중단
+                    if (!proceed) return; 
+                }
+                
+                // 데스크탑이거나, 모바일에서 진행을 수락한 경우 세션 시작
+                startLabSession(false);
+            });
 
             // 재시작 버튼 클릭 (커스텀 confirm 적용)
             btnRestart.addEventListener('click', async () => {
@@ -742,9 +767,11 @@
                 tabRight.classList.toggle('active', target === 'right');
 
                 // 상태에 따른 UI 토글
-                if (isLabActive) {
+                 if (isLabActive) {
                     // 실습 중: 왼쪽/오른쪽 버튼 모두 "대시보드"를 띄우도록 함
                     uiDashboard.classList.remove('sheet-item-hidden');
+                    
+                    uiTimer.classList.add('sheet-item-hidden');
                     
                     // 나머지 숨김
                     uiSearch.classList.add('sheet-item-hidden');
