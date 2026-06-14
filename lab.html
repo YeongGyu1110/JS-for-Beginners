@@ -152,22 +152,12 @@
         .lab-task-btn.completed .status-box { color: var(--accent-color); }
         .lab-task-btn.completed .task-text { color: var(--text-secondary); text-decoration: line-through; }
 
-        @media (max-width: 1200px) {
-            .side-nav-btn { display: none; }
-        }
-
-        @media (max-width: 600px) {
-            .post-navigation { flex-direction: column; }
-        }
-
         /* 🔒 실습 활성 상태일 때 네비게이션 숨김 */
         .lab-state-active .post-navigation,
         .lab-state-active .side-nav-btn {
             display: none !important;
         }
 
-        @media (max-width: 1024px) { .layout-container { grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; } .sidebar { position: static; max-height: none; } }
-    
         /* 실습 종료 시 상단 터미널 상태 변화 */
         .lab-terminal.completed {
             border-left-color: #10b981; /* 성공 (초록) */
@@ -255,6 +245,96 @@
             border-color: var(--text-primary);
             color: var(--text-heading);
         }
+
+        /* =========================================
+           [추가] 모바일 UX 대응 (Bottom Sheet & Layout)
+           ========================================= */
+
+        .content, .right-sidebar { min-width: 0; max-width: 100vw; }
+        .markdown-body { overflow-wrap: break-word; word-break: break-word; }
+
+        .mobile-bottom-bar, .sheet-overlay { display: none; }
+
+        @media (max-width: 1024px) {
+            .layout-container {
+                grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; padding-bottom: 120px; 
+            }
+
+            .right-sidebar {
+                order: 2; position: static; border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 2rem;
+            }
+
+            .left-sidebar {
+                position: fixed; top: auto; bottom: 0; left: 0; width: 100%;
+                background-color: var(--surface-color); border-top: 1px solid var(--border-color); border-radius: 0; 
+                padding: 2rem; padding-bottom: 100px; z-index: 2000;
+                transform: translateY(100%); visibility: hidden; 
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.3s;
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.8); max-height: 75vh; overflow-y: auto;
+            }
+            .left-sidebar.sheet-open { transform: translateY(0); visibility: visible; }
+
+            .sheet-overlay {
+                display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background-color: rgba(12, 13, 15, 0.85); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+                z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            }
+            .sheet-overlay.show { opacity: 1; pointer-events: auto; }
+
+            .mobile-bottom-bar {
+                display: flex; position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+                width: calc(100% - 3rem); max-width: 400px; 
+                background-color: rgba(19, 21, 26, 1); border: 1px solid var(--border-color); border-radius: var(--radius-sm); 
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 1); z-index: 2001; 
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+            }
+            .mobile-bottom-bar.hide { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
+
+            .bottom-tab-btn {
+                flex: 1; display: flex; align-items: center; justify-content: center;
+                background: transparent; border: none; color: var(--text-secondary); padding: 0.8rem 0; 
+                cursor: pointer; transition: all 0.2s ease; font-family: 'Fira Code', monospace; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;
+            }
+            /* .bottom-tab-btn:first-child { border-right: 1px solid rgba(255, 107, 0, 0.3); } */
+            .bottom-tab-btn.active, .bottom-tab-btn:active { color: var(--accent-color); background-color: rgba(255, 107, 0, 0.05); }
+            
+            .sheet-item-hidden { display: none !important; }
+
+            /* ★ 실습 대시보드가 모바일 바텀시트에 들어갔을 때의 여백 최적화 */
+            #ui-dashboard.sheet-item { padding-top: 1rem; }
+        }
+
+        /* (삭제할 코드: .bottom-tab-btn:first-child { border-right: 1px solid rgba(255, 107, 0, 0.3); }) */
+
+        /* =========================================
+           [추가] 모바일 터미널 UI 최적화
+           ========================================= */
+        @media (max-width: 768px) {
+            .lab-terminal {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.2rem;
+                padding: 1.2rem;
+            }
+            .terminal-status {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .terminal-btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body, html { overflow-x: hidden; }
+            .layout-container { padding: 0 1rem; padding-bottom: 80px; }
+            .header { padding: 1rem; }
+            .search-input { font-size: 16px; }
+            .markdown-body pre { margin: 2rem -1rem !important; padding: 1rem !important; border-radius: 0; border-left: none; border-right: none; }
+        }
     </style>
 </head>
 <body class="lab-state-standby">
@@ -324,6 +404,22 @@
             </div>
         </aside>
     </div>
+
+    </div> <!-- // 기존 .layout-container 닫는 태그 -->
+
+    <!-- =========================================
+         [추가] 모바일 전용 Bottom Bar & Overlay (lab.html 용)
+         ========================================= -->
+    <div class="sheet-overlay" id="sheet-overlay"></div>
+    
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+        <button class="bottom-tab-btn" id="tab-left">
+            <span id="tab-left-text">> SEARCH_</span>
+        </button>
+        <button class="bottom-tab-btn" id="tab-right">
+            <span id="tab-right-text">> TOC_</span>
+        </button>
+    </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js"></script>
@@ -498,6 +594,15 @@
                     text.innerText = text.getAttribute('data-original');
                 });
 
+                if (window.innerWidth <= 1024) {
+                    leftSidebar.appendChild(uiDashboard);
+                    uiDashboard.classList.add('sheet-item-hidden');
+                }
+
+                // [추가] 플로팅 탭 텍스트 변경
+                tabLeft.style.display = 'none';
+                tabRightText.innerHTML = `⏱ 45:00 &nbsp;&nbsp;|&nbsp;&nbsp; MISSIONS: 0 / ${totalTasks}`;
+
                 // 5. 타이머 시작 및 스크롤 최상단 이동
                 startTimer(45); // 타이머 45분
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -523,6 +628,8 @@
                     
                     completedTasks++;
                     document.getElementById('dash-completed').textContent = completedTasks;
+                    const currentTimer = document.getElementById('timer-display').textContent;
+                    tabRightText.innerHTML = `⏱ ${currentTimer} &nbsp;&nbsp;|&nbsp;&nbsp; MISSIONS: ${completedTasks} / ${totalTasks}`;
                 });
             });
 
@@ -578,6 +685,16 @@
                 
                 document.getElementById('btn-start-lab').style.display = 'none';
                 document.getElementById('btn-restart-lab').style.display = 'block';
+
+                if (window.innerWidth <= 1024) {
+                    document.querySelector('.right-sidebar').appendChild(uiDashboard);
+                }
+
+                // [추가] 바텀 시트 닫고 탭 텍스트 원복
+                closeBottomSheet();
+                tabLeft.style.display = '';
+                tabLeftText.textContent = "> SEARCH_";
+                tabRightText.textContent = "> TOC_";
             };
 
             btnEnd.addEventListener('click', () => terminateLab(false));
@@ -591,6 +708,7 @@
                 timerInterval = setInterval(() => {
                     const m = String(Math.floor(sec/60)).padStart(2,'0'), s = String(sec%60).padStart(2,'0');
                     display.textContent = `${m}:${s}`;
+                    tabRightText.innerHTML = `⏱ ${m}:${s} &nbsp;&nbsp;|&nbsp;&nbsp; MISSIONS: ${completedTasks} / ${totalTasks}`;
                     
                     if (sec <= 300 && !display.classList.contains('warning')) {
                         display.classList.add('warning'); 
@@ -599,6 +717,90 @@
                     sec--;
                 }, 1000);
             }
+
+            // =========================================
+            // [추가] 모바일 바텀 시트 로직 변수
+            // =========================================
+            const leftSidebar = document.querySelector('.left-sidebar');
+            const overlay = document.getElementById('sheet-overlay');
+            const bottomBar = document.getElementById('mobile-bottom-bar');
+            
+            const tabLeft = document.getElementById('tab-left');
+            const tabRight = document.getElementById('tab-right');
+            const tabLeftText = document.getElementById('tab-left-text');
+            const tabRightText = document.getElementById('tab-right-text');
+
+            const tocTitleEl = leftSidebar.querySelector('h3.sidebar-title');
+            const tocContainerEl = leftSidebar.querySelector('.toc-container');
+
+            function openBottomSheet(target) {
+                overlay.classList.add('show');
+                leftSidebar.classList.add('sheet-open');
+                
+                // 탭 액티브 상태
+                tabLeft.classList.toggle('active', target === 'left');
+                tabRight.classList.toggle('active', target === 'right');
+
+                // 상태에 따른 UI 토글
+                if (isLabActive) {
+                    // 실습 중: 왼쪽/오른쪽 버튼 모두 "대시보드"를 띄우도록 함
+                    uiDashboard.classList.remove('sheet-item-hidden');
+                    
+                    // 나머지 숨김
+                    uiSearch.classList.add('sheet-item-hidden');
+                    tocTitleEl.classList.add('sheet-item-hidden');
+                    tocContainerEl.classList.add('sheet-item-hidden');
+                } else {
+                    // 대기/종료 중: Search / ToC 로직 (index.html과 동일)
+                    if (target === 'left') { // Search
+                        uiSearch.classList.remove('sheet-item-hidden');
+                        tocTitleEl.classList.add('sheet-item-hidden');
+                        tocContainerEl.classList.add('sheet-item-hidden');
+                        setTimeout(() => leftSidebar.querySelector('.search-input').focus(), 300);
+                    } else if (target === 'right') { // ToC
+                        uiSearch.classList.add('sheet-item-hidden');
+                        tocTitleEl.classList.remove('sheet-item-hidden');
+                        tocContainerEl.classList.remove('sheet-item-hidden');
+                    }
+                }
+            }
+
+            function closeBottomSheet() {
+                overlay.classList.remove('show');
+                leftSidebar.classList.remove('sheet-open');
+                tabLeft.classList.remove('active');
+                tabRight.classList.remove('active');
+            }
+
+            if (tabLeft && tabRight) {
+                tabLeft.addEventListener('click', () => openBottomSheet('left'));
+                tabRight.addEventListener('click', () => openBottomSheet('right'));
+                overlay.addEventListener('click', closeBottomSheet);
+                tocContainerEl.addEventListener('click', (e) => {
+                    if (e.target.tagName.toLowerCase() === 'a') closeBottomSheet();
+                });
+            }
+
+            // 스크롤 숨김 로직 (index.html과 동일)
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!bottomBar || window.innerWidth > 1024) return;
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const currentScrollY = window.scrollY;
+                        if (leftSidebar.classList.contains('sheet-open')) {
+                            bottomBar.classList.remove('hide');
+                        } else {
+                            if (currentScrollY < 10 || currentScrollY < lastScrollY) bottomBar.classList.remove('hide');
+                            else if (currentScrollY > lastScrollY && currentScrollY > 50) bottomBar.classList.add('hide');
+                        }
+                        lastScrollY = currentScrollY;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
         });
     </script>
 </body>

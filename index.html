@@ -100,25 +100,6 @@
         }
 
         /* =========================================
-           8. 반응형 (모바일)
-           ========================================= */
-        @media (max-width: 1024px) {
-            .layout-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                padding: 0 1.5rem;
-                margin: 1.5rem auto;
-            }
-            .sidebar {
-                position: static;
-                max-height: none;
-            }
-            .left-sidebar { order: -1; }
-            .right-sidebar { order: 2; border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 1rem; }
-            .header { padding: 1rem 1.5rem; }
-        }
-
-        /* =========================================
         9. 검색창 스타일 (Sidebar Search)
         ========================================= */
         .search-form {
@@ -211,12 +192,141 @@
             opacity: 1;
         }
 
-        @media (max-width: 1200px) {
-            .side-nav-btn { display: none; } /* 화면이 좁으면 본문 버튼만 노출 */
+        /* =========================================
+           [추가] 모바일 UX 대응 (Bottom Sheet & Layout)
+           ========================================= */
+
+        .content, .right-sidebar { min-width: 0; max-width: 100vw; }
+        .markdown-body { overflow-wrap: break-word; word-break: break-word; }
+
+        /* --- 데스크탑에서는 모바일 UI 숨김 --- */
+        .mobile-bottom-bar, .sheet-overlay { display: none; }
+
+        @media (max-width: 1024px) {
+            .layout-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 0 1.5rem;
+                /* 플로팅 바가 글 끝부분을 가리지 않도록 하단 여백을 더 넉넉히 확보 */
+                padding-bottom: 120px; 
+            }
+
+            .right-sidebar {
+                order: 2;
+                position: static;
+                border-top: 1px solid var(--border-color);
+                padding-top: 2rem;
+                margin-top: 2rem;
+            }
+
+            .left-sidebar {
+                position: fixed;
+                top: auto; 
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: var(--surface-color);
+                /* border-top: 1px solid var(--accent-color); */
+                border-top: 1px solid var(--border-color);
+                
+                /* [수정] 둥근 곡선(16px)을 삭제하고 테두리를 직각(0)으로 변경하여 디자인 일관성 확보 */
+                border-radius: 0; 
+                
+                padding: 2rem;
+                padding-bottom: 100px;
+                z-index: 2000;
+                transform: translateY(100%); 
+                visibility: hidden; 
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.3s;
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+                max-height: 75vh; 
+                overflow-y: auto;
+            }
+            .left-sidebar.sheet-open {
+                transform: translateY(0);
+                visibility: visible;
+            }
+
+            .sheet-overlay {
+                display: block;
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background-color: rgba(12, 13, 15, 0.85); 
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                z-index: 1999;
+                opacity: 0; pointer-events: none;
+                transition: opacity 0.3s ease;
+            }
+            .sheet-overlay.show { opacity: 1; pointer-events: auto; }
+
+            /* --- 하단 플로팅 탭 바 (Floating Design) --- */
+            .mobile-bottom-bar {
+                display: flex;
+                position: fixed;
+                bottom: 25px; 
+                left: 50%;
+                transform: translateX(-50%);
+                
+                /* [수정] 가로폭을 넓히고 최대 너비 제한 (가로로 긴 바 형태) */
+                width: calc(100% - 3rem);
+                max-width: 400px; 
+                
+                /* background-color: rgba(19, 21, 26, 0.85);  */
+                background-color: rgba(19, 21, 26, 1); 
+                /* backdrop-filter: blur(8px); */
+                /* -webkit-backdrop-filter: blur(8px); */
+                /* border: 1px solid var(--accent-color); */
+                border: 1px solid var(--border-color);
+                border-radius: var(--radius-sm); /* 다른 입력창과 동일한 2px의 미세한 각 처리 */
+                /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); */
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 1);
+                z-index: 2001; 
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+            }
+
+            /* 스크롤 다운 시 화면 아래로 숨기기 위한 클래스 */
+            .mobile-bottom-bar.hide {
+                transform: translate(-50%, 150px);
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .bottom-tab-btn {
+                flex: 1; /* [수정] 두 버튼이 50:50으로 정확히 공간을 나눠가짐 */
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+                background: transparent; 
+                border: none;
+                color: var(--text-secondary);
+                
+                /* [수정] 위아래 패딩을 줄여서 바의 높이를 얇게 조정 */
+                padding: 0.8rem 0; 
+                
+                cursor: pointer;
+                transition: all 0.2s ease;
+                
+                /* 텍스트 폰트 설정 (아이콘 제거) */
+                font-family: 'Fira Code', monospace;
+                font-size: 0.8rem;
+                font-weight: 600;
+                letter-spacing: 1px;
+            }
+
+            .bottom-tab-btn.active, .bottom-tab-btn:active {
+                color: var(--accent-color);
+                background-color: rgba(255, 107, 0, 0.05); /* 터치 시 미세한 배경 하이라이트 */
+            }
+
+            .sheet-item-hidden { display: none !important; }
         }
 
-        @media (max-width: 600px) {
-            .post-navigation { flex-direction: column; }
+        @media (max-width: 480px) {
+            body, html { overflow-x: hidden; }
+            .layout-container { padding: 0 1rem; padding-bottom: 80px; }
+            .header { padding: 1rem; }
+            .search-input { font-size: 16px; } /* iOS 자동 확대 방지 */
+            .markdown-body pre { margin: 2rem -1rem !important; padding: 1rem !important; border-radius: 0; border-left: none; border-right: none; }
         }
     </style>
 </head>
@@ -269,6 +379,22 @@
             
         </aside>
     </div>
+
+    </div> <!-- // 기존 .layout-container 닫는 태그 -->
+
+    <!-- =========================================
+         [추가] 모바일 전용 Bottom Bar & Overlay
+         ========================================= -->
+    <div class="sheet-overlay" id="sheet-overlay"></div>
+    
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
+        <button class="bottom-tab-btn" id="tab-search">
+            > SEARCH_
+        </button>
+        <button class="bottom-tab-btn" id="tab-toc">
+            > TOC_
+        </button>
+    </nav>
 
     <!-- 라이브러리 스크립트 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -368,6 +494,97 @@
                 console.error(error);
                 DocCore.renderSystemMessage('404', contentArea, tagsContainer); 
             }
+
+            // =========================================
+            // [추가] 모바일 바텀 시트 로직
+            // =========================================
+            const leftSidebar = document.querySelector('.left-sidebar');
+            const overlay = document.getElementById('sheet-overlay');
+            const tabSearch = document.getElementById('tab-search');
+            const tabToc = document.getElementById('tab-toc');
+            
+            const searchFormEl = leftSidebar.querySelector('.search-form');
+            const tocTitleEl = leftSidebar.querySelector('h3.sidebar-title');
+            const tocContainerEl = leftSidebar.querySelector('.toc-container');
+
+            function openBottomSheet(target) {
+                // 1. 오버레이 및 시트 올리기
+                overlay.classList.add('show');
+                leftSidebar.classList.add('sheet-open');
+                
+                // 2. 탭 활성화 상태 변경
+                tabSearch.classList.toggle('active', target === 'search');
+                tabToc.classList.toggle('active', target === 'toc');
+
+                // 3. 누른 탭에 따라 내용 토글
+                if (target === 'search') {
+                    searchFormEl.classList.remove('sheet-item-hidden');
+                    tocTitleEl.classList.add('sheet-item-hidden');
+                    tocContainerEl.classList.add('sheet-item-hidden');
+                    // 시트가 올라온 후 입력창 포커스
+                    setTimeout(() => leftSidebar.querySelector('.search-input').focus(), 300);
+                } else if (target === 'toc') {
+                    searchFormEl.classList.add('sheet-item-hidden');
+                    tocTitleEl.classList.remove('sheet-item-hidden');
+                    tocContainerEl.classList.remove('sheet-item-hidden');
+                }
+            }
+
+            function closeBottomSheet() {
+                overlay.classList.remove('show');
+                leftSidebar.classList.remove('sheet-open');
+                tabSearch.classList.remove('active');
+                tabToc.classList.remove('active');
+            }
+
+            // 이벤트 바인딩
+            if (tabSearch && tabToc) {
+                tabSearch.addEventListener('click', () => openBottomSheet('search'));
+                tabToc.addEventListener('click', () => openBottomSheet('toc'));
+                overlay.addEventListener('click', closeBottomSheet);
+                
+                tocContainerEl.addEventListener('click', (e) => {
+                    if (e.target.tagName.toLowerCase() === 'a') {
+                        closeBottomSheet();
+                    }
+                });
+            }
+
+            // =========================================
+            // [추가] 스크롤 방향 감지 및 플로팅 바 자동 숨김
+            // =========================================
+            const bottomBar = document.getElementById('mobile-bottom-bar');
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+
+            window.addEventListener('scroll', () => {
+                // 데스크탑 모드에서는 동작하지 않도록 예외 처리
+                if (!bottomBar || window.innerWidth > 1024) return;
+
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const currentScrollY = window.scrollY;
+                        
+                        // 바텀 시트가 열려있을 때는 항상 보여야 함
+                        if (leftSidebar.classList.contains('sheet-open')) {
+                            bottomBar.classList.remove('hide');
+                        } else {
+                            // 스크롤이 맨 위거나, 위로 올릴 때는 나타남
+                            if (currentScrollY < 10 || currentScrollY < lastScrollY) {
+                                bottomBar.classList.remove('hide');
+                            } 
+                            // 스크롤을 아래로 내릴 때 (일정 거리 이상 내려갔을 때 숨김)
+                            else if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                                bottomBar.classList.add('hide');
+                            }
+                        }
+                        
+                        lastScrollY = currentScrollY;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
         });
     </script>
 </body>
