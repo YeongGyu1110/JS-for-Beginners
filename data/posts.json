@@ -98,5 +98,15 @@
     "path": "./script/chapter01/04.md",
     "chapter": "3",
     "order": 3
+  },
+  {
+    "id": "05", 
+    "title": "데이터 타입과 변수 선언하기",
+    "description":  "자바스크립트에서 사용되는 기본적인 데이터 타입과 변수를 선언하는 방법을 배웁니다.",
+    "type": "doc",
+    "tags": ["javascript", "let", "console.log"],
+    "path": "./script/chapter02/01.md",
+    "chapter": "4",
+    "order": 1
   }
 ]
