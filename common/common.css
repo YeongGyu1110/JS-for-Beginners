@@ -199,3 +199,8 @@ body {
         bottom: 85px !important; 
     }
 }
+
+@media (max-width: 480px) {
+    body, html { overflow-x: hidden; }
+    .header { padding: 1rem; }
+}
