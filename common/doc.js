@@ -22,11 +22,22 @@ const DocCore = {
     // 2. 코드 복사 버튼 일괄 생성
     createCopyButtons: (containerArea) => {
         containerArea.querySelectorAll('pre').forEach(pre => {
-            if (pre.querySelector('.copy-button')) return;
+            // 이미 래퍼로 감싸져 있는지 확인
+            if (pre.parentElement.classList.contains('code-wrapper')) return;
+
+            // 1. 코드 블록을 감쌀 부모 래퍼(Wrapper) 생성
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-wrapper';
+            
+            // 2. DOM 구조 재배치 (Wrapper 안에 pre 넣기)
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+
+            // 3. 복사 버튼을 pre 안이 아닌 'Wrapper'에 추가
             const btn = document.createElement('button');
             btn.className = 'copy-button';
             btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
-            pre.appendChild(btn);
+            wrapper.appendChild(btn);
             
             btn.addEventListener('click', async () => {
                 if (document.body.classList.contains('lab-state-standby')) return; // 랩 잠금 상태 방지
