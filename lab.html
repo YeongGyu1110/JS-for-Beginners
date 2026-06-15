@@ -575,7 +575,7 @@
 
                 // 4. 미션 버튼 상태 완전 초기화
                 document.querySelectorAll('.lab-task-btn').forEach(btn => {
-                    btn.classList.remove('completed');
+                    btn.classList.remove('completed', 'processing');
                     
                     // 버튼 내부 텍스트 요소 찾기
                     const status = btn.querySelector('.status-box');
@@ -612,8 +612,11 @@
             // 미션 버튼 이벤트 리스너 세팅 (최초 1회만 등록)
             document.querySelectorAll('.lab-task-btn').forEach(btn => {
                 btn.addEventListener('click', async function() {
-                    if (!isLabActive || this.classList.contains('completed')) return;
-                    
+                    if (!isLabActive || this.classList.contains('completed') || this.classList.contains('processing')) return;
+
+                    // 다중 클릭 방지를 위해 즉시 processing 클래스 부여
+                    this.classList.add('processing');
+
                     const status = this.querySelector('.status-box');
                     const text = this.querySelector('.task-text');
                     
@@ -622,6 +625,10 @@
                     
                     await new Promise(r => setTimeout(r, 1000)); // 체크 딜레이 시뮬레이션
                     
+                    // 처리가 끝나면 processing은 지우고 completed 부여
+                    this.classList.remove('processing');
+                    this.classList.add('completed');
+
                     this.classList.add('completed');
                     status.innerText = '✔'; 
                     text.innerText = text.getAttribute('data-original'); // 원본 텍스트 복원
