@@ -108,5 +108,15 @@
     "path": "./script/chapter02/01.md",
     "chapter": "4",
     "order": 1
+  },
+  {
+    "id": "06", 
+    "title": "변수의 종류와 이름 짓기 규칙: let, const, var",
+    "description":  "자바스크립트에서 변수를 선언하는 세 가지 키워드(let, const, var)의 차이점과 변수 이름 짓기 규칙을 배웁니다.",
+    "type": "doc",
+    "tags": ["let", "const", "var", "camel case", "screaming snake case"],
+    "path": "./script/chapter02/02.md",
+    "chapter": "4",
+    "order": 2
   }
 ]
