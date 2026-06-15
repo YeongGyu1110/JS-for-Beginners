@@ -720,6 +720,8 @@
                 tabLeft.style.display = '';
                 tabLeftText.textContent = "> SEARCH_";
                 tabRightText.textContent = "> TOC_";
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             };
 
             btnEnd.addEventListener('click', () => terminateLab(false));
