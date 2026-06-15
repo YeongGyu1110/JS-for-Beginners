@@ -10,78 +10,9 @@
     
     <link rel="icon" href="favicon.png" type="image/png">
 
+    <link rel="stylesheet" href="./common/common.css">
+    
     <style>
-        /* =========================================
-           1. 공통 테마 변수
-           ========================================= */
-        :root {
-            --bg-color: #0c0d0f;
-            --surface-color: #13151a;
-            --surface-hover: #191c22;
-            --text-heading: #f8fafc;
-            --text-primary: #cbd5e1;
-            --text-secondary: #64748b;
-            --accent-color: #ff6b00; 
-            --border-color: #22252e;
-            --radius-md: 4px;
-            --radius-sm: 2px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Pretendard', sans-serif;
-            font-size: 15px;
-            line-height: 1.75;
-            -webkit-font-smoothing: antialiased;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
-            background-size: 32px 32px;
-            background-attachment: fixed;
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
-
-        /* =========================================
-           2. 공통 상단 헤더
-           ========================================= */
-        .header {
-            padding: 1rem 2rem;
-            position: sticky; 
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            background-color: rgba(12, 13, 15, 0.9);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-heading);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            letter-spacing: -0.5px;
-        }
-        
-        .logo span { 
-            color: var(--accent-color); 
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink { 50% { opacity: 0; } }
 
         /* =========================================
            3. 히어로 섹션 (높이 및 여백 축소)
@@ -206,62 +137,9 @@
             margin-bottom: 1rem;
         }
 
-        .search-input {
-            width: 100%;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-heading);
-            padding: 0.85rem 1.25rem 0.85rem 2.2rem;
-            border-radius: var(--radius-sm);
-            font-family: 'Fira Code', monospace;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .search-input::placeholder { color: var(--text-secondary); opacity: 0.5; }
-        .search-input:focus { border-color: var(--text-secondary); }
-
-        .search-icon {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-family: 'Fira Code', monospace;
-            pointer-events: none;
-            opacity: 0.5;
-            transition: all 0.2s ease;
-        }
-
-        .search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: bold; }
-        .search-icon::before { content: "·"; }
-        .search-input:focus ~ .search-icon::before { content: ">"; }
-
         /* 추천 태그 */
         .suggested-tags { 
             display: flex; flex-wrap: wrap; gap: 0.5rem; 
-        }
-        .tag {
-            font-family: 'Fira Code', monospace; background-color: var(--surface-color); border: 1px solid var(--border-color);
-            color: var(--text-secondary); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
-            font-size: 0.75rem; transition: all 0.15s ease; cursor: pointer;
-        }
-        .tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
-
-        .lab-badge {
-            font-family: 'Fira Code', monospace;
-            font-size: 0.6rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            border: 1px solid var(--accent-color);
-            padding: 1px 4px;
-            border-radius: 2px;
-            margin-left: 6px;
-            vertical-align: middle;
-            letter-spacing: 0.5px;
-            background-color: rgba(255, 107, 0, 0.1);
         }
 
         /* 챕터 통계 뱃지 */
@@ -377,13 +255,104 @@
         }
         .footer-sys-info .highlight { color: var(--text-primary); }
 
+        .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2.2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.95rem; outline: none; transition: all 0.2s ease; }
+
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.95rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
+    
+        /* =========================================
+           6. 반응형 UI (Mobile)
+           ========================================= */
         @media (max-width: 768px) {
-            .footer-sys-info { text-align: left; }
-            .section-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-        
+            /* 히어로 섹션 축소 및 위로 당기기 */
+            .hero-container {
+                padding: 6rem 1.5rem 4rem 1.5rem;
+            }
+
+            /* ASCII 로고가 모바일에서 깨지지 않도록 크기 축소 */
+            .ascii-logo {
+                font-size: 0.55rem;
+                margin-bottom: 1.5rem;
+            }
+
             .scramble-title {
-                font-size: 2rem;
-                min-height: 4.8rem; /* 모바일에서 2줄로 늘어날 때를 대비한 높이 확보 (2rem * 1.2 * 2줄) */
+                font-size: 1.8rem;
+                min-height: auto;
+                word-break: keep-all; /* 단어 단위로 줄바꿈되어 가독성 향상 */
+            }
+
+            .sub-description {
+                font-size: 0.9rem;
+                margin-bottom: 2rem;
+            }
+
+            .enter-btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.85rem;
+                width: 100%; /* 버튼을 넓게 배치하여 터치하기 쉽게 */
+                max-width: 300px;
+            }
+
+            /* 메인 컨텐츠 영역 여백 조정 */
+            .main-container {
+                padding: 0 1.5rem 2rem 1.5rem;
+            }
+
+            .section-block {
+                margin-bottom: 3.5rem;
+            }
+
+            /* 섹션 헤더를 세로로 배치하고 간격 조정 */
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+
+            .stats-badge {
+                font-size: 0.7rem;
+            }
+
+            /* 검색바 최적화 */
+            .search-input {
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem 0.8rem 2.2rem;
+            }
+
+            /* 커리큘럼 그리드 최적화 (가로폭 문제 해결) */
+            .chapter-grid {
+                /* 모바일 기기(아이폰 SE 등)에서 320px이 화면 밖으로 넘치는 현상 방지 */
+                grid-template-columns: 1fr; 
+                gap: 1.2rem;
+            }
+
+            .chapter-card {
+                padding: 1.8rem 1.5rem; /* 카드 내부 여백 축소 */
+            }
+
+            .chapter-title {
+                font-size: 1.2rem;
+                margin-bottom: 1.2rem;
+                padding-bottom: 0.8rem;
+            }
+
+            .chapter-list a {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+
+            /* 푸터 레이아웃 세로 정렬 */
+            .footer {
+                padding: 2rem 1.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .footer-sys-info {
+                text-align: left;
             }
         }
     </style>
@@ -461,61 +430,9 @@
         </div>
     </footer>
 
-    <script>
-        class TextScrambler {
-            constructor(el) {
-                this.el = el;
-                this.chars = '!<>-_\\/[]{}—=+*^?#@&%0123456789';
-                this.update = this.update.bind(this);
-            }
-            setText(newText) {
-                const oldText = this.el.innerText;
-                const length = Math.max(oldText.length, newText.length);
-                const promise = new Promise((resolve) => (this.resolve = resolve));
-                this.queue = [];
-                for (let i = 0; i < length; i++) {
-                    const from = oldText[i] || '';
-                    const to = newText[i] || '';
-                    const start = Math.floor(Math.random() * 40);
-                    const end = start + Math.floor(Math.random() * 40);
-                    this.queue.push({ from, to, start, end });
-                }
-                cancelAnimationFrame(this.frameRequest);
-                this.frame = 0;
-                this.update();
-                return promise;
-            }
-            update() {
-                let output = '';
-                let complete = 0;
-                for (let i = 0, n = this.queue.length; i < n; i++) {
-                    let { from, to, start, end, char } = this.queue[i];
-                    if (this.frame >= end) {
-                        complete++;
-                        output += to;
-                    } else if (this.frame >= start) {
-                        if (!char || Math.random() < 0.28) {
-                            char = this.randomChar();
-                            this.queue[i].char = char;
-                        }
-                        output += `<span style="color: var(--accent-color)">${char}</span>`;
-                    } else {
-                        output += from;
-                    }
-                }
-                this.el.innerHTML = output;
-                if (complete === this.queue.length) {
-                    this.resolve();
-                } else {
-                    this.frameRequest = requestAnimationFrame(this.update);
-                    this.frame++;
-                }
-            }
-            randomChar() {
-                return this.chars[Math.floor(Math.random() * this.chars.length)];
-            }
-        }
+    <script src="./common/common.js"></script>
 
+    <script>
         async function loadData() {
             const grid = document.getElementById('chapter-grid');
             const enterBtn = document.getElementById('enter-btn');
@@ -527,112 +444,77 @@
             document.getElementById('footer-sync').innerHTML = `LAST_SYNC: <span class="highlight">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}</span>`;
 
             try {
-                // 1. 데이터 병렬 로드
-                const [postsRes, chaptersRes] = await Promise.all([
-                    fetch('./data/posts.json'),
-                    fetch('./data/chapters.json')
-                ]);
-
-                if (!postsRes.ok || !chaptersRes.ok) throw new Error('데이터베이스 로드 실패');
+                // 데이터 병렬 로드
+                const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json')]);
+                if (!postsRes.ok || !chaptersRes.ok) throw new Error('DB_LOAD_FAIL');
                 
                 const posts = await postsRes.json();
                 const chaptersData = await chaptersRes.json();
 
-                // 2. 통계 업데이트 및 시작 버튼 링크 설정 (수정됨)
+                // 시작 버튼 설정
                 if (posts.length > 0) {
-                    const sortedPosts = [...posts].sort((a, b) => {
-                        if(a.chapter !== b.chapter) return a.chapter.localeCompare(b.chapter);
-                        return a.order - b.order;
-                    });
-                    
-                    const firstPost = sortedPosts[0];
-                    enterBtn.href = `chapter.html?id=${firstPost.chapter}`;
+                    const sortedPosts = [...posts].sort((a, b) => a.chapter !== b.chapter ? a.chapter.localeCompare(b.chapter) : a.order - b.order);
+                    enterBtn.href = `chapter.html?id=${sortedPosts[0].chapter}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
                     enterBtn.innerText = "> NO_DATA_";
                 }
 
-                // 3. 태그 추출 및 렌더링
+                // 태그 추출 및 무작위 4개 렌더링
                 const tagCounts = {};
-                posts.forEach(post => {
-                    if (post.tags) {
-                        post.tags.forEach(tag => {
-                            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                        });
-                    }
-                });
-
-                const tagArray = Object.keys(tagCounts);
-                for (let i = tagArray.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [tagArray[i], tagArray[j]] = [tagArray[j], tagArray[i]];
-                }
-                tagArray.sort((a, b) => tagCounts[b] - tagCounts[a]);
-
-                const topTags = tagArray.slice(0, 4);
+                posts.forEach(p => (p.tags || []).forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+                const topTags = Object.keys(tagCounts).sort(() => Math.random() - 0.5).sort((a, b) => tagCounts[b] - tagCounts[a]).slice(0, 4);
+                
                 if (suggestedTagsContainer) {
-                    suggestedTagsContainer.innerHTML = topTags.map(tag => 
-                        `<a href="search.html?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`
-                    ).join('');
+                    suggestedTagsContainer.innerHTML = topTags.map(tag => `<a href="search.html?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`).join('');
                 }
 
-                // 4. 챕터 렌더링 (수정됨: items 배열은 여기서 생성됨)
+                // 챕터 그리드 렌더링
                 const chaptersObj = {};
-                posts.forEach(post => {
-                    if (!post.chapter) return;
-                    if (!chaptersObj[post.chapter]) {
-                        chaptersObj[post.chapter] = [];
-                    }
-                    chaptersObj[post.chapter].push(post);
+                posts.forEach(p => {
+                    if (!p.chapter) return;
+                    (chaptersObj[p.chapter] = chaptersObj[p.chapter] || []).push(p);
                 });
 
-                const totalChapters = Object.keys(chaptersObj).length;
-                statsBadge.innerHTML = `[ TOTAL_CHAPTERS: <span>${totalChapters}</span> | DOCS_LOADED: <span>${posts.length}</span> ]`;
+                statsBadge.innerHTML = `[ TOTAL_CHAPTERS: <span>${Object.keys(chaptersObj).length}</span> | DOCS_LOADED: <span>${posts.length}</span> ]`;
 
-                grid.innerHTML = '';
-                const sortedChapters = Object.keys(chaptersObj).sort();
-
-                sortedChapters.forEach(chapterKey => {
+                grid.innerHTML = Object.keys(chaptersObj).sort().map(chapterKey => {
                     const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
-                    const chapterInfo = chaptersData[chapterKey] || { 
-                        meta: `SECTION ${chapterKey}`, 
-                        title: `Chapter ${chapterKey}` 
-                    };
-
-                    const card = document.createElement('div');
-                    card.className = 'chapter-card';
+                    const info = chaptersData[chapterKey] || { meta: `SECTION ${chapterKey}`, title: `Chapter ${chapterKey}` };
+                    
                     const listHTML = items.map(item => {
-                        const targetPage = item.type === 'lab' ? 'lab.html' : 'index.html';
-                        const labBadge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                        return `<li><a href="${targetPage}?id=${item.id}">${item.title}${labBadge}</a></li>`;
+                        const target = item.type === 'lab' ? 'lab.html' : 'index.html';
+                        const badge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                        return `<li><a href="${target}?id=${item.id}">${item.title}${badge}</a></li>`;
                     }).join('');
 
-                    card.innerHTML = `
-                        <span class="chapter-meta">${chapterInfo.meta}</span>
-                        <a href="chapter.html?id=${chapterKey}" style="text-decoration:none; display:block;">
-                            <h3 class="chapter-title">${chapterInfo.title}</h3>
-                        </a>
-                        <ul class="chapter-list">${listHTML}</ul>
+                    return `
+                        <div class="chapter-card">
+                            <span class="chapter-meta">${info.meta}</span>
+                            <a href="chapter.html?id=${chapterKey}" style="text-decoration:none; display:block;">
+                                <h3 class="chapter-title">${info.title}</h3>
+                            </a>
+                            <ul class="chapter-list">${listHTML}</ul>
+                        </div>
                     `;
-                    grid.appendChild(card);
-                });
+                }).join('');
 
-            } catch (error) {
-                console.error(error);
+            } catch (e) {
+                console.error(e);
                 grid.innerHTML = `<p style="color: var(--accent-color); font-family: 'Fira Code', monospace;">[SYS_ERR: 데이터베이스를 불러올 수 없습니다.]</p>`;
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             const el = document.getElementById('scramble-text');
-            const fx = new TextScrambler(el);
             const subDesc = document.getElementById('sub-desc');
             const enterBtn = document.getElementById('enter-btn');
 
             loadData();
 
+            // TextScrambler는 common.js에 정의되어 있음
             setTimeout(() => {
-                fx.setText('JavaScript for Beginners').then(() => {
+                new TextScrambler(el).setText('JavaScript for Beginners').then(() => {
                     subDesc.classList.add('show');
                     enterBtn.classList.add('show');
                 });

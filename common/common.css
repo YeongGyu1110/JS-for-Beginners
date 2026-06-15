@@ -1,0 +1,206 @@
+/* =========================================
+   1. 공통 테마 변수 (Variables)
+   ========================================= */
+:root {
+    --bg-color: #0c0d0f;
+    --surface-color: #13151a;
+    --surface-hover: #191c22;
+    --text-heading: #f8fafc;
+    --text-primary: #cbd5e1;
+    --text-secondary: #64748b;
+    --accent-color: #ff6b00; 
+    --border-color: #22252e;
+    --radius-md: 4px;
+    --radius-sm: 2px;
+}
+
+/* =========================================
+   2. 초기화 및 전역 설정 (Reset & Global)
+   ========================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+    background-size: 32px 32px;
+    background-attachment: fixed;
+}
+
+/* 커스텀 스크롤바 */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-color); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+/* =========================================
+   3. 헤더 및 로고 (Header & Logo)
+   ========================================= */
+.header {
+    padding: 1rem 2rem; position: sticky; width: 100%; top: 0; z-index: 100;
+    background-color: rgba(12, 13, 15, 0.9);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-color);
+}
+.logo {
+    font-family: 'Fira Code', monospace; font-size: 1.15rem; font-weight: 700;
+    color: var(--text-heading); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    letter-spacing: -0.5px;
+}
+.logo span { color: var(--accent-color); animation: blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* =========================================
+   4. 공통 UI 컴포넌트 (태그, 뱃지, 프로그레스 바)
+   ========================================= */
+.tag {
+    font-family: 'Fira Code', monospace; background-color: var(--surface-color); border: 1px solid var(--border-color);
+    color: var(--text-secondary); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
+    font-size: 0.75rem; transition: all 0.15s ease; cursor: pointer; display: inline-block;
+}
+.tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+.lab-badge {
+    font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 600;
+    color: var(--accent-color); border: 1px solid var(--accent-color); padding: 1px 4px;
+    border-radius: 2px; margin-left: 8px; vertical-align: middle; letter-spacing: 0.5px;
+    background-color: rgba(255, 107, 0, 0.1);
+}
+
+.progress-container { width: 100%; height: 2px; background: transparent; position: fixed; top: 0; z-index: 1001; }
+.progress-bar { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.1s ease-out; }
+
+/* =========================================
+   5. 토스트 알림 (Toast Notification)
+   ========================================= */
+.toast-notification {
+    position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%);
+    background-color: var(--surface-color); border: 1px solid var(--accent-color);
+    color: var(--text-heading); padding: 0.8rem 1.5rem; border-radius: var(--radius-sm);
+    font-family: 'Fira Code', monospace; font-size: 0.85rem; z-index: 9999; opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); pointer-events: none;
+}
+.toast-notification::before { content: "[!] "; color: var(--accent-color); font-weight: bold; }
+.toast-notification.show { bottom: 40px; opacity: 1; }
+
+/* =========================================
+   6. 시스템 메시지 (404, No File 등)
+   ========================================= */
+.system-message-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; text-align: center; font-family: 'Fira Code', monospace; }
+.system-message-title { color: var(--accent-color); font-size: 4rem; margin-bottom: 1rem; line-height: 1; letter-spacing: -2px; }
+.system-message-subtitle { color: var(--text-heading); font-size: 1.5rem; margin-bottom: 0.5rem; font-weight: 600; }
+.system-message-desc { color: var(--text-secondary); margin-bottom: 3rem; font-family: 'Pretendard', sans-serif; font-size: 0.95rem; opacity: 0.7; }
+.system-message-icon { margin-bottom: 1.5rem; opacity: 0.5; color: var(--text-secondary); }
+.return-home-btn { display: inline-block; color: var(--text-primary); text-decoration: none; border: 1px solid var(--border-color); background-color: var(--surface-color); padding: 0.6rem 1.2rem; border-radius: var(--radius-sm); transition: all 0.2s ease; }
+.return-home-btn:hover { color: var(--accent-color); border-color: var(--accent-color); transform: translateY(-2px); }
+
+/* =========================================
+   7. 검색 입력창 공통 스타일
+   ========================================= */
+.search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.8rem; outline: none; transition: all 0.2s ease; }
+.search-input::placeholder { color: var(--text-secondary); opacity: 0.5; }
+.search-input:focus { border-color: var(--text-secondary); }
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.9rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
+.search-icon::before { content: "·"; }
+.search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: 600; }
+.search-input:focus ~ .search-icon::before { content: ">"; }
+
+/* 문서 좌우 플로팅 네비게이션 버튼 */
+.side-nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 48px; height: 100px; background-color: rgba(19, 21, 26, 0.4); backdrop-filter: blur(8px); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); text-decoration: none; transition: all 0.1s ease; z-index: 999; opacity: 0.5; overflow: hidden; }
+.side-nav-btn::before { content: ""; position: absolute; top: 0; width: 0; height: 100%; background-color: var(--accent-color); transition: width 0.1s ease; }
+.side-nav-btn.prev::before { left: 0; }
+.side-nav-btn.next::before { right: 0; }
+.side-nav-btn:hover { opacity: 1; background-color: var(--surface-hover); color: var(--accent-color); border-color: var(--accent-color); }
+.side-nav-btn:hover::before { width: 4px; }
+.side-nav-btn.prev { left: 0; border-radius: 0 4px 4px 0; border-left: none; }
+.side-nav-btn.next { right: 0; border-radius: 4px 0 0 4px; border-right: none; }
+.side-nav-btn svg { width: 24px; height: 24px; transition: transform 0.2s ease; }
+.side-nav-btn.prev:hover svg { transform: translateX(-4px); }
+.side-nav-btn.next:hover svg { transform: translateX(4px); }
+@media (max-width: 1200px) { .side-nav-btn { display: none; } }
+
+/* =========================================
+   8. 커스텀 확인 창 (Custom Confirm Dialog)
+   ========================================= */
+.confirm-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(12, 13, 15, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10000;
+    opacity: 0; transition: opacity 0.2s ease;
+}
+.confirm-overlay.show { opacity: 1; }
+
+.confirm-box {
+    background-color: var(--surface-color);
+    border: 1px solid var(--accent-color);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    max-width: 420px; width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    transform: translateY(15px); transition: transform 0.2s ease;
+}
+.confirm-overlay.show .confirm-box { transform: translateY(0); }
+
+.confirm-message {
+    font-family: 'Pretendard', sans-serif;
+    font-size: 0.95rem; color: var(--text-primary);
+    line-height: 1.6; margin-bottom: 2rem;
+    word-break: keep-all;
+}
+
+.confirm-buttons {
+    display: flex; gap: 10px; justify-content: flex-end;
+}
+
+.confirm-btn {
+    padding: 0.6rem 1.2rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem; font-weight: 600;
+    cursor: pointer; border-radius: var(--radius-sm);
+    transition: all 0.15s ease;
+}
+
+.confirm-btn.yes {
+    background-color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    color: #fff;
+}
+.confirm-btn.yes:hover {
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.4);
+}
+
+.confirm-btn.no {
+    background-color: transparent;
+    border: 1px solid var(--text-secondary);
+    color: var(--text-secondary);
+}
+.confirm-btn.no:hover {
+    border-color: var(--text-primary);
+    color: var(--text-heading);
+}
+
+/* =========================================
+   [추가] 모바일 Toast 위치 조정 (플로팅 바 회피)
+   ========================================= */
+@media (max-width: 1024px) {
+    .toast-notification.show {
+        /* 하단 탭 바(높이 약 40px + 여백 25px = 65px)를 고려하여 더 위로 올림 */
+        bottom: 85px !important; 
+    }
+}
+
+@media (max-width: 480px) {
+    body, html { overflow-x: hidden; }
+    .header { padding: 1rem; }
+}
