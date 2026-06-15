@@ -255,19 +255,106 @@
         }
         .footer-sys-info .highlight { color: var(--text-primary); }
 
-        @media (max-width: 768px) {
-            .footer-sys-info { text-align: left; }
-            .section-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-        
-            .scramble-title {
-                font-size: 2rem;
-                min-height: 4.8rem; /* 모바일에서 2줄로 늘어날 때를 대비한 높이 확보 (2rem * 1.2 * 2줄) */
-            }
-        }
-
         .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2.2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.95rem; outline: none; transition: all 0.2s ease; }
 
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.95rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
+    
+        /* =========================================
+           6. 반응형 UI (Mobile)
+           ========================================= */
+        @media (max-width: 768px) {
+            /* 히어로 섹션 축소 및 위로 당기기 */
+            .hero-container {
+                padding: 6rem 1.5rem 4rem 1.5rem;
+            }
+
+            /* ASCII 로고가 모바일에서 깨지지 않도록 크기 축소 */
+            .ascii-logo {
+                font-size: 0.55rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .scramble-title {
+                font-size: 1.8rem;
+                min-height: auto;
+                word-break: keep-all; /* 단어 단위로 줄바꿈되어 가독성 향상 */
+            }
+
+            .sub-description {
+                font-size: 0.9rem;
+                margin-bottom: 2rem;
+            }
+
+            .enter-btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.85rem;
+                width: 100%; /* 버튼을 넓게 배치하여 터치하기 쉽게 */
+                max-width: 300px;
+            }
+
+            /* 메인 컨텐츠 영역 여백 조정 */
+            .main-container {
+                padding: 0 1.5rem 2rem 1.5rem;
+            }
+
+            .section-block {
+                margin-bottom: 3.5rem;
+            }
+
+            /* 섹션 헤더를 세로로 배치하고 간격 조정 */
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+
+            .stats-badge {
+                font-size: 0.7rem;
+            }
+
+            /* 검색바 최적화 */
+            .search-input {
+                font-size: 0.9rem;
+                padding: 0.8rem 1rem 0.8rem 2.2rem;
+            }
+
+            /* 커리큘럼 그리드 최적화 (가로폭 문제 해결) */
+            .chapter-grid {
+                /* 모바일 기기(아이폰 SE 등)에서 320px이 화면 밖으로 넘치는 현상 방지 */
+                grid-template-columns: 1fr; 
+                gap: 1.2rem;
+            }
+
+            .chapter-card {
+                padding: 1.8rem 1.5rem; /* 카드 내부 여백 축소 */
+            }
+
+            .chapter-title {
+                font-size: 1.2rem;
+                margin-bottom: 1.2rem;
+                padding-bottom: 0.8rem;
+            }
+
+            .chapter-list a {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+
+            /* 푸터 레이아웃 세로 정렬 */
+            .footer {
+                padding: 2rem 1.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .footer-sys-info {
+                text-align: left;
+            }
+        }
     </style>
 </head>
 <body>

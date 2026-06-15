@@ -81,6 +81,90 @@
         .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2.2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.95rem; outline: none; transition: all 0.2s ease; }
 
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.95rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
+    
+        /* =========================================
+           5. 반응형 UI (Mobile)
+           ========================================= */
+        @media (max-width: 768px) {
+            /* 레이아웃 좌우 여백 및 마진 축소 */
+            .layout-container {
+                margin: 2rem auto;
+                padding: 0 1.25rem;
+            }
+
+            /* 검색 영역 간격 좁히기 */
+            .search-container {
+                margin-bottom: 2rem;
+            }
+
+            .search-form {
+                max-width: 100%; /* 모바일 해상도에서 꽉 차도록 설정 */
+                margin-bottom: 0.8rem;
+            }
+
+            /* 검색창 두께 및 폰트 크기 최적화 */
+            .search-input {
+                font-size: 0.9rem;
+                padding: 0.7rem 1rem 0.7rem 2.2rem;
+            }
+
+            .search-icon {
+                font-size: 0.9rem;
+                left: 12px;
+            }
+
+            /* 추천 태그 간격 축소 */
+            .suggested-tags {
+                gap: 0.35rem;
+            }
+            .suggested-tags .tag {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            /* 검색 결과 상단 안내 텍스트 수정 */
+            .search-status {
+                font-size: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+
+            /* 검색 결과 카드 컴팩트화 */
+            .search-result-item {
+                padding: 1.25rem 1.1rem; /* 안쪽 여백 축소 */
+                margin-bottom: 1rem;
+            }
+
+            .search-result-title {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.3;
+            }
+
+            .search-result-summary {
+                font-size: 0.88rem;
+                margin-bottom: 0.8rem;
+                line-height: 1.5;
+            }
+
+            .search-result-meta {
+                gap: 0.35rem;
+            }
+            .search-result-meta .tag {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            /* 검색 결과 없음 안내 여백 조절 */
+            .no-results {
+                padding: 2.5rem 0;
+                font-size: 0.8rem;
+            }
+
+            /* html 하단에 인라인 스타일로 정의된 footer 패딩 조절 */
+            footer[style] {
+                padding: 2rem 1.5rem !important;
+            }
+        }
     </style>
 </head>
 <body>

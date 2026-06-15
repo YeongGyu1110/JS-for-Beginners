@@ -219,12 +219,85 @@
             gap: 0.5rem;
         }
 
-        /* 반응형 */
         @media (max-width: 768px) {
-            .chapter-hero { padding: 3rem 1.5rem; }
-            .chapter-title { font-size: 2rem; }
-            .module-card { flex-direction: column; padding: 1.5rem; }
-            .module-number { margin-right: 0; margin-bottom: 1rem; font-size: 1.8rem; }
+            /* 1. 챕터 히어로 섹션 (상단) */
+            .chapter-hero {
+                padding: 3.5rem 1.5rem 2.5rem 1.5rem;
+            }
+
+            .chapter-meta-badge {
+                font-size: 0.75rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .chapter-title {
+                font-size: 1.8rem;
+                min-height: auto;
+                word-break: keep-all; /* 단어 단위 줄바꿈 유지 */
+                margin-bottom: 1rem;
+            }
+
+            .chapter-desc {
+                font-size: 0.95rem;
+                margin-bottom: 2rem;
+            }
+
+            /* 버튼 터치 영역 확장 및 세로 배치 */
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1.2rem;
+            }
+
+            .start-btn {
+                justify-content: center; /* 텍스트 및 아이콘 중앙 정렬 */
+                padding: 0.9rem;
+                font-size: 1rem;
+            }
+
+            .chapter-stats {
+                text-align: center;
+            }
+
+            /* 2. 커리큘럼(문서) 리스트 영역 */
+            .curriculum-section {
+                margin: 2.5rem auto;
+                padding: 0 1.5rem;
+            }
+
+            .section-heading {
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            /* 모듈 카드 세로형 레이아웃으로 변경 */
+            .module-card {
+                flex-direction: column;
+                padding: 1.5rem;
+                border-radius: var(--radius-sm); /* 모바일에서는 둥글기 살짝 완화 */
+            }
+
+            .module-number {
+                margin-right: 0;
+                margin-bottom: 0.8rem;
+                font-size: 1.5rem;
+            }
+
+            .module-title {
+                font-size: 1.15rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.4;
+            }
+
+            .module-desc {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            /* 태그 크기 미세 조정 */
+            .module-tags {
+                gap: 0.4rem;
+            }
         }
     </style>
 </head>

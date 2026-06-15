@@ -189,3 +189,18 @@ body {
     border-color: var(--text-primary);
     color: var(--text-heading);
 }
+
+/* =========================================
+   [추가] 모바일 Toast 위치 조정 (플로팅 바 회피)
+   ========================================= */
+@media (max-width: 1024px) {
+    .toast-notification.show {
+        /* 하단 탭 바(높이 약 40px + 여백 25px = 65px)를 고려하여 더 위로 올림 */
+        bottom: 85px !important; 
+    }
+}
+
+@media (max-width: 480px) {
+    body, html { overflow-x: hidden; }
+    .header { padding: 1rem; }
+}
