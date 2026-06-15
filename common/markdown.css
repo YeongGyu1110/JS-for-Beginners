@@ -59,15 +59,18 @@
 :not(pre) > code { background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.2em 0.4em; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.88em; }
 
 /* 코드 블록 (Pre) & 복사 버튼 */
+.code-wrapper {
+    position: relative;
+    margin: 2.5rem 0; /* 기존 pre에 있던 바깥 여백을 래퍼로 이동 */
+}
+
 .markdown-body pre {
     background-color: var(--surface-color) !important;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    margin: 2.5rem 0 !important;
+    margin: 0 !important; /* 여백은 래퍼가 담당하므로 0으로 초기화 */
     padding: 1.25rem !important;
-    position: relative;
-    overflow: hidden;
-    overflow-x: auto;
+    overflow-x: auto; /* 가로 스크롤 허용 */
 }
 .markdown-body pre code { font-family: 'Fira Code', monospace !important; font-size: 0.9rem; transition: filter 0.6s ease; line-height: 1.6; }
 
@@ -78,6 +81,8 @@
     font-family: 'Fira Code', monospace; z-index: 5;
 }
 .markdown-body pre:hover .copy-button { opacity: 1; pointer-events: auto; }
+
+.code-wrapper:hover .copy-button { opacity: 1; pointer-events: auto; }
 .copy-button:hover { background-color: var(--surface-hover); border-color: var(--text-secondary); color: var(--text-heading); }
 .copy-button.copied { background-color: var(--accent-color); border-color: var(--accent-color); color: #fff; font-weight: 500; }
 
