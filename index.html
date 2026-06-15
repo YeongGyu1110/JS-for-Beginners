@@ -539,8 +539,22 @@
 
             // 이벤트 바인딩
             if (tabSearch && tabToc) {
-                tabSearch.addEventListener('click', () => openBottomSheet('search'));
-                tabToc.addEventListener('click', () => openBottomSheet('toc'));
+                tabSearch.addEventListener('click', () => {
+                    if (leftSidebar.classList.contains('sheet-open') && tabSearch.classList.contains('active')) {
+                        closeBottomSheet();
+                    } else {
+                        openBottomSheet('search');
+                    }
+                });
+
+                tabToc.addEventListener('click', () => {
+                    if (leftSidebar.classList.contains('sheet-open') && tabToc.classList.contains('active')) {
+                        closeBottomSheet();
+                    } else {
+                        openBottomSheet('toc');
+                    }
+                });
+                
                 overlay.addEventListener('click', closeBottomSheet);
                 
                 tocContainerEl.addEventListener('click', (e) => {

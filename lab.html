@@ -800,8 +800,22 @@
             }
 
             if (tabLeft && tabRight) {
-                tabLeft.addEventListener('click', () => openBottomSheet('left'));
-                tabRight.addEventListener('click', () => openBottomSheet('right'));
+                tabLeft.addEventListener('click', () => {
+                    if (leftSidebar.classList.contains('sheet-open') && tabLeft.classList.contains('active')) {
+                        closeBottomSheet();
+                    } else {
+                        openBottomSheet('left');
+                    }
+                });
+
+                tabRight.addEventListener('click', () => {
+                    if (leftSidebar.classList.contains('sheet-open') && tabRight.classList.contains('active')) {
+                        closeBottomSheet();
+                    } else {
+                        openBottomSheet('right');
+                    }
+                });
+
                 overlay.addEventListener('click', closeBottomSheet);
                 tocContainerEl.addEventListener('click', (e) => {
                     if (e.target.tagName.toLowerCase() === 'a') closeBottomSheet();
