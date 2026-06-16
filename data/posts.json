@@ -118,5 +118,15 @@
     "path": "./script/chapter02/02.md",
     "chapter": "4",
     "order": 2
+  },
+  {
+    "id": "07", 
+    "title": "자료형",
+    "description": "자바스크립트에서 사용되는 다양한 자료형과 데이터 타입을 이해하고, 각 타입의 특징과 사용 방법을 배웁니다.",
+    "type": "doc",
+    "tags": ["javascript", "data types"],
+    "path": "./script/chapter02/03.md",
+    "chapter": "4",
+    "order": 3
   }
 ]
