@@ -469,7 +469,7 @@
 
                 // 시작 버튼 설정
                 if (posts.length > 0) {
-                    const sortedPosts = [...posts].sort((a, b) => a.chapter !== b.chapter ? a.chapter.localeCompare(b.chapter) : a.order - b.order);
+                    const sortedPosts = [...posts].sort((a, b) => a.chapter !== b.chapter ? Number(a.chapter) - Number(b.chapter) : a.order - b.order);
                     enterBtn.href = `chapter.html?id=${sortedPosts[0].chapter}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
@@ -494,7 +494,7 @@
 
                 statsBadge.innerHTML = `[ TOTAL_CHAPTERS: <span>${Object.keys(chaptersObj).length}</span> | DOCS_LOADED: <span>${posts.length}</span> ]`;
 
-                grid.innerHTML = Object.keys(chaptersObj).sort().map(chapterKey => {
+                grid.innerHTML = Object.keys(chaptersObj).sort((a, b) => Number(a) - Number(b)).map(chapterKey => {
                     const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
                     const info = chaptersData[chapterKey] || { meta: `SECTION ${chapterKey}`, title: `Chapter ${chapterKey}` };
                     
