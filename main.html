@@ -355,6 +355,22 @@
                 text-align: left;
             }
         }
+
+        .chapter-list li.more-item::before {
+            content: "»";
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            top: 0.3em;
+        }
+
+        .chapter-list li.more-item a {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .chapter-list li.more-item a:hover {
+            color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -482,11 +498,24 @@
                     const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
                     const info = chaptersData[chapterKey] || { meta: `SECTION ${chapterKey}`, title: `Chapter ${chapterKey}` };
                     
-                    const listHTML = items.map(item => {
-                        const target = item.type === 'lab' ? 'lab.html' : 'index.html';
-                        const badge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                        return `<li><a href="${target}?id=${item.id}">${item.title}${badge}</a></li>`;
-                    }).join('');
+                    let listHTML = '';
+                    if (items.length >= 4) {
+                        // 1. 목록이 4개 이상일 경우 앞의 2개만 추출
+                        listHTML = items.slice(0, 2).map(item => {
+                            const target = item.type === 'lab' ? 'lab.html' : 'index.html';
+                            const badge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                            return `<li><a href="${target}?id=${item.id}">${item.title}${badge}</a></li>`;
+                        }).join('');
+                        
+                        // 2. 3번째 리스트에 챕터 페이지로 이동하는 '더보기' 항목 추가
+                        listHTML += `<li class="more-item"><a href="chapter.html?id=${chapterKey}">... 더보기 (${items.length}개의 문서)</a></li>`;
+                    } else {
+                        listHTML = items.map(item => {
+                            const target = item.type === 'lab' ? 'lab.html' : 'index.html';
+                            const badge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                            return `<li><a href="${target}?id=${item.id}">${item.title}${badge}</a></li>`;
+                        }).join('');
+                    }
 
                     return `
                         <div class="chapter-card">
