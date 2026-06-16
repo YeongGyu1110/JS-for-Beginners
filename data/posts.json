@@ -1,92 +1,94 @@
-[
-  {
-    "id": "what-is-javascript",
-    "title": "Hello, JavaScript!",
-    "description": "프로그래밍의 기본 개념과 자바스크립트의 탄생 배경, 그리고 많은 사람들이 혼동하는 자바(Java)와의 차이점을 알아봅니다.",
-    "type": "doc",
-    "tags": ["JavaScript", "Java"],
-    "path": "./script/chapter01/01.md",
-    "chapter": "1",
-    "order": 1
-  },
-  {
-    "id": "browser-console",
-    "title": "콘솔(Console)과 팝업",
-    "description": "크롬 개발자 도구를 실행하는 방법을 배우고, alert와 confirm 함수를 이용해 브라우저에 첫 명령을 내립니다.",
-    "type": "doc",
-    "tags": ["JavaScript", "alert", "confirm", "개발자도구", "브라우저"],
-    "path": "./script/chapter01/02.md",
-    "chapter": "1",
-    "order": 2
-  },
-  {
-    "id": "env-setup",
-    "title": "자바스크립트 개발 환경 구축하기",
-    "description": "본격적인 코딩을 위해 코드 에디터 VS Code와 실행 엔진 Node.js를 설치하여 로컬 개발 환경을 구축합니다",
-    "type": "doc",
-    "tags": ["환경설정", "Visual_Studio_Code", "VS_Code", "Node.js"],
-    "path": "./script/chapter01/03.md",
-    "chapter": "1",
-    "order": 3
-  },
-  {
-    "id": "first-run",
-    "title": "첫 번째 코드 실행하기",
-    "description":  "자바스크립트 파일을 생성하고 Node.js를 통해 터미널에서 직접 코드를 실행 및 수정하며 동작 원리를 파악합니다.",
-    "type": "doc",
-    "tags": ["JavaScript", "Node.js", "터미널"],
-    "path": "./script/chapter01/04.md",
-    "chapter": "1",
-    "order": 4
-  },
-  {
-    "id": "variables-and-console", 
-    "title": "변수와 console.log",
-    "description": "자바스크립트의 기본 실행 단위인 문(Statement)을 이해하고, 변수를 생성해 데이터를 저장하고 터미널에 출력하는 방법을 알아봅니다.",
-    "type": "doc",
-    "tags": ["JavaScript", "let", "console.log", "변수", "출력"],
-    "path": "./script/chapter02/01.md",
-    "chapter": "2",
-    "order": 1
-  },
-  {
-    "id": "let-const-var", 
-    "title": "변수의 종류와 이름 짓기 규칙",
-    "description":  "let, const, var 키워드의 차이점(재할당 및 중복 선언)을 비교하고, 에러 없는 안전한 변수 이름 짓기 규칙(네이밍 컨벤션)을 학습합니다.",
-    "type": "doc",
-    "tags": ["JavaScript", "let", "const", "var", "카멜_케이스", "스크림밍_스네이크_케이스"],
-    "path": "./script/chapter02/02.md",
-    "chapter": "2",
-    "order": 2
-  },
-  {
-    "id": "data-types", 
-    "title": "자료형",
-    "description": "숫자, 문자열, 논리형 등 원시 자료형과 객체, 배열 등 참조 자료형의 개념을 배우고, typeof 연산자로 데이터 타입을 확인해 봅니다.",
-    "type": "doc",
-    "tags": ["JavaScript", "자료형", "typeof", "원시형", "참조형"],
-    "path": "./script/chapter02/03.md",
-    "chapter": "2",
-    "order": 3
-  },
-  {
-    "id": "test-style", 
-    "title": "스타일 테스트",
-    "description": "",
-    "type": "doc",
-    "tags": ["test"],
-    "path": "./script/test/style-test.md",
-    "chapter": "3",
-    "order": 1
-  },
-  {
-    "id": "test-lab", 
-    "title": "실습 테스트",
-    "description": "",
-    "type": "lab",
-    "tags": ["test"],
-    "path": "./script/test/lab.md",
-    "chapter": "3",
-    "order": 2
-  }
-]
+{
+  "1": [
+    {
+      "id": "what-is-javascript",
+      "title": "Hello, JavaScript!",
+      "description": "프로그래밍의 기본 개념과 자바스크립트의 탄생 배경, 그리고 많은 사람들이 혼동하는 자바(Java)와의 차이점을 알아봅니다.",
+      "type": "doc",
+      "tags": ["JavaScript", "Java"],
+      "path": "./script/chapter01/01.md",
+      "order": 1
+    },
+    {
+      "id": "browser-console",
+      "title": "콘솔(Console)과 팝업",
+      "description": "크롬 개발자 도구를 실행하는 방법을 배우고, alert와 confirm 함수를 이용해 브라우저에 첫 명령을 내립니다.",
+      "type": "doc",
+      "tags": ["JavaScript", "alert", "confirm", "개발자도구", "브라우저"],
+      "path": "./script/chapter01/02.md",
+      "order": 2
+    },
+    {
+      "id": "env-setup",
+      "title": "자바스크립트 개발 환경 구축하기",
+      "description": "본격적인 코딩을 위해 코드 에디터 VS Code와 실행 엔진 Node.js를 설치하여 로컬 개발 환경을 구축합니다",
+      "type": "doc",
+      "tags": ["환경설정", "Visual_Studio_Code", "VS_Code", "Node.js"],
+      "path": "./script/chapter01/03.md",
+      "order": 3
+    },
+    {
+      "id": "first-run",
+      "title": "첫 번째 코드 실행하기",
+      "description":  "자바스크립트 파일을 생성하고 Node.js를 통해 터미널에서 직접 코드를 실행 및 수정하며 동작 원리를 파악합니다.",
+      "type": "doc",
+      "tags": ["JavaScript", "Node.js", "터미널"],
+      "path": "./script/chapter01/04.md",
+      "order": 4
+    }
+  ],
+  "2": [
+    {
+      "id": "variables-and-console", 
+      "title": "변수와 console.log",
+      "description": "자바스크립트의 기본 실행 단위인 문(Statement)을 이해하고, 변수를 생성해 데이터를 저장하고 터미널에 출력하는 방법을 알아봅니다.",
+      "type": "doc",
+      "tags": ["JavaScript", "let", "console.log", "변수", "출력"],
+      "path": "./script/chapter02/01.md",
+      "chapter": "2",
+      "order": 1
+    },
+    {
+      "id": "let-const-var", 
+      "title": "변수의 종류와 이름 짓기 규칙",
+      "description":  "let, const, var 키워드의 차이점(재할당 및 중복 선언)을 비교하고, 에러 없는 안전한 변수 이름 짓기 규칙(네이밍 컨벤션)을 학습합니다.",
+      "type": "doc",
+      "tags": ["JavaScript", "let", "const", "var", "카멜_케이스", "스크림밍_스네이크_케이스"],
+      "path": "./script/chapter02/02.md",
+      "chapter": "2",
+      "order": 2
+    },
+    {
+      "id": "data-types", 
+      "title": "자료형",
+      "description": "숫자, 문자열, 논리형 등 원시 자료형과 객체, 배열 등 참조 자료형의 개념을 배우고, typeof 연산자로 데이터 타입을 확인해 봅니다.",
+      "type": "doc",
+      "tags": ["JavaScript", "자료형", "typeof", "원시형", "참조형"],
+      "path": "./script/chapter02/03.md",
+      "chapter": "2",
+      "order": 3
+    }
+  ],
+  "3": [
+    {
+      "id": "test-style", 
+      "title": "스타일 테스트",
+      "description": "",
+      "type": "doc",
+      "tags": ["test"],
+      "path": "./script/test/style-test.md",
+      "chapter": "3",
+      "order": 1
+    },
+    {
+      "id": "test-lab", 
+      "title": "실습 테스트",
+      "description": "",
+      "type": "lab",
+      "tags": ["test"],
+      "path": "./script/test/lab.md",
+      "chapter": "3",
+      "order": 2
+    }
+  ]
+}
