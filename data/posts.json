@@ -73,7 +73,7 @@
       "title": "자료형 변환",
       "description": "String(), Number(), Boolean() 함수를 사용하여 데이터의 자료형을 원하는 형태로 명시적으로 변환하는 방법과 각 자료형 변환 시 주의해야 할 점을 학습합니다.",
       "type": "doc",
-      "tags": ["JavaScript", "자료형", "String()", "Number()", "Boolean()", "Truthy", "Falsy"],
+      "tags": ["JavaScript", "자료형", "String()", "Number()", "Boolean()", "Truthy", "Falsy", "NaN"],
       "path": "./script/chapter02/04.md",
       "chapter": "2",
       "order": 4
