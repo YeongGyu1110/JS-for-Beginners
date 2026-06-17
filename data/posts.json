@@ -77,6 +77,16 @@
       "path": "./script/chapter02/04.md",
       "chapter": "2",
       "order": 4
+    },
+    {
+      "id": "promt-laba", 
+      "title": "실습",
+      "description": "",
+      "type": "lab",
+      "tags": ["JavaScript", "prompt()"],
+      "path": "./script/chapter02/05.md",
+      "chapter": "2",
+      "order": 5
     }
   ],
   "3": [
