@@ -606,7 +606,7 @@
                         }).join('');
                         
                         // 2. 3번째 리스트에 챕터 페이지로 이동하는 '더보기' 항목 추가
-                        listHTML += `<li class="more-item"><a href="chapter.html?id=${chapterKey}">... 더보기 (${items.length}개의 문서)</a></li>`;
+                        listHTML += `<li class="more-item"><a href="chapter.html?id=${chapterKey}">... 더보기 (${items.length - 2}개의 문서)</a></li>`;
                     } else {
                         listHTML = items.map(item => {
                             const target = item.type === 'lab' ? 'lab.html' : 'index.html';
