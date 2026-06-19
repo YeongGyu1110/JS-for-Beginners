@@ -97,29 +97,5 @@
       "order": 5,
       "category": "javascript"
     }
-  ],
-  "3": [
-    {
-      "id": "test-style", 
-      "title": "스타일 테스트",
-      "description": "",
-      "type": "doc",
-      "tags": ["test"],
-      "path": "./script/test/style-test.md",
-      "chapter": "3",
-      "order": 1,
-      "category": "test"
-    },
-    {
-      "id": "test-lab", 
-      "title": "실습 테스트",
-      "description": "",
-      "type": "lab",
-      "tags": ["test"],
-      "path": "./script/test/lab.md",
-      "chapter": "3",
-      "order": 2,
-      "category": "test"
-    }
   ]
 }
