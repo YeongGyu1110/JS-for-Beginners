@@ -476,7 +476,11 @@
             try {
                 // 2. 데이터 로드 및 검증
                 const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json')]);
-                const posts = await postsRes.json();
+                const rawPosts = await postsRes.json();
+                // 객체 구조를 1차원 배열 구조로 가공하면서 chapter 키를 주입
+                const posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                    items.map(item => ({ ...item, chapter: chapterKey }))
+                );
                 const chapters = await chaptersRes.json();
                 const currentPost = posts.find(p => p.id === postId);
 

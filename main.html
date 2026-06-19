@@ -464,7 +464,11 @@
                 const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json')]);
                 if (!postsRes.ok || !chaptersRes.ok) throw new Error('DB_LOAD_FAIL');
                 
-                const posts = await postsRes.json();
+                const rawPosts = await postsRes.json();
+                // 객체 구조로 바뀐 데이터를 기존처럼 1차원 배열로 합치면서 chapter 속성을 주입해 줌
+                const posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                    items.map(item => ({ ...item, chapter: chapterKey }))
+                );
                 const chaptersData = await chaptersRes.json();
 
                 // 시작 버튼 설정

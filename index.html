@@ -443,7 +443,11 @@
 
                 if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('DB_LOAD_FAIL');
                 
-                const posts = await postsResponse.json();
+                const rawPosts = await postsResponse.json();
+                // 객체 구조를 1차원 배열 구조로 가공하면서 chapter 키를 주입
+                const posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                    items.map(item => ({ ...item, chapter: chapterKey }))
+                );
                 const chapters = await chaptersResponse.json();
                 const currentPost = posts.find(p => p.id === postId);
                 
