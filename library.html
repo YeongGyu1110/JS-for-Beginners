@@ -281,25 +281,37 @@
 
     <script src="./common/common.js"></script>
     <script>
-        // 데이터 병합 및 로드 함수 (이전과 동일)
+        // 데이터 병합 및 로드 함수
         async function fetchAllDocuments() {
             let allDocs = [];
+            
             try {
+                // 1. posts.json (자바스크립트 가이드) 가져오기
                 const postsRes = await fetch('./data/posts.json');
                 if (postsRes.ok) {
                     const rawPosts = await postsRes.json();
-                    const jsPosts = Object.values(rawPosts).flat();
+                    
+                    // [수정된 부분] 
+                    // flat()으로 배열을 풀면서, 동시에 map()을 이용해 모든 객체에 category: 'javascript'를 강제로 주입합니다.
+                    const jsPosts = Object.values(rawPosts)
+                        .flat()
+                        .map(post => ({ ...post, category: 'javascript' })); 
+                    
                     allDocs = [...allDocs, ...jsPosts];
                 }
 
+                // 2. library.json (기타 문서들) 가져오기
                 const libRes = await fetch('./data/library.json');
                 if (libRes.ok) {
                     const libPosts = await libRes.json();
+                    // library.json 안의 데이터들은 각자 다른 카테고리(markdown 등)를 가져야 하므로
+                    // JSON 파일 안에 "category" 프로퍼티가 적혀 있어야 합니다.
                     allDocs = [...allDocs, ...libPosts];
                 }
             } catch (e) {
                 console.warn('데이터 로드 중 일부 실패:', e);
             }
+
             return allDocs;
         }
 
