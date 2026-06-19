@@ -371,6 +371,80 @@
         .chapter-list li.more-item a:hover {
             color: var(--accent-color);
         }
+
+        /* =========================================
+           7. 확장 라이브러리 배너 (Extended Library)
+           ========================================= */
+        .library-banner {
+            background-color: var(--surface-color);
+            border: 1px dashed var(--text-secondary);
+            border-radius: var(--radius-md);
+            padding: 2.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .library-banner:hover {
+            border-color: var(--accent-color);
+            background-color: var(--surface-hover);
+            box-shadow: 0 4px 20px rgba(255, 107, 0, 0.05);
+        }
+
+        .library-banner-title {
+            color: var(--text-heading);
+            font-family: 'Fira Code', monospace;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .library-banner-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .library-btn {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .library-btn:hover {
+            background-color: var(--accent-color);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+        }
+
+        /* 모바일 대응 추가 */
+        @media (max-width: 768px) {
+            .library-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1.8rem 1.5rem;
+            }
+            .library-banner-desc {
+                font-size: 0.9rem;
+            }
+            .library-btn {
+                width: 100%;
+                text-align: center;
+                margin-top: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -427,6 +501,26 @@
             </div>
 
             <div class="chapter-grid" id="chapter-grid"></div>
+        </section>
+
+        
+        <!-- 확장 라이브러리(문서고) 이동 섹션 -->
+        <section class="section-block">
+            <div class="section-header">
+                <h2 class="section-title"><span>></span> EXTENDED_LIBRARY_</h2>
+            </div>
+            
+            <div class="library-banner">
+                <div class="library-banner-content">
+                    <h3 class="library-banner-title">JFB_ DOCS ARCHIVE</h3>
+                    <p class="library-banner-desc">
+                        자바스크립트 튜토리얼 외에 Markdown, Discord.js 등<br>
+                        개발에 필요한 다양한 확장 기술 문서를 카테고리별로 모아둔 아카이브입니다.
+                    </p>
+                </div>
+                <!-- 이동할 새로운 HTML 파일 이름으로 href를 수정하세요 -->
+                <a href="library.html" class="library-btn">> OPEN_ARCHIVE</a>
+            </div>
         </section>
 
     </main>

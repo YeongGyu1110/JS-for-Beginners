@@ -7,7 +7,8 @@
       "type": "doc",
       "tags": ["JavaScript", "Java"],
       "path": "./script/chapter01/01.md",
-      "order": 1
+      "order": 1,
+      "category": "javascript"
     },
     {
       "id": "browser-console",
@@ -16,7 +17,8 @@
       "type": "doc",
       "tags": ["JavaScript", "alert", "confirm", "개발자도구", "브라우저"],
       "path": "./script/chapter01/02.md",
-      "order": 2
+      "order": 2,
+      "category": "javascript"
     },
     {
       "id": "env-setup",
@@ -25,7 +27,8 @@
       "type": "doc",
       "tags": ["환경설정", "Visual_Studio_Code", "VS_Code", "Node.js"],
       "path": "./script/chapter01/03.md",
-      "order": 3
+      "order": 3,
+      "category": "javascript"
     },
     {
       "id": "first-run",
@@ -34,7 +37,8 @@
       "type": "doc",
       "tags": ["JavaScript", "Node.js", "터미널"],
       "path": "./script/chapter01/04.md",
-      "order": 4
+      "order": 4,
+      "category": "javascript"
     }
   ],
   "2": [
@@ -46,7 +50,8 @@
       "tags": ["JavaScript", "let", "console.log", "변수", "출력", "템플릿_리터럴"],
       "path": "./script/chapter02/01.md",
       "chapter": "2",
-      "order": 1
+      "order": 1,
+      "category": "javascript"
     },
     {
       "id": "let-const-var", 
@@ -56,7 +61,8 @@
       "tags": ["JavaScript", "let", "const", "var", "카멜_케이스", "스크림밍_스네이크_케이스"],
       "path": "./script/chapter02/02.md",
       "chapter": "2",
-      "order": 2
+      "order": 2,
+      "category": "javascript"
     },
     {
       "id": "data-types", 
@@ -66,7 +72,8 @@
       "tags": ["JavaScript", "자료형", "typeof", "원시형", "참조형"],
       "path": "./script/chapter02/03.md",
       "chapter": "2",
-      "order": 3
+      "order": 3,
+      "category": "javascript"
     },
     {
       "id": "type-conversion", 
@@ -76,7 +83,8 @@
       "tags": ["JavaScript", "자료형", "String()", "Number()", "Boolean()", "Truthy", "Falsy", "NaN", "형변환"],
       "path": "./script/chapter02/04.md",
       "chapter": "2",
-      "order": 4
+      "order": 4,
+      "category": "javascript"
     },
     {
       "id": "prompt-lab", 
@@ -86,7 +94,8 @@
       "tags": ["JavaScript", "개발자도구", "브라우저", "prompt()", "형변환", "템플릿_리터럴", "lab"],
       "path": "./script/chapter02/05.md",
       "chapter": "2",
-      "order": 5
+      "order": 5,
+      "category": "javascript"
     }
   ],
   "3": [
@@ -98,7 +107,8 @@
       "tags": ["test"],
       "path": "./script/test/style-test.md",
       "chapter": "3",
-      "order": 1
+      "order": 1,
+      "category": "test"
     },
     {
       "id": "test-lab", 
@@ -108,7 +118,8 @@
       "tags": ["test"],
       "path": "./script/test/lab.md",
       "chapter": "3",
-      "order": 2
+      "order": 2,
+      "category": "test"
     }
   ]
 }
