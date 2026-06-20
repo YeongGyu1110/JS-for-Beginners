@@ -436,18 +436,27 @@
 
             try {
                 // 2. 데이터 로드
-                const [postsResponse, chaptersResponse] = await Promise.all([
+                const [postsResponse, chaptersResponse, libraryResponse] = await Promise.all([
                     fetch('./data/posts.json'),
-                    fetch('./data/chapters.json')
+                    fetch('./data/chapters.json'),
+                    fetch('./data/library.json').catch(() => ({ ok: false })) // library.json 추가 로드
                 ]);
 
                 if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('DB_LOAD_FAIL');
                 
                 const rawPosts = await postsResponse.json();
-                // 객체 구조를 1차원 배열 구조로 가공하면서 chapter 키를 주입
-                const posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                
+                // 기존 posts.json 데이터
+                let posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
                     items.map(item => ({ ...item, chapter: chapterKey }))
                 );
+                
+                // library.json 데이터 병합
+                if (libraryResponse.ok) {
+                    const libPosts = await libraryResponse.json();
+                    posts = [...posts, ...libPosts];
+                }
+
                 const chapters = await chaptersResponse.json();
                 const currentPost = posts.find(p => p.id === postId);
                 
@@ -463,13 +472,28 @@
                     tagsContainer.innerHTML = currentPost.tags.map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                 }
 
-                const chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a, b) => a.order - b.order);
-                const chapterInfo = chapters[currentPost.chapter];
-                
-                if (chapterInfo) {
-                    document.getElementById('side-chapter-title').textContent = chapterInfo.title;
-                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${currentPost.chapter}`;
+                // 챕터 또는 카테고리에 따른 우측 사이드바 데이터 분기 처리
+                let chapterPosts = [];
+                let sideTitle = 'MODULE';
+                let sideLink = '#';
+
+                if (currentPost.chapter) {
+                    // 정규 커리큘럼 데이터 (posts.json)
+                    chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a, b) => a.order - b.order);
+                    const chapterInfo = chapters[currentPost.chapter];
+                    if (chapterInfo) {
+                        sideTitle = chapterInfo.title;
+                        sideLink = `chapter.html?id=${currentPost.chapter}`;
+                    }
+                } else if (currentPost.category) {
+                    // 확장 라이브러리 데이터 (library.json)
+                    chapterPosts = posts.filter(p => p.category === currentPost.category);
+                    sideTitle = currentPost.category.toUpperCase() + '_';
+                    sideLink = `library.html?category=${currentPost.category}`;
                 }
+                
+                document.getElementById('side-chapter-title').textContent = sideTitle;
+                document.getElementById('side-chapter-title-link').href = sideLink;
                 
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
@@ -490,7 +514,8 @@
                 Prism.highlightAll();
                 DocCore.createCopyButtons(contentArea);
                 DocCore.buildToC(contentArea, 'toc');
-                DocCore.buildNavigation(postId, posts, contentArea);
+                const navTargetPosts = chapterPosts.map((p, i) => ({ ...p, chapter: '1', order: i }));
+                DocCore.buildNavigation(postId, navTargetPosts, contentArea);
 
                 setTimeout(() => contentArea.classList.add('loaded'), 100);
 

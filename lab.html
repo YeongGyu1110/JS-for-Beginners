@@ -475,12 +475,23 @@
 
             try {
                 // 2. 데이터 로드 및 검증
-                const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json')]);
+                const [postsRes, chaptersRes, libraryRes] = await Promise.all([
+                    fetch('./data/posts.json'), 
+                    fetch('./data/chapters.json'),
+                    fetch('./data/library.json').catch(() => ({ok: false}))
+                ]);
+                
                 const rawPosts = await postsRes.json();
-                // 객체 구조를 1차원 배열 구조로 가공하면서 chapter 키를 주입
-                const posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                
+                let posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
                     items.map(item => ({ ...item, chapter: chapterKey }))
                 );
+                
+                if (libraryRes.ok) {
+                    const libPosts = await libraryRes.json();
+                    posts = [...posts, ...libPosts];
+                }
+
                 const chapters = await chaptersRes.json();
                 const currentPost = posts.find(p => p.id === postId);
 
@@ -496,12 +507,25 @@
                 // 3. UI 업데이트 (사이드바, 태그, 제목)
                 document.title = `${currentPost.title} (Lab) - JFB`;
 
-                const chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a,b) => a.order - b.order);
-                const chapterInfo = chapters[currentPost.chapter];
-                if (chapterInfo) {
-                    document.getElementById('side-chapter-title').textContent = chapterInfo.title;
-                    document.getElementById('side-chapter-title-link').href = `chapter.html?id=${currentPost.chapter}`;
+                let chapterPosts = [];
+                let sideTitle = 'MODULE';
+                let sideLink = '#';
+
+                if (currentPost.chapter) {
+                    chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a,b) => a.order - b.order);
+                    const chapterInfo = chapters[currentPost.chapter];
+                    if (chapterInfo) {
+                        sideTitle = chapterInfo.title;
+                        sideLink = `chapter.html?id=${currentPost.chapter}`;
+                    }
+                } else if (currentPost.category) {
+                    chapterPosts = posts.filter(p => p.category === currentPost.category);
+                    sideTitle = currentPost.category.toUpperCase() + '_';
+                    sideLink = `library.html?category=${currentPost.category}`;
                 }
+
+                document.getElementById('side-chapter-title').textContent = sideTitle;
+                document.getElementById('side-chapter-title-link').href = sideLink;
                 
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
                     const target = p.type === 'lab' ? 'lab.html' : 'index.html';
@@ -532,7 +556,8 @@
                 // 5. 공통 기능 부착
                 DocCore.createCopyButtons(labContent);
                 DocCore.buildToC(labContent, 'toc');
-                DocCore.buildNavigation(postId, posts, labContent);
+                const navTargetPosts = chapterPosts.map((p, i) => ({ ...p, chapter: '1', order: i }));
+                DocCore.buildNavigation(postId, navTargetPosts, labContent);
 
                 // 랩 전용 미션 개수 파악
                 totalTasks = document.querySelectorAll('.lab-task-btn').length;

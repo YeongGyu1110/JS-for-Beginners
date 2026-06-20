@@ -16,14 +16,14 @@
     "tags": ["test"],
     "path": "./script/test/style-test.md",
     "category": "test"
-},
-{
-    "id": "test-lab", 
-    "title": "실습 테스트",
-    "description": "",
-    "type": "lab",
-    "tags": ["test"],
-    "path": "./script/test/lab.md",
-    "category": "test"
-}
+  },
+  {
+      "id": "test-lab", 
+      "title": "실습 테스트",
+      "description": "",
+      "type": "lab",
+      "tags": ["test"],
+      "path": "./script/test/lab.md",
+      "category": "test"
+  }
 ]
