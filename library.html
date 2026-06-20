@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JFB Archive - Document Library</title>
+    <title>Satellite Modules - JFB</title>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,54 +13,105 @@
     
     <style>
         /* =========================================
-           1. 라이브러리 전체 레이아웃
+           1. 히어로 섹션 (chapter.html과 통일)
+           ========================================= */
+        .page-hero {
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,107,0,0.03) 0%, transparent 100%);
+            padding: 5rem 2rem 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-meta {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            display: inline-block;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-sm);
+            background-color: rgba(255, 107, 0, 0.05);
+        }
+
+        .hero-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 600px;
+            margin: 0 auto;
+            word-break: keep-all;
+        }
+
+        /* =========================================
+           2. 메인 레이아웃 (사이드바 + 그리드)
            ========================================= */
         .library-wrapper {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 3rem 2rem 5rem 2rem;
+            padding: 4rem 2rem 6rem 2rem;
             display: flex;
             align-items: flex-start;
-            gap: 3rem;
-            min-height: 70vh;
+            gap: 4rem;
+            min-height: 50vh;
         }
 
         /* =========================================
-           2. 왼쪽 사이드바 (카테고리 네비게이션)
+           3. 좌측 사이드바 (디렉토리 트리 스타일)
            ========================================= */
         .sidebar {
             width: 240px;
             flex-shrink: 0;
             position: sticky;
-            top: 100px; /* 헤더 아래 고정 */
+            top: 100px;
         }
 
         .sidebar-title {
             font-family: 'Fira Code', monospace;
-            font-size: 1rem;
-            color: var(--text-heading);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.8rem;
-            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
         }
-        .sidebar-title span { color: var(--accent-color); }
 
         .category-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            border-left: 1px solid var(--border-color);
+            margin-left: 0.5rem;
         }
 
         .category-link {
             display: block;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 1rem;
             color: var(--text-secondary);
             text-decoration: none;
             font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-            border-left: 2px solid transparent;
-            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        /* 트리 구조 연결선 느낌 */
+        .category-link::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 10px;
+            height: 1px;
+            background-color: var(--border-color);
             transition: all 0.2s ease;
         }
 
@@ -68,101 +119,120 @@
             color: var(--text-primary);
             background-color: var(--surface-hover);
         }
+        .category-link:hover::before { background-color: var(--text-primary); width: 14px; }
 
         .category-link.active {
             color: var(--accent-color);
             background-color: rgba(255, 107, 0, 0.05);
-            border-left-color: var(--accent-color);
             font-weight: 600;
+        }
+        .category-link.active::before {
+            background-color: var(--accent-color);
+            width: 14px;
         }
 
         /* =========================================
-           3. 오른쪽 메인 콘텐츠 영역 (문서 카드 그리드)
+           4. 우측 메인 콘텐츠 영역 (모듈 카드)
            ========================================= */
         .main-content {
             flex-grow: 1;
-            min-width: 0; /* flex 자식 넘침 방지 */
+            min-width: 0;
         }
 
         .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
             margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
         }
 
         .current-category-title {
             font-family: 'Fira Code', monospace;
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             color: var(--text-heading);
-            margin-bottom: 0.5rem;
+            font-weight: 600;
         }
-        
-        .current-category-title::before {
-            content: "> ";
-            color: var(--accent-color);
-        }
+        .current-category-title::before { content: "> "; color: var(--accent-color); }
 
         .doc-count {
             font-size: 0.85rem;
             color: var(--text-secondary);
             font-family: 'Fira Code', monospace;
         }
+        .doc-count span { color: var(--accent-color); }
 
         .docs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        /* 개별 문서 카드 디자인 */
+        /* 개별 문서 카드 디자인 (chapter.html 모듈 카드와 동일한 형태) */
         .doc-card {
+            display: flex;
+            flex-direction: column;
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
+            padding: 2rem;
             transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        /* 좌측 강조 테두리 (Hover 시 표시) */
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0; width: 3px;
+            background-color: transparent;
+            transition: background-color 0.2s ease;
         }
 
         .doc-card:hover {
-            transform: translateY(-4px);
             border-color: var(--text-secondary);
             background-color: var(--surface-hover);
+            transform: translateY(-2px);
         }
+
+        .doc-card:hover::before { background-color: var(--accent-color); }
 
         .doc-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
         .doc-category-badge {
             font-family: 'Fira Code', monospace;
             font-size: 0.7rem;
-            color: var(--accent-color);
+            color: var(--text-secondary);
             letter-spacing: 1px;
             text-transform: uppercase;
         }
 
         .doc-title {
             color: var(--text-heading);
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
             line-height: 1.4;
-            word-break: keep-all;
+            letter-spacing: -0.5px;
+            transition: color 0.15s ease;
         }
+
+        .doc-card:hover .doc-title { color: var(--accent-color); }
 
         .doc-desc {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 1.5rem;
-            flex-grow: 1;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            word-break: keep-all;
         }
 
         .doc-tags {
@@ -170,13 +240,10 @@
             flex-wrap: wrap;
             gap: 0.4rem;
             margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px dashed var(--border-color);
         }
 
         /* 빈 상태 메시지 */
         .empty-state {
-            grid-column: 1 / -1;
             text-align: center;
             padding: 4rem 2rem;
             background-color: var(--surface-color);
@@ -187,67 +254,70 @@
         }
 
         /* =========================================
-           4. 반응형 레이아웃 (모바일)
+           5. 반응형 레이아웃 (모바일)
            ========================================= */
         @media (max-width: 768px) {
+            .page-hero { padding: 3.5rem 1.5rem 2.5rem 1.5rem; }
+            .hero-title { font-size: 1.8rem; }
+            .hero-desc { font-size: 0.95rem; }
+
             .library-wrapper {
                 flex-direction: column;
-                padding: 1.5rem;
+                padding: 2rem 1.5rem 4rem 1.5rem;
                 gap: 2rem;
             }
 
-            /* 사이드바를 상단 가로 스크롤 탭으로 변환 */
-            .sidebar {
-                width: 100%;
-                position: static;
-            }
-
-            .sidebar-title {
-                display: none; /* 모바일에서는 텍스트 숨김 */
-            }
+            /* 사이드바 가로 스크롤 탭으로 변환 */
+            .sidebar { width: 100%; position: static; }
+            .sidebar-title { display: none; }
 
             .category-list {
                 flex-direction: row;
+                border-left: none;
+                margin-left: 0;
                 overflow-x: auto;
-                padding-bottom: 0.5rem;
                 border-bottom: 1px solid var(--border-color);
-                scrollbar-width: none; /* Firefox */
+                scrollbar-width: none;
             }
-            .category-list::-webkit-scrollbar { display: none; } /* Chrome */
+            .category-list::-webkit-scrollbar { display: none; }
 
             .category-link {
                 white-space: nowrap;
-                border-left: none;
-                border-bottom: 2px solid transparent;
-                border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+                padding: 0.8rem 1.2rem;
             }
-
+            .category-link::before { display: none; }
             .category-link.active {
-                border-left-color: transparent;
-                border-bottom-color: var(--accent-color);
+                border-bottom: 2px solid var(--accent-color);
                 background-color: transparent;
             }
 
-            .current-category-title {
-                font-size: 1.5rem;
-            }
-
-            .docs-grid {
-                grid-template-columns: 1fr;
-            }
+            .content-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .current-category-title { font-size: 1.2rem; }
+            
+            .doc-card { padding: 1.5rem; }
+            .doc-title { font-size: 1.15rem; }
         }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <a href="main.html" class="logo">JFB<span>_</span> ARCHIVE</a>
+        <a href="main.html" class="logo">JFB<span>_</span></a>
     </header>
 
+    <!-- 히어로 섹션 -->
+    <section class="page-hero">
+        <span class="hero-meta">[ EXTRA_MODULES ]</span>
+        <h1 class="hero-title">SATELLITE_</h1>
+        <p class="hero-desc">
+            정규 커리큘럼 외에 프레임워크, 마크다운, 기타 유틸리티 등 개발에 날개를 달아줄 확장 기술 문서가 모여있는 공간입니다.
+        </p>
+    </section>
+
     <div class="library-wrapper">
-        <!-- 좌측 사이드바 (카테고리) -->
+        <!-- 좌측 사이드바 (카테고리 트리) -->
         <aside class="sidebar">
-            <h3 class="sidebar-title"><span>></span> CATEGORIES_</h3>
+            <h3 class="sidebar-title">DIR_</h3>
             <ul class="category-list" id="category-list">
                 <!-- 자바스크립트로 렌더링됩니다 -->
             </ul>
@@ -257,7 +327,7 @@
         <main class="main-content">
             <div class="content-header">
                 <h2 class="current-category-title" id="current-category-title">LOADING...</h2>
-                <div class="doc-count" id="doc-count">[ SEARCHING_DATABASE... ]</div>
+                <div class="doc-count" id="doc-count">[ SEARCHING_DB... ]</div>
             </div>
 
             <div class="docs-grid" id="docs-grid">
@@ -267,70 +337,48 @@
     </div>
 
     <!-- 푸터 -->
-    <footer class="footer">
-        <!-- 기존 main.html 푸터 내용과 동일하게 유지 -->
-        <div class="footer-content" style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding: 2rem 0; font-family: 'Fira Code', monospace;">
-            <div>
-                <div style="color: var(--text-heading); font-weight: 700;">JFB<span>_</span> ARCHIVE</div>
-            </div>
-            <div style="font-size: 0.75rem; color: var(--text-secondary); text-align: right;">
-                <div>SYS_STATUS: <span style="color: #10b981;">ONLINE</span></div>
-            </div>
-        </div>
+    <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: auto; font-family: 'Fira Code', monospace; text-align: center;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);">_</span></div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
 
     <script src="./common/common.js"></script>
     <script>
-        // 데이터 병합 및 로드 함수
         async function fetchAllDocuments() {
             let allDocs = [];
-            
             try {
-                // 1. posts.json (자바스크립트 가이드) 가져오기
+                // 1. posts.json (메인 튜토리얼)
                 const postsRes = await fetch('./data/posts.json');
                 if (postsRes.ok) {
                     const rawPosts = await postsRes.json();
-                    
-                    // [수정된 부분] 
-                    // flat()으로 배열을 풀면서, 동시에 map()을 이용해 모든 객체에 category: 'javascript'를 강제로 주입합니다.
                     const jsPosts = Object.values(rawPosts)
                         .flat()
-                        .map(post => ({ ...post, category: 'javascript' })); 
-                    
+                        .map(post => ({ ...post, category: 'javascript-core' })); 
                     allDocs = [...allDocs, ...jsPosts];
                 }
 
-                // 2. library.json (기타 문서들) 가져오기
+                // 2. library.json (확장 모듈)
                 const libRes = await fetch('./data/library.json');
                 if (libRes.ok) {
                     const libPosts = await libRes.json();
-                    // library.json 안의 데이터들은 각자 다른 카테고리(markdown 등)를 가져야 하므로
-                    // JSON 파일 안에 "category" 프로퍼티가 적혀 있어야 합니다.
                     allDocs = [...allDocs, ...libPosts];
                 }
             } catch (e) {
                 console.warn('데이터 로드 중 일부 실패:', e);
             }
-
             return allDocs;
         }
 
-        // 카테고리 ID를 예쁜 이름으로 변환해주는 헬퍼 함수
+        // 카테고리 ID 포맷터
         function formatCategoryName(categoryId) {
-            // 특별히 원하는 표기법이 있는 경우 예외 처리
-            if (categoryId === 'javascript') return 'JavaScript Guide';
+            if (categoryId === 'javascript-core') return 'JavaScript Core';
             if (categoryId === 'discord-js') return 'Discord.js';
-            if (categoryId === 'css') return 'CSS / Style';
-            
-            // 그 외의 경우는 하이픈(-)을 공백으로 바꾸고 첫 글자를 대문자로 변환
-            // 예: "python-basic" -> "Python Basic"
             return categoryId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
 
-        // 사이드바 렌더링 함수 (동적 생성 방식으로 변경됨)
+        // 좌측 디렉토리 트리 렌더링
         function renderSidebar(categories, currentCategory) {
             const listEl = document.getElementById('category-list');
-            
             listEl.innerHTML = categories.map(category => {
                 const isActive = category === currentCategory ? 'active' : '';
                 const label = formatCategoryName(category);
@@ -344,25 +392,22 @@
             }).join('');
         }
 
-        // 메인 문서 그리드 렌더링 함수
+        // 우측 메인 카드 렌더링
         function renderDocs(docs, currentCategory) {
             const gridEl = document.getElementById('docs-grid');
             const titleEl = document.getElementById('current-category-title');
             const countEl = document.getElementById('doc-count');
 
-            // 현재 카테고리 제목 세팅
             titleEl.textContent = formatCategoryName(currentCategory).toUpperCase() + '_';
-
             const filteredDocs = docs.filter(doc => doc.category === currentCategory);
 
-            countEl.innerHTML = `[ DOCS_FOUND: <span>${filteredDocs.length}</span> ]`;
+            countEl.innerHTML = `[ DOCS: <span>${filteredDocs.length}</span> ]`;
 
             if (filteredDocs.length === 0) {
                 gridEl.innerHTML = `
                     <div class="empty-state">
                         <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;">[!]</div>
-                        해당 카테고리에 등록된 문서가 없습니다.<br>
-                        데이터베이스를 확인해주세요.
+                        해당 모듈에 연결된 데이터가 없습니다.
                     </div>
                 `;
                 return;
@@ -373,52 +418,41 @@
                 const badge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
                 const tagsHTML = (post.tags || []).map(tag => `<span class="tag">#${tag}</span>`).join('');
                 
+                // 전체를 <a> 태그 래퍼로 만들어 클릭 영역 확대 및 호버 트리거 개선
                 return `
-                    <div class="doc-card">
+                    <a href="${targetPage}?id=${post.id}" class="doc-card">
                         <div class="doc-meta">
-                            <span class="doc-category-badge">${currentCategory}</span>
+                            <span class="doc-category-badge">MODULE // ${currentCategory}</span>
                             ${badge}
                         </div>
-                        <a href="${targetPage}?id=${post.id}" style="text-decoration:none;">
-                            <h3 class="doc-title">${post.title}</h3>
-                        </a>
-                        <p class="doc-desc">${post.description || '이 문서에 대한 상세 설명이 제공되지 않았습니다.'}</p>
+                        <h3 class="doc-title">${post.title}</h3>
+                        <p class="doc-desc">${post.description || '모듈 상세 설명이 로드되지 않았습니다.'}</p>
                         <div class="doc-tags">
                             ${tagsHTML}
                         </div>
-                    </div>
+                    </a>
                 `;
             }).join('');
         }
 
-        // 초기화 로직
         document.addEventListener('DOMContentLoaded', async () => {
-            // 1. 전체 데이터 로드
             const allDocs = await fetchAllDocuments();
-
-            // 2. 문서들에서 고유한 카테고리 목록 추출 (Set 활용)
-            // 데이터에 카테고리가 없는 경우를 방지하기 위해 filter(Boolean) 사용
             let uniqueCategories = [...new Set(allDocs.map(doc => doc.category).filter(Boolean))];
 
-            // 3. 자바스크립트를 항상 최상단에 배치하기 위한 정렬 (선택 사항)
             uniqueCategories.sort((a, b) => {
-                if (a === 'javascript') return -1;
-                if (b === 'javascript') return 1;
-                return a.localeCompare(b); // 나머지는 알파벳 순
+                if (a === 'javascript-core') return -1;
+                if (b === 'javascript-core') return 1;
+                return a.localeCompare(b);
             });
 
-            // 4. URL 파라미터 확인 및 기본값 처리
             const urlParams = new URLSearchParams(window.location.search);
             let currentCategory = urlParams.get('category');
             
-            // 만약 URL에 카테고리가 없거나, 추출한 카테고리 목록에 없는 값이라면 첫 번째 카테고리로 강제 지정
             if (!currentCategory || !uniqueCategories.includes(currentCategory)) {
-                // 카테고리 데이터가 하나라도 있으면 첫 번째 값을, 없으면 'javascript'를 기본으로 설정
-                currentCategory = uniqueCategories.length > 0 ? uniqueCategories[0] : 'javascript';
+                currentCategory = uniqueCategories.length > 0 ? uniqueCategories[0] : 'javascript-core';
                 window.history.replaceState({}, '', `?category=${currentCategory}`);
             }
 
-            // 5. 화면 렌더링
             renderSidebar(uniqueCategories, currentCategory);
             renderDocs(allDocs, currentCategory);
         });
