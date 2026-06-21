@@ -91,24 +91,24 @@
   ],
   "3": [
     {
-      "id": "test-style", 
-      "title": "스타일 테스트",
-      "description": "",
+      "id": "operator", 
+      "title": "연산자 기본",
+      "description": "자바스크립트의 기본 실행 단위인 문(Statement)을 이해하고, 변수를 생성해 데이터를 저장하고 터미널에 출력하는 방법을 알아봅니다.",
       "type": "doc",
-      "tags": ["test"],
-      "path": "./script/test/style-test.md",
+      "tags": [],
+      "path": "./script/chapter03/01.md",
       "chapter": "3",
       "order": 1
     },
     {
-      "id": "test-lab", 
-      "title": "실습 테스트",
-      "description": "",
-      "type": "lab",
-      "tags": ["test"],
-      "path": "./script/test/lab.md",
+      "id": "operator-deepening", 
+      "title": "연산자 심화",
+      "description": "자바스크립트의 기본 실행 단위인 문(Statement)을 이해하고, 변수를 생성해 데이터를 저장하고 터미널에 출력하는 방법을 알아봅니다.",
+      "type": "doc",
+      "tags": [],
+      "path": "./script/chapter03/02.md",
       "chapter": "3",
-      "order": 2
+      "order": 1
     }
   ]
 }
