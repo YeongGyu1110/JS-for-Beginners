@@ -108,7 +108,17 @@
       "tags": [],
       "path": "./script/chapter03/02.md",
       "chapter": "3",
-      "order": 1
+      "order": 2
+    },
+    {
+      "id": "Logical-Nullish Coalescing Operator", 
+      "title": "논리 연산자와 Nullish 병합 연산자",
+      "description": "자바스크립트의 기본 실행 단위인 문(Statement)을 이해하고, 변수를 생성해 데이터를 저장하고 터미널에 출력하는 방법을 알아봅니다.",
+      "type": "doc",
+      "tags": [],
+      "path": "./script/chapter03/03.md",
+      "chapter": "3",
+      "order": 3
     }
   ]
 }
