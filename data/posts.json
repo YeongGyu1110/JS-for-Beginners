@@ -115,7 +115,7 @@
       "title": "논리 연산자와 Nullish 병합 연산자",
       "description": "여러 조건을 결합하거나 뒤집는 논리 연산자(AND, OR, NOT)의 단축 평가 원리와, 값이 비어있을 때를 안전하게 처리해 주는 최신 문법인 Nullish 병합 연산자(??)에 대해 학습합니다.",
       "type": "doc",
-      "tags": ["연산자", "자료형", "단축_평기", "null", "undefined", "Truthy", "Falsy"],
+      "tags": ["연산자", "자료형", "단축_평가", "null", "undefined", "Truthy", "Falsy"],
       "path": "./script/chapter03/03.md",
       "chapter": "3",
       "order": 3
@@ -133,9 +133,9 @@
     {
       "id": "Short-circuit evaluation-lab", 
       "title": "단축 평가를 활용한 로그인 및 환경 설정",
-      "description": "두 값을 비교하는 방법과 자바스크립트가 문자를 비교하는 원리를 배우며, 동등 연산자(==)와 엄격한 일치 연산자(===)의 차이 및 자동 형변환의 주의점을 상세히 다룹니다.",
+      "description": "논리 연산자(&&, ||, ??)의 단축 평가와 비교 연산자만을 활용하여 로그인 기능 및 프로필 환경 설정 기능을 구현하는 과정을 실습합니다.",
       "type": "lab",
-      "tags": ["연산자", "단축_평기", "lab"],
+      "tags": ["연산자", "단축_평가", "lab"],
       "path": "./script/chapter03/05.md",
       "chapter": "3",
       "order": 5
