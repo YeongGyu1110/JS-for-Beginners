@@ -131,7 +131,7 @@
       "order": 4
     },
     {
-      "id": "Short-circuit evaluation-lab", 
+      "id": "Short-circuit-evaluation-lab", 
       "title": "단축 평가를 활용한 로그인 및 환경 설정",
       "description": "논리 연산자(&&, ||, ??)의 단축 평가와 비교 연산자만을 활용하여 로그인 기능 및 프로필 환경 설정 기능을 구현하는 과정을 실습합니다.",
       "type": "lab",
