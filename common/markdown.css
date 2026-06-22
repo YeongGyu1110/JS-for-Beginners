@@ -33,7 +33,8 @@
     background-color: var(--surface-color);
     border-left: 2px solid var(--accent-color);
     border-radius: var(--radius-sm);
-    color: var(--text-secondary);
+    /* color: var(--text-secondary); */
+    color: var(--text-primary);
 }
 .markdown-body blockquote p { margin-bottom: 0; font-size: 0.95rem; }
 
