@@ -17,7 +17,7 @@
 /* =========================================
    2. 초기화 및 전역 설정 (Reset & Global)
    ========================================= */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-variant-ligatures: none; }
 html { scroll-behavior: smooth; }
 
 body {
