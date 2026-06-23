@@ -151,6 +151,16 @@
       "path": "./script/chapter04/01.md",
       "chapter": "4",
       "order": 1
+    },
+    {
+      "id": "switch", 
+      "title": "switch문",
+      "description": "논리 연산자(&&, ||, ??)의 단축 평가와 비교 연산자만을 활용하여 로그인 기능 및 프로필 환경 설정 기능을 구현하는 과정을 실습합니다.",
+      "type": "doc",
+      "tags": ["연산자", "단축_평가", "lab"],
+      "path": "./script/chapter04/02.md",
+      "chapter": "4",
+      "order": 2
     }
   ]
 }
