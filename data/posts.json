@@ -45,7 +45,6 @@
       "type": "doc",
       "tags": ["변수", "let", "console.log", "변수", "출력", "템플릿_리터럴"],
       "path": "./script/chapter02/01.md",
-      "chapter": "2",
       "order": 1
     },
     {
@@ -55,7 +54,6 @@
       "type": "doc",
       "tags": ["변수", "let", "const", "var", "카멜_케이스", "스크림밍_스네이크_케이스"],
       "path": "./script/chapter02/02.md",
-      "chapter": "2",
       "order": 2
     },
     {
@@ -65,7 +63,6 @@
       "type": "doc",
       "tags": ["자료형", "typeof", "원시형", "null", "undefined", "참조형"],
       "path": "./script/chapter02/03.md",
-      "chapter": "2",
       "order": 3
     },
     {
@@ -75,7 +72,6 @@
       "type": "doc",
       "tags": ["자료형", "String()", "Number()", "Boolean()", "Truthy", "Falsy", "NaN", "형변환"],
       "path": "./script/chapter02/04.md",
-      "chapter": "2",
       "order": 4
     },
     {
@@ -85,7 +81,6 @@
       "type": "lab",
       "tags": [ "변수", "자료형", "개발자도구", "브라우저", "prompt()", "형변환", "템플릿_리터럴", "lab"],
       "path": "./script/chapter02/05.md",
-      "chapter": "2",
       "order": 5
     }
   ],
@@ -97,7 +92,6 @@
       "type": "doc",
       "tags": ["연산자", "피연산자"],
       "path": "./script/chapter03/01.md",
-      "chapter": "3",
       "order": 1
     },
     {
@@ -107,7 +101,6 @@
       "type": "doc",
       "tags": ["연산자"],
       "path": "./script/chapter03/02.md",
-      "chapter": "3",
       "order": 2
     },
     {
@@ -117,7 +110,6 @@
       "type": "doc",
       "tags": ["연산자", "자료형", "단축_평가", "null", "undefined", "Truthy", "Falsy"],
       "path": "./script/chapter03/03.md",
-      "chapter": "3",
       "order": 3
     },
     {
@@ -127,7 +119,6 @@
       "type": "doc",
       "tags": ["연산자", "자료형", "형변환", "유니코드"],
       "path": "./script/chapter03/04.md",
-      "chapter": "3",
       "order": 4
     },
     {
@@ -137,7 +128,6 @@
       "type": "lab",
       "tags": ["연산자", "단축_평가", "lab"],
       "path": "./script/chapter03/05.md",
-      "chapter": "3",
       "order": 5
     }
   ],
@@ -149,7 +139,6 @@
       "type": "doc",
       "tags": ["연산자", "단축_평가", "lab"],
       "path": "./script/chapter04/01.md",
-      "chapter": "4",
       "order": 1
     },
     {
@@ -159,7 +148,6 @@
       "type": "doc",
       "tags": ["연산자", "단축_평가", "lab"],
       "path": "./script/chapter04/02.md",
-      "chapter": "4",
       "order": 2
     }
   ]
