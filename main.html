@@ -371,6 +371,123 @@
         .chapter-list li.more-item a:hover {
             color: var(--accent-color);
         }
+
+        /* =========================================
+           7. 위성 모듈 (SATELLITE) 섹션
+           ========================================= */
+        .extension-card {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); /* 다른 챕터 카드들과 동일한 둥글기 적용 */
+            padding: 2.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .extension-card:hover {
+            background-color: var(--surface-hover);
+            border-color: var(--text-secondary);
+            transform: translateY(-4px); /* 메인 챕터 카드와 동일한 수준의 호버 이펙트 */
+        }
+
+        /* 배경 장식 패턴 (우측 하단) */
+        .extension-card::after {
+            content: "{ }"; /* 중괄호로 변경 */
+            position: absolute;
+            right: -2%;
+            bottom: -20%;
+            font-family: 'Fira Code', monospace;
+            font-size: 14rem;
+            color: var(--border-color);
+            opacity: 0.15;
+            pointer-events: none;
+            line-height: 1;
+            font-weight: 700;
+            letter-spacing: -10px; /* 괄호 사이 간격 좁히기 */
+
+            transition: color 0.3s ease, opacity 0.3s ease; 
+        }
+
+        /* [새로 추가된 부분] 카드 호버 시 중괄호의 색상과 투명도 변경 */
+        .extension-card:hover::after {
+            opacity: 0.08; /* 주황색이 너무 강하게 시선을 끌지 않도록 투명도를 약간 낮춥니다 */
+            color: var(--accent-color);
+        }
+
+        .extension-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .extension-meta {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            margin-bottom: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .extension-title {
+            color: var(--text-heading);
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem; /* 챕터 타이틀과 밸런스를 맞추기 위해 폰트 크기 미세 조정 */
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .extension-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            word-break: keep-all;
+            max-width: 600px;
+        }
+
+        .extension-btn {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.9rem 1.8rem;
+            background-color: var(--bg-color);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .extension-btn svg { width: 16px; height: 16px; }
+
+        .extension-btn:hover {
+            background-color: var(--accent-color);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .extension-card {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1.8rem 1.5rem;
+                gap: 1.5rem;
+            }
+            .extension-title { font-size: 1.25rem; }
+            .extension-desc { font-size: 0.9rem; }
+            .extension-btn { width: 100%; justify-content: center; }
+            .extension-card::after { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -427,6 +544,29 @@
             </div>
 
             <div class="chapter-grid" id="chapter-grid"></div>
+        </section>
+
+        
+        <!-- 확장 모듈 이동 섹션 -->
+        <section class="section-block">
+            <div class="section-header">
+                <h2 class="section-title"><span>></span> EXPAND_UNIVERSE_</h2>
+            </div>
+            
+            <div class="extension-card">
+                <div class="extension-info">
+                    <div class="extension-meta">[ SIGNAL_DETECTED ]</div>
+                    <h3 class="extension-title">SATELLITE_MODULES</h3>
+                    <p class="extension-desc">
+                        메인 커리큘럼 밖의 새로운 영역을 탐색합니다.<br>
+                        자바스크립트 엔진의 내부 메커니즘부터 웹 프로그래밍, 라이브러리 응용까지 무한히 확장되는 가이드가 이곳에 연결됩니다.
+                    </p>
+                </div>
+                <a href="library.html" class="extension-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    CONNECT_LINK
+                </a>
+            </div>
         </section>
 
     </main>

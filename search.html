@@ -214,22 +214,37 @@
             let postsDatabase = [];
 
             try {
-                const res = await fetch('./data/posts.json');
-                if(res.ok) {
-                    const rawPosts = await res.json();
-                    // 객체 구조를 1차원 배열 구조로 가공하면서 chapter 키를 주입
+                // posts.json과 library.json을 동시에 로드합니다.
+                const [postsRes, libRes] = await Promise.all([
+                    fetch('./data/posts.json'),
+                    fetch('./data/library.json').catch(() => ({ ok: false }))
+                ]);
+
+                // 1. posts.json 데이터 가공
+                if(postsRes.ok) {
+                    const rawPosts = await postsRes.json();
                     postsDatabase = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
                         items.map(item => ({ ...item, chapter: chapterKey }))
                     );
-                    
-                    const tagCounts = {};
-                    postsDatabase.forEach(p => (p.tags || []).forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+                }
 
-                    const topTags = Object.keys(tagCounts).sort(()=>Math.random()-0.5).sort((a,b)=>tagCounts[b]-tagCounts[a]).slice(0, 4);
-                    
-                    if (suggestedTagsContainer) {
-                        suggestedTagsContainer.innerHTML = topTags.map(tag => `<button class="tag" data-tag="#${tag}">#${tag}</button>`).join('');
-                    }
+                // 2. library.json 데이터 병합
+                if(libRes.ok) {
+                    const libPosts = await libRes.json();
+                    postsDatabase = [...postsDatabase, ...libPosts];
+                }
+                
+                // 3. 태그 카운팅 및 추천 태그 생성 (병합된 전체 데이터 기준)
+                const tagCounts = {};
+                postsDatabase.forEach(p => (p.tags || []).forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+
+                const topTags = Object.keys(tagCounts)
+                    .sort(() => Math.random() - 0.5)
+                    .sort((a, b) => tagCounts[b] - tagCounts[a])
+                    .slice(0, 4);
+                
+                if (suggestedTagsContainer) {
+                    suggestedTagsContainer.innerHTML = topTags.map(tag => `<button class="tag" data-tag="#${tag}">#${tag}</button>`).join('');
                 }
             } catch(e) { console.error(e); }
 
