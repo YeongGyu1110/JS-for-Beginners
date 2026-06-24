@@ -158,6 +158,15 @@
       "tags": ["연산자", "단축_평가", "lab"],
       "path": "./script/chapter04/03.md",
       "order": 3
+    },
+    {
+      "id": "control-flow-lab", 
+      "title": "거스름돈",
+      "description": "논리 연산자(&&, ||, ??)의 단축 평가와 비교 연산자만을 활용하여 로그인 기능 및 프로필 환경 설정 기능을 구현하는 과정을 실습합니다.",
+      "type": "lab",
+      "tags": ["연산자", "단축_평가", "lab"],
+      "path": "./script/chapter04/04.md",
+      "order": 4
     }
   ]
 }
