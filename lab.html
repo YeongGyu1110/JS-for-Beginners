@@ -556,7 +556,16 @@
                 // 5. 공통 기능 부착
                 DocCore.createCopyButtons(labContent);
                 DocCore.buildToC(labContent, 'toc');
-                const navTargetPosts = chapterPosts.map((p, i) => ({ ...p, chapter: '1', order: i }));
+
+                // 정규 커리큘럼은 전체 챕터 글을 넘겨 챕터 간 이동 허용
+                // 라이브러리는 현재 카테고리(chapterPosts) 내에서만 이동하도록 제한
+                let navTargetPosts;
+                if (currentPost.chapter) {
+                    navTargetPosts = posts.filter(p => p.chapter);
+                } else {
+                    navTargetPosts = chapterPosts.map((p, i) => ({ ...p, chapter: '1', order: i }));
+                }
+
                 DocCore.buildNavigation(postId, navTargetPosts, labContent);
 
                 // 랩 전용 미션 개수 파악
