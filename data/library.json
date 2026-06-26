@@ -1,14 +1,5 @@
 [
   {
-    "id": "markdown-basic",
-    "title": "마크다운 기본 문법",
-    "description": "README.md 작성을 위한 필수 문법",
-    "type": "doc",
-    "category": "markdown",
-    "tags": ["Markdown", "Github"],
-    "path": "./script/markdown/basic.md"
-  },
-  {
     "id": "test-style", 
     "title": "스타일 테스트",
     "description": "",
