@@ -45,7 +45,6 @@
       "type": "doc",
       "tags": ["변수", "let", "console.log", "변수", "출력", "템플릿_리터럴"],
       "path": "./script/chapter02/01.md",
-      "chapter": "2",
       "order": 1
     },
     {
@@ -55,7 +54,6 @@
       "type": "doc",
       "tags": ["변수", "let", "const", "var", "카멜_케이스", "스크림밍_스네이크_케이스"],
       "path": "./script/chapter02/02.md",
-      "chapter": "2",
       "order": 2
     },
     {
@@ -65,7 +63,6 @@
       "type": "doc",
       "tags": ["자료형", "typeof", "원시형", "null", "undefined", "참조형"],
       "path": "./script/chapter02/03.md",
-      "chapter": "2",
       "order": 3
     },
     {
@@ -75,17 +72,15 @@
       "type": "doc",
       "tags": ["자료형", "String()", "Number()", "Boolean()", "Truthy", "Falsy", "NaN", "형변환"],
       "path": "./script/chapter02/04.md",
-      "chapter": "2",
       "order": 4
     },
     {
       "id": "prompt-lab", 
-      "title": "prompt를 이용해 입력값 받기",
+      "title": "실습: prompt를 이용해 입력값 받기",
       "description": "prompt() 함수를 통해 사용자로부터 데이터를 입력받고, 숫자로 변환하여 연산한 뒤 출력하는 과정을 실습합니다.",
       "type": "lab",
       "tags": [ "변수", "자료형", "개발자도구", "브라우저", "prompt()", "형변환", "템플릿_리터럴", "lab"],
       "path": "./script/chapter02/05.md",
-      "chapter": "2",
       "order": 5
     }
   ],
@@ -97,7 +92,6 @@
       "type": "doc",
       "tags": ["연산자", "피연산자"],
       "path": "./script/chapter03/01.md",
-      "chapter": "3",
       "order": 1
     },
     {
@@ -107,7 +101,6 @@
       "type": "doc",
       "tags": ["연산자"],
       "path": "./script/chapter03/02.md",
-      "chapter": "3",
       "order": 2
     },
     {
@@ -117,7 +110,6 @@
       "type": "doc",
       "tags": ["연산자", "자료형", "단축_평가", "null", "undefined", "Truthy", "Falsy"],
       "path": "./script/chapter03/03.md",
-      "chapter": "3",
       "order": 3
     },
     {
@@ -127,18 +119,54 @@
       "type": "doc",
       "tags": ["연산자", "자료형", "형변환", "유니코드"],
       "path": "./script/chapter03/04.md",
-      "chapter": "3",
       "order": 4
     },
     {
       "id": "Short-circuit-evaluation-lab", 
-      "title": "단축 평가를 활용한 로그인 및 환경 설정",
+      "title": "실습: 단축 평가를 활용한 로그인 및 환경 설정",
       "description": "논리 연산자(&&, ||, ??)의 단축 평가와 비교 연산자만을 활용하여 로그인 기능 및 프로필 환경 설정 기능을 구현하는 과정을 실습합니다.",
       "type": "lab",
       "tags": ["연산자", "단축_평가", "lab"],
       "path": "./script/chapter03/05.md",
-      "chapter": "3",
       "order": 5
+    }
+  ],
+  "4": [
+    {
+      "id": "if", 
+      "title": "if문",
+      "description": "if문, else, else if문의 기본 구조와 작동 원리를 배우고, 소괄호 내부에서 일어나는 Truthy/Falsy 자동 형변환 개념 및 조건부 연산자(삼항 연산자)의 올바른 활용법에 대해 다룹니다.",
+      "type": "doc",
+      "tags": ["조건문", "if", "else", "Truthy", "Falsy", "형변환"],
+      "path": "./script/chapter04/01.md",
+      "order": 1
+    },
+    {
+      "id": "switch", 
+      "title": "switch문",
+      "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
+      "type": "doc",
+      "tags": ["조건문", "switch", "case", "break", "default"],
+      "path": "./script/chapter04/02.md",
+      "order": 2
+    },
+    {
+      "id": "while-and-for", 
+      "title": "while과 for",
+      "description": "while문과 do...while문, 4가지 구성 요소를 갖춘 for문의 작동 원리 및 인라인 변수 선언에 대해 다룹니다.",
+      "type": "doc",
+      "tags": ["반복문", "while", "do_while", "for", "break", "continue", "Lable"],
+      "path": "./script/chapter04/03.md",
+      "order": 3
+    },
+    {
+      "id": "control-flow-lab", 
+      "title": "실습: 제어문을 활용한 거스름돈 계산",
+      "description": "'최소 화폐 개수 거스름돈 계산 알고리즘'을 구현하는 실습 가이드입니다. 결제 부족 예외 처리, 10원 미만 자투리 금액 절삭과 나머지 연산자(%)를 활용한 탐욕법(Greedy) 기초를 익힙니다.",
+      "type": "lab",
+      "tags": ["조건문", "반복문", "lab"],
+      "path": "./script/chapter04/04.md",
+      "order": 4
     }
   ]
 }
