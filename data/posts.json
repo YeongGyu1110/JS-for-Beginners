@@ -187,6 +187,15 @@
       "tags": ["조건문", "switch", "case", "break", "default"],
       "path": "./script/chapter05/02.md",
       "order": 2
+    },
+    {
+      "id": "function-expression", 
+      "title": "함수 표현식",
+      "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
+      "type": "doc",
+      "tags": ["조건문", "switch", "case", "break", "default"],
+      "path": "./script/chapter05/03.md",
+      "order": 3
     }
   ]
 }
