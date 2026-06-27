@@ -168,5 +168,25 @@
       "path": "./script/chapter04/04.md",
       "order": 4
     }
+  ],
+  "5": [
+    {
+      "id": "basic-function", 
+      "title": "함수 기본",
+      "description": "if문, else, else if문의 기본 구조와 작동 원리를 배우고, 소괄호 내부에서 일어나는 Truthy/Falsy 자동 형변환 개념 및 조건부 연산자(삼항 연산자)의 올바른 활용법에 대해 다룹니다.",
+      "type": "doc",
+      "tags": ["조건문", "if", "else", "Truthy", "Falsy", "형변환"],
+      "path": "./script/chapter05/01.md",
+      "order": 1
+    },
+    {
+      "id": "function-parameter", 
+      "title": "함수 파라미터",
+      "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
+      "type": "doc",
+      "tags": ["조건문", "switch", "case", "break", "default"],
+      "path": "./script/chapter05/02.md",
+      "order": 2
+    }
   ]
 }
