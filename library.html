@@ -180,7 +180,6 @@
             transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
-            text-decoration: none;
         }
 
         /* 좌측 강조 테두리 (Hover 시 표시) */
@@ -216,6 +215,8 @@
         }
 
         .doc-title {
+            display: inline-block;
+            text-decoration: none;
             color: var(--text-heading);
             font-size: 1.25rem;
             font-weight: 700;
@@ -416,21 +417,19 @@
             gridEl.innerHTML = filteredDocs.map(post => {
                 const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
                 const badge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                const tagsHTML = (post.tags || []).map(tag => `<span class="tag">#${tag}</span>`).join('');
-                
-                // 전체를 <a> 태그 래퍼로 만들어 클릭 영역 확대 및 호버 트리거 개선
+                const tagsHTML = (post.tags || []).map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                 return `
-                    <a href="${targetPage}?id=${post.id}" class="doc-card">
+                    <div class="doc-card">
                         <div class="doc-meta">
                             <span class="doc-category-badge">MODULE // ${currentCategory}</span>
                             ${badge}
                         </div>
-                        <h3 class="doc-title">${post.title}</h3>
+                        <a href="${targetPage}?id=${post.id}" class="doc-title">${post.title}</a>
                         <p class="doc-desc">${post.description || '모듈 상세 설명이 로드되지 않았습니다.'}</p>
                         <div class="doc-tags">
                             ${tagsHTML}
                         </div>
-                    </a>
+                    </div>
                 `;
             }).join('');
         }
