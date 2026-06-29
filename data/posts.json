@@ -79,7 +79,7 @@
       "title": "실습: prompt를 이용해 입력값 받기",
       "description": "prompt() 함수를 통해 사용자로부터 데이터를 입력받고, 숫자로 변환하여 연산한 뒤 출력하는 과정을 실습합니다.",
       "type": "lab",
-      "tags": [ "변수", "자료형", "개발자도구", "브라우저", "prompt()", "형변환", "템플릿_리터럴", "lab"],
+      "tags": ["변수", "자료형", "개발자도구", "브라우저", "prompt()", "LAB"],
       "path": "./script/chapter02/05.md",
       "order": 5
     }
@@ -126,7 +126,7 @@
       "title": "실습: 단축 평가를 활용한 로그인 및 환경 설정",
       "description": "논리 연산자(&&, ||, ??)의 단축 평가와 비교 연산자만을 활용하여 로그인 기능 및 프로필 환경 설정 기능을 구현하는 과정을 실습합니다.",
       "type": "lab",
-      "tags": ["연산자", "단축_평가", "lab"],
+      "tags": ["연산자", "단축_평가", "Node.js", "LAB"],
       "path": "./script/chapter03/05.md",
       "order": 5
     }
@@ -164,54 +164,54 @@
       "title": "실습: 제어문을 활용한 거스름돈 계산",
       "description": "'최소 화폐 개수 거스름돈 계산 알고리즘'을 구현하는 실습 가이드입니다. 결제 부족 예외 처리, 10원 미만 자투리 금액 절삭과 나머지 연산자(%)를 활용한 탐욕법(Greedy) 기초를 익힙니다.",
       "type": "lab",
-      "tags": ["조건문", "반복문", "lab"],
+      "tags": ["조건문", "반복문", "Node.js", "LAB"],
       "path": "./script/chapter04/04.md",
       "order": 4
     }
   ],
   "5": [
     {
-      "id": "basic-function", 
+      "id": "function-basics", 
       "title": "함수 기본",
-      "description": "if문, else, else if문의 기본 구조와 작동 원리를 배우고, 소괄호 내부에서 일어나는 Truthy/Falsy 자동 형변환 개념 및 조건부 연산자(삼항 연산자)의 올바른 활용법에 대해 다룹니다.",
+      "description": "함수의 선언과 호출의 차이를 이해하고, 올바른 이름 짓기 규칙(동사형, 카멜케이스) 및 지역 변수와 외부 변수(스코프)의 기초 개념을 학습합니다.",
       "type": "doc",
-      "tags": ["조건문", "if", "else", "Truthy", "Falsy", "형변환"],
+      "tags": ["함수", "변수", "스코프"],
       "path": "./script/chapter05/01.md",
       "order": 1
     },
     {
-      "id": "function-parameter", 
-      "title": "함수 파라미터",
-      "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
+      "id": "function-parameters-and-return", 
+      "title": "함수 매개변수와 반환값",
+      "description": "함수 내부로 데이터를 전달하는 매개변수와 인수, 기본값(Default Parameter) 설정 방법, 그리고 결과를 내보내거나 실행을 즉시 종료하는 반환(return)에 대해 다룹니다.",
       "type": "doc",
-      "tags": ["조건문", "switch", "case", "break", "default"],
+      "tags": ["함수", "파라미터", "아규먼트", "return"],
       "path": "./script/chapter05/02.md",
       "order": 2
     },
     {
-      "id": "function-expression", 
-      "title": "함수 표현식",
-      "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
+      "id": "function-expression-and-callback", 
+      "title": "함수 표현식과 콜백 함수",
+      "description": "함수를 '값'으로 취급하는 자바스크립트의 특성을 이해하고, 함수 선언문과의 핵심 차이점(호이스팅, 스코프) 및 콜백(Callback) 함수의 동작 원리를 알아봅니다.",
       "type": "doc",
-      "tags": ["조건문", "switch", "case", "break", "default"],
+      "tags": ["함수", "함수_표현식", "스코프", "콜백"],
       "path": "./script/chapter05/03.md",
       "order": 3
     },
     {
       "id": "arrow-function", 
-      "title": "화살표 함수 기본",
-      "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
+      "title": "화살표 함수",
+      "description": "ES6에 도입된 화살표 함수 문법을 학습하고, 매개변수 및 코드 길이에 따른 축약 규칙(암묵적 반환)을 통해 콜백 코드를 극도로 간결하게 작성하는 방법을 배웁니다.",
       "type": "doc",
-      "tags": ["조건문", "switch", "case", "break", "default"],
+      "tags": ["함수", "화살표_함수"],
       "path": "./script/chapter05/04.md",
       "order": 4
     },
     {
       "id": "function-lab", 
       "title": "실습: 함수형 챗봇 만들기",
-      "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
+      "description": "함수 선언문, 화살표 함수, 매개변수 및 반환값, 그리고 콜백 패턴을 레고 블록처럼 조립하여 터미널 환경에서 작동하는 대화형 챗봇을 직접 구현하는 실습입니다.",
       "type": "lab",
-      "tags": ["조건문", "switch", "case", "break", "default"],
+      "tags": ["함수", "콜백", "Node.js", "LAB"],
       "path": "./script/chapter05/05.md",
       "order": 5
     }
