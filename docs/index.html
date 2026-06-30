@@ -463,7 +463,7 @@
                 // 데이터 검증 및 에러 처리
                 if (!currentPost) return DocCore.renderSystemMessage('404', contentArea, tagsContainer);
                 if (currentPost.type === 'lab') return DocCore.renderSystemMessage('wrong_type', contentArea, tagsContainer, postId);
-                if (!currentPost.path.startsWith('./script/')) throw new Error('INVALID_PATH');
+                if (!currentPost.path) throw new Error('INVALID_PATH');
 
                 // 3. UI 업데이트 (사이드바, 태그, 제목)
                 document.title = currentPost.title + " - JFB";
