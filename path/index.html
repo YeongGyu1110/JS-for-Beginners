@@ -10,7 +10,7 @@
     
     <link rel="icon" href="favicon.png" type="image/png">
 
-    <link rel="stylesheet" href="./common/common.css">
+    <link rel="stylesheet" href="../assets/common/common.css">
 
     <style>
         body {
@@ -305,7 +305,7 @@
 <body>
 
     <header class="header">
-        <a href="main.html" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span>_</span></a>
     </header>
 
     <div id="app-container">
@@ -320,7 +320,7 @@
         <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
     
-    <script src="./common/common.js"></script>
+    <script src="../assets/common/common.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
@@ -337,7 +337,7 @@
                         ${code === '404' ? '<h1 class="system-message-title">404</h1>' : ''}
                         <h2 class="system-message-subtitle">${msg}</h2>
                         <p class="system-message-desc">${desc}</p>
-                        <a href="main.html" class="return-home-btn">> RETURN_TO_MAIN_</a>
+                        <a href="../" class="return-home-btn">> RETURN_TO_MAIN_</a>
                     </div>
                 `;
             };
@@ -345,7 +345,7 @@
             if (!chapterId) return renderError('', 'NO_CHAPTER_SELECTED', '조회할 챕터를 선택해주세요.');
 
             try {
-                const [postsRes, chaptersRes] = await Promise.all([fetch('./data/posts.json'), fetch('./data/chapters.json').catch(()=>({ok:false}))]);
+                const [postsRes, chaptersRes] = await Promise.all([fetch('../data/posts.json'), fetch('../data/chapters.json').catch(()=>({ok:false}))]);
                 if (!postsRes.ok) throw new Error();
                 
                 const rawPosts = await postsRes.json();
@@ -364,12 +364,12 @@
                 document.title = `${info.title} - JFB`;
                 
                 const firstPost = chapterPosts[0];
-                const startTarget = firstPost.type === 'lab' ? 'lab.html' : 'index.html';
+                const startTarget = firstPost.type === 'lab' ? '../lab/' : '../docs/';
 
                 const modulesHTML = chapterPosts.map((post, index) => {
-                    const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
+                    const targetPage = post.type === 'lab' ? '../lab/' : '../docs/';
                     const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                    const tagsHTML = (post.tags || []).map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                    const tagsHTML = (post.tags || []).map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                     
                     return `
                     <div class="module-card">
@@ -425,7 +425,7 @@
                         // 이전 챕터 버튼 생성
                         if (currentIndex > 0) {
                             const prevId = chapterIds[currentIndex - 1];
-                            prevUrl = `chapter.html?id=${prevId}`;
+                            prevUrl = `./?id=${prevId}`;
                             const sidePrev = document.createElement('a');
                             sidePrev.href = prevUrl;
                             sidePrev.className = 'side-nav-btn prev';
@@ -437,7 +437,7 @@
                         // 다음 챕터 버튼 생성
                         if (currentIndex < chapterIds.length - 1) {
                             const nextId = chapterIds[currentIndex + 1];
-                            nextUrl = `chapter.html?id=${nextId}`;
+                            nextUrl = `./?id=${nextId}`;
                             const sideNext = document.createElement('a');
                             sideNext.href = nextUrl;
                             sideNext.className = 'side-nav-btn next';

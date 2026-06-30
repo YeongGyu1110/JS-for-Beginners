@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     
     <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="stylesheet" href="./common/common.css">
+    <link rel="stylesheet" href="../assets/common/common.css">
     
     <style>
         /* =========================================
@@ -303,7 +303,7 @@
 <body>
 
     <header class="header">
-        <a href="main.html" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span>_</span></a>
     </header>
 
     <!-- 히어로 섹션 -->
@@ -343,13 +343,14 @@
         <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
 
-    <script src="./common/common.js"></script>
+    <script src="../assets/common/common.js"></script>
+
     <script>
         async function fetchAllDocuments() {
             let allDocs = [];
             try {
                 // 1. posts.json (메인 튜토리얼)
-                const postsRes = await fetch('./data/posts.json');
+                const postsRes = await fetch('../data/posts.json');
                 if (postsRes.ok) {
                     const rawPosts = await postsRes.json();
                     const jsPosts = Object.values(rawPosts)
@@ -359,7 +360,7 @@
                 }
 
                 // 2. library.json (확장 모듈)
-                const libRes = await fetch('./data/library.json');
+                const libRes = await fetch('../data/library.json');
                 if (libRes.ok) {
                     const libPosts = await libRes.json();
                     allDocs = [...allDocs, ...libPosts];
@@ -385,7 +386,7 @@
                 const label = formatCategoryName(category);
                 return `
                     <li>
-                        <a href="library.html?category=${category}" class="category-link ${isActive}">
+                        <a href="./?category=${category}" class="category-link ${isActive}">
                             ${label}
                         </a>
                     </li>
@@ -415,9 +416,9 @@
             }
 
             gridEl.innerHTML = filteredDocs.map(post => {
-                const targetPage = post.type === 'lab' ? 'lab.html' : 'index.html';
+                const targetPage = post.type === 'lab' ? '../lab/' : '../docs';
                 const badge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                const tagsHTML = (post.tags || []).map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                const tagsHTML = (post.tags || []).map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                 return `
                     <div class="doc-card">
                         <div class="doc-meta">
