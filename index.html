@@ -10,7 +10,7 @@
     
     <link rel="icon" href="favicon.png" type="image/png">
 
-    <link rel="stylesheet" href="./common/common.css">
+    <link rel="stylesheet" href="./assets/common/common.css">
     
     <style>
 
@@ -493,7 +493,7 @@
 <body>
 
     <header class="header">
-        <a href="main.html" class="logo">JFB<span>_</span></a>
+        <a href="/" class="logo">JFB<span>_</span></a>
     </header>
 
     <div class="hero-container">
@@ -527,7 +527,7 @@
             </div>
             
             <div class="search-wrapper">
-                <form action="search.html" method="GET" class="main-search-form">
+                <form action="search/" method="GET" class="main-search-form">
                     <input type="text" name="q" class="search-input" placeholder="Search documentation..." autocomplete="off">
                     <span class="search-icon"></span>
                 </form>
@@ -562,7 +562,7 @@
                         자바스크립트 엔진의 내부 메커니즘부터 웹 프로그래밍, 라이브러리 응용까지 무한히 확장되는 가이드가 이곳에 연결됩니다.
                     </p>
                 </div>
-                <a href="library.html" class="extension-btn">
+                <a href="satellite/" class="extension-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     CONNECT_LINK
                 </a>
@@ -614,7 +614,7 @@
                 // 시작 버튼 설정
                 if (posts.length > 0) {
                     const sortedPosts = [...posts].sort((a, b) => a.chapter !== b.chapter ? Number(a.chapter) - Number(b.chapter) : a.order - b.order);
-                    enterBtn.href = `chapter.html?id=${sortedPosts[0].chapter}`;
+                    enterBtn.href = `path/?id=${sortedPosts[0].chapter}`;
                     enterBtn.innerText = "> START_TUTORIAL_";
                 } else {
                     enterBtn.innerText = "> NO_DATA_";
@@ -626,7 +626,7 @@
                 const topTags = Object.keys(tagCounts).sort(() => Math.random() - 0.5).sort((a, b) => tagCounts[b] - tagCounts[a]).slice(0, 4);
                 
                 if (suggestedTagsContainer) {
-                    suggestedTagsContainer.innerHTML = topTags.map(tag => `<a href="search.html?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`).join('');
+                    suggestedTagsContainer.innerHTML = topTags.map(tag => `<a href="search/?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`).join('');
                 }
 
                 // 챕터 그리드 렌더링
@@ -646,16 +646,16 @@
                     if (items.length >= 4) {
                         // 1. 목록이 4개 이상일 경우 앞의 2개만 추출
                         listHTML = items.slice(0, 2).map(item => {
-                            const target = item.type === 'lab' ? 'lab.html' : 'index.html';
+                            const target = item.type === 'lab' ? 'lab/' : 'docs/';
                             const badge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
                             return `<li><a href="${target}?id=${item.id}">${item.title}${badge}</a></li>`;
                         }).join('');
                         
                         // 2. 3번째 리스트에 챕터 페이지로 이동하는 '더보기' 항목 추가
-                        listHTML += `<li class="more-item"><a href="chapter.html?id=${chapterKey}">... 더보기 (${items.length - 2}개의 문서)</a></li>`;
+                        listHTML += `<li class="more-item"><a href="path/?id=${chapterKey}">... 더보기 (${items.length - 2}개의 문서)</a></li>`;
                     } else {
                         listHTML = items.map(item => {
-                            const target = item.type === 'lab' ? 'lab.html' : 'index.html';
+                            const target = item.type === 'lab' ? 'lab/' : 'docs/';
                             const badge = item.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
                             return `<li><a href="${target}?id=${item.id}">${item.title}${badge}</a></li>`;
                         }).join('');
@@ -664,7 +664,7 @@
                     return `
                         <div class="chapter-card">
                             <span class="chapter-meta">${info.meta}</span>
-                            <a href="chapter.html?id=${chapterKey}" style="text-decoration:none; display:block;">
+                            <a href="path/?id=${chapterKey}" style="text-decoration:none; display:block;">
                                 <h3 class="chapter-title">${info.title}</h3>
                             </a>
                             <ul class="chapter-list">${listHTML}</ul>
