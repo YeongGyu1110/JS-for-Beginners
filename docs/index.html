@@ -14,8 +14,8 @@
 
     <link rel="icon" href="favicon.png" type="image/png">
 
-    <link rel="stylesheet" href="./common/common.css">
-    <link rel="stylesheet" href="./common/markdown.css">
+    <link rel="stylesheet" href="../assets/common/common.css">
+    <link rel="stylesheet" href="../assets/viewer/markdown.css">
 
     <style>
 
@@ -334,13 +334,13 @@
     <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
     
     <header class="header">
-        <a href="main.html" class="logo" style="text-decoration: none;">JFB<span>_</span></a>
+        <a href="../" class="logo" style="text-decoration: none;">JFB<span>_</span></a>
     </header>
 
     <div class="layout-container">
         <aside class="sidebar left-sidebar">
 
-            <form action="search.html" method="GET" class="search-form">
+            <form action="../search/" method="GET" class="search-form">
                 <!-- input을 먼저 배치해야 CSS 형제 선택자(~)로 아이콘을 제어할 수 있습니다 -->
                 <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off">
                 <span class="search-icon"></span>
@@ -403,8 +403,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
         
-    <script src="./common/common.js"></script>
-    <script src="./common/doc.js"></script>
+    <script src="../assets/common/common.js"></script>
+    <script src="../assets/viewer/doc.js"></script>
 
     <!-- 커스텀 자바스크립트 -->
     <!-- 커스텀 자바스크립트 -->
@@ -437,9 +437,9 @@
             try {
                 // 2. 데이터 로드
                 const [postsResponse, chaptersResponse, libraryResponse] = await Promise.all([
-                    fetch('./data/posts.json'),
-                    fetch('./data/chapters.json'),
-                    fetch('./data/library.json').catch(() => ({ ok: false })) // library.json 추가 로드
+                    fetch('../data/posts.json'),
+                    fetch('../data/chapters.json'),
+                    fetch('../data/library.json').catch(() => ({ ok: false })) // library.json 추가 로드
                 ]);
 
                 if (!postsResponse.ok || !chaptersResponse.ok) throw new Error('DB_LOAD_FAIL');
@@ -469,7 +469,7 @@
                 document.title = currentPost.title + " - JFB";
                 
                 if (currentPost.tags && currentPost.tags.length > 0) {
-                    tagsContainer.innerHTML = currentPost.tags.map(tag => `<a href="search.html?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                    tagsContainer.innerHTML = currentPost.tags.map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                 }
 
                 // 챕터 또는 카테고리에 따른 우측 사이드바 데이터 분기 처리
@@ -483,13 +483,13 @@
                     const chapterInfo = chapters[currentPost.chapter];
                     if (chapterInfo) {
                         sideTitle = chapterInfo.title;
-                        sideLink = `chapter.html?id=${currentPost.chapter}`;
+                        sideLink = `../path/?id=${currentPost.chapter}`;
                     }
                 } else if (currentPost.category) {
                     // 확장 라이브러리 데이터 (library.json)
                     chapterPosts = posts.filter(p => p.category === currentPost.category);
                     sideTitle = currentPost.category.toUpperCase() + '_';
-                    sideLink = `library.html?category=${currentPost.category}`;
+                    sideLink = `../satellite/?category=${currentPost.category}`;
                 }
                 
                 document.getElementById('side-chapter-title').textContent = sideTitle;
@@ -497,7 +497,7 @@
                 
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, idx) => {
                     const num = String(idx + 1).padStart(2, '0');
-                    const targetPage = p.type === 'lab' ? 'lab.html' : 'index.html';
+                    const targetPage = p.type === 'lab' ? '../lab/' : '../docs/';
                     return `<a href="${targetPage}?id=${p.id}" class="${p.id === postId ? 'active' : ''}" title="${num}. ${p.title}">${num}. ${p.title}</a>`;
                 }).join('');
 
