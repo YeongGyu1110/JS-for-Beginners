@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found - JFB</title>
+    
+    <!-- 웹 폰트: Pretendard (본문용), Fira Code (코드용) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="/favicon.png" type="image/png">
+
+    <!-- 공통 CSS 연결 (경로는 프로젝트 환경에 맞게 수정해주세요) -->
+    <link rel="stylesheet" href="/assets/common/common.css">
+
+    <style>
+        /* 페이지 전체를 Flexbox로 설정하여 푸터를 하단에 고정 */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 메인 컨텐츠 영역이 남은 공간을 모두 차지하도록 설정 */
+        .error-layout {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 2rem;
+        }
+
+        /* 기존 common.css의 60vh 고정 높이를 해제하여 Flex 레이아웃에 맞춤 */
+        .system-message-container {
+            height: auto; 
+            margin-top: -5vh; /* 화면의 완벽한 중앙보다 살짝 위쪽에 배치하는 것이 시각적으로 안정적임 */
+        }
+
+        /* 심플한 푸터 스타일 */
+        .footer {
+            padding: 2rem;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 공통 헤더 -->
+    <header class="header">
+        <a href="/" class="logo" style="text-decoration: none;">JFB<span>_</span></a>
+    </header>
+
+    <!-- 404 메인 컨텐츠 -->
+    <main class="error-layout">
+        <div class="system-message-container">
+            <!-- 아이콘 및 태그를 제거하고 타이틀, 서브타이틀, 설명으로만 구성하여 심플함 극대화 -->
+            <h1 class="system-message-title" style="font-size: 5rem;">404</h1>
+            <h2 class="system-message-subtitle" style="margin-bottom: 1rem;">PAGE_NOT_FOUND</h2>
+            
+            <!-- 범용적인 에러 설명 -->
+            <p class="system-message-desc">
+                존재하지 않는 주소를 요청했거나 잘못된 접근입니다.<br>
+                입력하신 경로를 다시 확인해 주세요.
+            </p>
+            
+            <a href="/" class="return-home-btn">> RETURN_TO_HOME_</a>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 2rem 2rem; margin-top: auto; font-family: 'Fira Code', monospace; text-align: center;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);">_</span></div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
+    </footer>
+
+</body>
+</html>
