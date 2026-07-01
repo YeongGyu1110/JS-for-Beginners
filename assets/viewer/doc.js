@@ -117,7 +117,7 @@ const DocCore = {
                 navContainer.className = 'post-navigation';
 
                 if (prevPost) {
-                    const prevTarget = prevPost.type === 'lab' ? 'lab.html' : 'index.html';
+                    const prevTarget = prevPost.type === 'lab' ? '../lab/' : '../docs/';
                     prevUrl = `${prevTarget}?id=${prevPost.id}`;
                     navContainer.innerHTML += `<a href="${prevUrl}" class="nav-btn prev"><span class="nav-label">< PREVIOUS</span><span class="nav-title">${prevPost.title}</span></a>`;
                     
@@ -127,7 +127,7 @@ const DocCore = {
                     document.body.appendChild(sidePrev);
                 }
                 if (nextPost) {
-                    const nextTarget = nextPost.type === 'lab' ? 'lab.html' : 'index.html';
+                    const nextTarget = nextPost.type === 'lab' ? '../lab/' : '../docs/';
                     nextUrl = `${nextTarget}?id=${nextPost.id}`;
                     navContainer.innerHTML += `<a href="${nextUrl}" class="nav-btn next"><span class="nav-label">NEXT ></span><span class="nav-title">${nextPost.title}</span></a>`;
                     
@@ -158,17 +158,17 @@ const DocCore = {
         if (type === 'empty') {
             icon = `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line>`;
             sub = "NO_FILE_SELECTED"; desc = "읽을 문서를 선택하거나 검색해주세요.";
-            btn = `<a href="search.html" class="return-home-btn">> OPEN_SEARCH_</a>`;
+            btn = `<a href="../search/" class="return-home-btn">> OPEN_SEARCH_</a>`;
         } else if (type === '404') {
             title = "404 Not Found - JFB"; tagMsg = `<span style="color: var(--accent-color)">[SYS_ERR: 404]</span>`;
             icon = `<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>`;
             sub = "FILE_NOT_FOUND"; desc = "요청하신 문서를 찾을 수 없거나 삭제되었습니다.";
-            btn = `<h1 class="system-message-title" style="margin-top:-1rem">404</h1><a href="main.html" class="return-home-btn">> RETURN_TO_HOME_</a>`;
+            btn = `<h1 class="system-message-title" style="margin-top:-1rem">404</h1><a href="../" class="return-home-btn">> RETURN_TO_HOME_</a>`;
         } else if (type === 'wrong_type') {
             title = "Access Denied - JFB"; tagMsg = `<span style="color: var(--accent-color)">[TYPE_MISMATCH]</span>`;
             icon = `<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>`;
             sub = "INVALID_VIEWER_TYPE"; desc = "이 문서는 해당 뷰어 환경과 맞지 않습니다.";
-            const targetPage = window.location.pathname.includes('lab.html') ? 'index.html' : 'lab.html';
+            const targetPage = window.location.pathname.includes('/lab/') ? '../docs/' : '../lab/'; 
             btn = `<a href="${targetPage}?id=${id}" class="return-home-btn">> OPEN_IN_CORRECT_VIEWER_</a>`;
         }
 

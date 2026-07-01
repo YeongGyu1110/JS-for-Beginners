@@ -12,10 +12,10 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="icon" href="../favicon.png" type="image/png">
 
-    <link rel="stylesheet" href="./common/common.css">
-    <link rel="stylesheet" href="./common/markdown.css">
+    <link rel="stylesheet" href="../assets/common/common.css">
+    <link rel="stylesheet" href="../assets/viewer/markdown.css">
 
     <style>
         body {
@@ -341,12 +341,12 @@
     <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
     
     <header class="header">
-        <a href="main.html" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span>_</span></a>
     </header>
 
     <div class="layout-container">
         <aside class="sidebar left-sidebar">
-            <form action="search.html" method="GET" class="search-form ui-element" id="ui-search">
+            <form action="../search/" method="GET" class="search-form ui-element" id="ui-search">
                 <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off">
                 <span class="search-icon"></span>
             </form>
@@ -426,8 +426,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 
-    <script src="./common/common.js"></script>
-    <script src="./common/doc.js"></script>
+    <script src="../assets/common/common.js"></script>
+    <script src="../assets/viewer/doc.js"></script>
 
     <!-- 커스텀 자바스크립트 -->
     <script>
@@ -476,9 +476,9 @@
             try {
                 // 2. 데이터 로드 및 검증
                 const [postsRes, chaptersRes, libraryRes] = await Promise.all([
-                    fetch('./data/posts.json'), 
-                    fetch('./data/chapters.json'),
-                    fetch('./data/library.json').catch(() => ({ok: false}))
+                    fetch('../data/posts.json'), 
+                    fetch('../data/chapters.json'),
+                    fetch('../data/library.json').catch(() => ({ok: false}))
                 ]);
                 
                 const rawPosts = await postsRes.json();
@@ -516,26 +516,26 @@
                     const chapterInfo = chapters[currentPost.chapter];
                     if (chapterInfo) {
                         sideTitle = chapterInfo.title;
-                        sideLink = `chapter.html?id=${currentPost.chapter}`;
+                        sideLink = `../path/?id=${currentPost.chapter}`;
                     }
                 } else if (currentPost.category) {
                     chapterPosts = posts.filter(p => p.category === currentPost.category);
                     sideTitle = currentPost.category.toUpperCase() + '_';
-                    sideLink = `library.html?category=${currentPost.category}`;
+                    sideLink = `../satellite/?category=${currentPost.category}`;
                 }
 
                 document.getElementById('side-chapter-title').textContent = sideTitle;
                 document.getElementById('side-chapter-title-link').href = sideLink;
                 
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
-                    const target = p.type === 'lab' ? 'lab.html' : 'index.html';
+                    const target = p.type === 'lab' ? '../lab/' : '../docs/';
                     return `<a href="${target}?id=${p.id}" class="${p.id === postId ? 'active' : ''}">${String(i+1).padStart(2,'0')}. ${p.title}</a>`;
                 }).join('');
                 
                 document.getElementById('side-chapter-count').textContent = `[${chapterPosts.findIndex(p=>p.id===postId)+1}/${chapterPosts.length}]`;
                 
                 if (currentPost.tags) {
-                    tagsContainer.innerHTML = currentPost.tags.map(t => `<a href="search.html?q=%23${t}" class="tag">#${t}</a>`).join('');
+                    tagsContainer.innerHTML = currentPost.tags.map(t => `<a href="../search/?q=%23${t}" class="tag">#${t}</a>`).join('');
                 }
 
                 // 4. 마크다운 렌더링

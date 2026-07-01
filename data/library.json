@@ -5,7 +5,7 @@
     "description": "",
     "type": "doc",
     "tags": ["test"],
-    "path": "./script/test/style-test.md",
+    "path": "../content/test/style-test.md",
     "category": "test"
   },
   {
@@ -14,7 +14,7 @@
       "description": "",
       "type": "lab",
       "tags": ["test"],
-      "path": "./script/test/lab.md",
+      "path": "../content/test/lab.md",
       "category": "test"
   }
 ]
