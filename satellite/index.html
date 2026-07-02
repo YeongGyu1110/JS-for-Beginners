@@ -355,7 +355,7 @@
                     const rawPosts = await postsRes.json();
                     const jsPosts = Object.values(rawPosts)
                         .flat()
-                        .map(post => ({ ...post, category: 'javascript-core' })); 
+                        .map(post => ({ ...post, category: 'javascript-fundamentals' }));
                     allDocs = [...allDocs, ...jsPosts];
                 }
 
@@ -373,7 +373,7 @@
 
         // 카테고리 ID 포맷터
         function formatCategoryName(categoryId) {
-            if (categoryId === 'javascript-core') return 'JavaScript Core';
+            if (categoryId === 'javascript-fundamentals') return 'JavaScript Fundamentals';
             if (categoryId === 'discord-js') return 'Discord.js';
             return categoryId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         }
@@ -440,8 +440,8 @@
             let uniqueCategories = [...new Set(allDocs.map(doc => doc.category).filter(Boolean))];
 
             uniqueCategories.sort((a, b) => {
-                if (a === 'javascript-core') return -1;
-                if (b === 'javascript-core') return 1;
+                if (a === 'javascript-fundamentals') return -1;
+                if (b === 'javascript-fundamentals') return 1;
                 return a.localeCompare(b);
             });
 
@@ -449,7 +449,7 @@
             let currentCategory = urlParams.get('category');
             
             if (!currentCategory || !uniqueCategories.includes(currentCategory)) {
-                currentCategory = uniqueCategories.length > 0 ? uniqueCategories[0] : 'javascript-core';
+                currentCategory = uniqueCategories.length > 0 ? uniqueCategories[0] : 'javascript-fundamentals';
                 window.history.replaceState({}, '', `?category=${currentCategory}`);
             }
 
