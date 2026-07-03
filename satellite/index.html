@@ -317,16 +317,17 @@
 
     <div class="library-wrapper">
         <!-- 좌측 사이드바 (카테고리 트리) -->
-        <aside class="sidebar">
-            <h3 class="sidebar-title">DIR_</h3>
+        <nav class="sidebar" aria-label="모듈 카테고리 탐색">
+            <h3 class="sidebar-title" aria-hidden="true">DIR_</h3>
             <ul class="category-list" id="category-list">
                 <!-- 자바스크립트로 렌더링됩니다 -->
             </ul>
-        </aside>
+        </nav>
 
         <!-- 우측 메인 콘텐츠 (문서 리스트) -->
         <main class="main-content">
-            <div class="content-header">
+            <!-- 데이터가 로드되어 화면이 바뀌면 음성으로 알려줍니다 -->
+            <div class="content-header" aria-live="polite">
                 <h2 class="current-category-title" id="current-category-title">LOADING...</h2>
                 <div class="doc-count" id="doc-count">[ SEARCHING_DB... ]</div>
             </div>
@@ -383,10 +384,12 @@
             const listEl = document.getElementById('category-list');
             listEl.innerHTML = categories.map(category => {
                 const isActive = category === currentCategory ? 'active' : '';
+                // 현재 선택된 탭일 경우 스크린 리더에게 '현재 페이지'라고 알려주는 속성
+                const ariaCurrent = category === currentCategory ? 'aria-current="page"' : '';
                 const label = formatCategoryName(category);
                 return `
                     <li>
-                        <a href="./?category=${category}" class="category-link ${isActive}">
+                        <a href="./?category=${category}" class="category-link ${isActive}" ${ariaCurrent}>
                             ${label}
                         </a>
                     </li>
@@ -455,6 +458,9 @@
 
             renderSidebar(uniqueCategories, currentCategory);
             renderDocs(allDocs, currentCategory);
+            
+            // 문서 로딩이 끝나면 브라우저 탭 타이틀을 현재 카테고리명으로 업데이트합니다.
+            document.title = `${formatCategoryName(currentCategory)} - Satellite Modules - JFB`;
         });
     </script>
 </body>
