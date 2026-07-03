@@ -61,6 +61,8 @@ window.showToast = (message) => {
 
     const toast = document.createElement('div');
     toast.className = 'toast-notification';
+    toast.setAttribute('role', 'status'); // 스크린 리더용 알림 선언
+    toast.setAttribute('aria-live', 'polite'); // 안내 음성이 겹치지 않게 대기
     toast.textContent = message;
     document.body.appendChild(toast);
 
@@ -96,6 +98,9 @@ window.showConfirm = (message) => {
 
         const overlay = document.createElement('div');
         overlay.className = 'confirm-overlay';
+        overlay.setAttribute('role', 'dialog'); // 이게 팝업 창임을 알려줌
+        overlay.setAttribute('aria-modal', 'true'); // 팝업 뒤 배경은 잠겼음을 알려줌
+        overlay.setAttribute('aria-label', '확인 메시지');
         overlay.innerHTML = `
             <div class="confirm-box">
                 <p class="confirm-message">${message}</p>
@@ -109,7 +114,12 @@ window.showConfirm = (message) => {
         document.body.appendChild(overlay);
 
         // 표시 애니메이션 적용을 위한 딜레이
-        setTimeout(() => overlay.classList.add('show'), 10);
+        setTimeout(() => {
+            overlay.classList.add('show');
+            // 창이 뜨면 키보드 초점을 '취소' 버튼으로 자동 이동
+            const cancelBtn = overlay.querySelector('#confirm-btn-cancel');
+            if (cancelBtn) cancelBtn.focus();
+        }, 10);
 
         const handleResolve = (value) => {
             overlay.classList.remove('show');

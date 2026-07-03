@@ -507,7 +507,10 @@
 #####      ###        #########       
         </pre>
 
-        <h1 class="scramble-title" id="scramble-text"></h1>
+        <h1 class="scramble-title">
+            <span id="scramble-text" aria-hidden="true"></span>
+            <span class="sr-only">JavaScript for Beginners</span>
+        </h1>
 
         <p class="sub-description" id="sub-desc">
             복잡한 논리 속에서 가장 단순한 시작을 찾아서.<br>
@@ -527,9 +530,9 @@
             </div>
             
             <div class="search-wrapper">
-                <form action="./search/" method="GET" class="main-search-form">
-                    <input type="text" name="q" class="search-input" placeholder="Search documentation..." autocomplete="off">
-                    <span class="search-icon"></span>
+                <form action="./search/" method="GET" class="main-search-form" role="search">
+                    <input type="text" name="q" class="search-input" placeholder="Search documentation..." autocomplete="off" aria-label="문서 검색">
+                    <span class="search-icon" aria-hidden="true"></span>
                 </form>
                 <!-- 자바스크립트로 추천 태그가 렌더링됩니다 -->
                 <div class="suggested-tags" id="suggested-tags"></div>
@@ -540,7 +543,7 @@
         <section class="section-block">
             <div class="section-header">
                 <h2 class="section-title"><span>></span> EXPLORE_CHAPTERS_</h2>
-                <div class="stats-badge" id="stats-badge">[ LOADING_DATA... ]</div>
+                <div class="stats-badge" id="stats-badge" aria-live="polite">[ LOADING_DATA... ]</div>
             </div>
 
             <div class="chapter-grid" id="chapter-grid"></div>
@@ -687,10 +690,21 @@
 
             // TextScrambler는 common.js에 정의되어 있음
             setTimeout(() => {
-                new TextScrambler(el).setText('JavaScript for Beginners').then(() => {
+                // 사용자가 기기 설정에서 '모션 줄이기'를 켰는지 확인
+                const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                
+                if (prefersReducedMotion) {
+                    // 애니메이션 없이 즉시 텍스트 표시
+                    el.innerText = 'JavaScript for Beginners';
                     subDesc.classList.add('show');
                     enterBtn.classList.add('show');
-                });
+                } else {
+                    // 기존 스크램블 애니메이션 실행
+                    new TextScrambler(el).setText('JavaScript for Beginners').then(() => {
+                        subDesc.classList.add('show');
+                        enterBtn.classList.add('show');
+                    });
+                }
             }, 500);
         });
     </script>
