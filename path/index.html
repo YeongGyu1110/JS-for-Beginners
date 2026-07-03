@@ -308,7 +308,8 @@
         <a href="../" class="logo">JFB<span>_</span></a>
     </header>
 
-    <div id="app-container">
+    <!-- aria-live="polite" 를 추가하여 내부 내용이 바뀔 때 스크린 리더가 읽어줍니다 -->
+    <div id="app-container" aria-live="polite">
         <div class="system-message-container">
             <span style="font-family: 'Fira Code', monospace; color: var(--text-secondary);">[INITIALIZING_MODULE...]</span>
         </div>
@@ -331,7 +332,8 @@
                 document.title = `${code} - JFB`;
                 container.innerHTML = `
                     <div class="system-message-container">
-                        <svg class="system-message-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- 장식용 에러 아이콘 숨김 -->
+                        <svg class="system-message-icon" aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                         </svg>
                         ${code === '404' ? '<h1 class="system-message-title">404</h1>' : ''}
@@ -349,7 +351,6 @@
                 if (!postsRes.ok) throw new Error();
                 
                 const rawPosts = await postsRes.json();
-                // 객체 구조를 1차원 배열 구조로 가공하면서 chapter 키를 주입
                 const posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
                     items.map(item => ({ ...item, chapter: chapterKey }))
                 );
@@ -366,31 +367,36 @@
                 const firstPost = chapterPosts[0];
                 const startTarget = firstPost.type === 'lab' ? '../lab/' : '../docs/';
 
+                // 모듈 카드를 <li> 태그로 변경하여 스크린 리더가 목록의 갯수를 인지하게 함
                 const modulesHTML = chapterPosts.map((post, index) => {
                     const targetPage = post.type === 'lab' ? '../lab/' : '../docs/';
                     const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
                     const tagsHTML = (post.tags || []).map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
                     
                     return `
-                    <div class="module-card">
-                        <div class="module-number">${String(index + 1).padStart(2, '0')}</div>
+                    <li class="module-card">
+                        <div class="module-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div>
                         <div class="module-content">
                             <a href="${targetPage}?id=${post.id}" class="module-title">${post.title}${labBadge}</a>
                             <p class="module-desc">${post.description || '상세 설명이 제공되지 않은 문서입니다.'}</p>
                             <div class="module-tags">${tagsHTML}</div>
                         </div>
-                    </div>`;
+                    </li>`;
                 }).join('');
 
+                // 타이틀 스크램블 분리 및 모듈 리스트를 <ul> 태그로 변경
                 container.innerHTML = `
                     <section class="chapter-hero">
                         <div class="hero-content-wrapper">
                             <span class="chapter-meta-badge">${info.meta}</span>
-                            <h1 class="chapter-title" id="hero-title"></h1>
+                            <h1 class="chapter-title">
+                                <span id="hero-title" aria-hidden="true"></span>
+                                <span class="sr-only">${info.title}</span>
+                            </h1>
                             <p class="chapter-desc">${desc}</p>
                             <div class="hero-actions">
                                 <a href="${startTarget}?id=${firstPost.id}" class="start-btn">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                     START_CHAPTER_
                                 </a>
                                 <div class="chapter-stats">[ TOTAL_MODULES: <span>${chapterPosts.length}</span> ]</div>
@@ -399,13 +405,20 @@
                     </section>
                     <section class="curriculum-section">
                         <h2 class="section-heading">LEARNING_PATH_</h2>
-                        <div class="module-list">${modulesHTML}</div>
+                        <ul class="module-list" style="list-style: none;">${modulesHTML}</ul>
                     </section>
                 `;
 
                 setTimeout(() => {
                     const titleEl = document.getElementById('hero-title');
-                    if(titleEl) new TextScrambler(titleEl).setText(info.title);
+                    if(titleEl) {
+                        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                        if (prefersReducedMotion) {
+                            titleEl.innerText = info.title; // 애니메이션 생략
+                        } else {
+                            new TextScrambler(titleEl).setText(info.title);
+                        }
+                    }
                 }, 100);
 
                 if (Object.keys(chaptersData).length > 0) {
@@ -430,7 +443,7 @@
                             sidePrev.href = prevUrl;
                             sidePrev.className = 'side-nav-btn prev';
                             sidePrev.title = `이전 챕터: ${chaptersData[prevId].title} (Ctrl + ←)`;
-                            sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+                            sidePrev.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
                             document.body.appendChild(sidePrev);
                         }
 
@@ -442,7 +455,7 @@
                             sideNext.href = nextUrl;
                             sideNext.className = 'side-nav-btn next';
                             sideNext.title = `다음 챕터: ${chaptersData[nextId].title} (Ctrl + →)`;
-                            sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+                            sideNext.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
                             document.body.appendChild(sideNext);
                         }
 
