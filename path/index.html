@@ -109,7 +109,8 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-        .chapter-stats span { color: var(--text-primary); font-weight: 600; }
+        /* aria-hidden="true"가 없는 span(실제 숫자)에만 색상 및 굵기 적용 */
+        .chapter-stats span:not([aria-hidden="true"]) { color: var(--text-primary); font-weight: 600; }
 
         /* =========================================
            4. 커리큘럼 모듈 리스트 (문서 목록)
@@ -129,7 +130,8 @@
             align-items: center;
             gap: 10px;
         }
-        .section-heading::before { content: "■"; color: var(--accent-color); font-size: 0.6rem; }
+        /* 스크린 리더가 "검은색 사각형" 기호를 무시하도록 빈 문자열 할당 */
+        .section-heading::before { content: "■" / ""; color: var(--accent-color); font-size: 0.6rem; }
 
         .module-list {
             display: flex;
@@ -305,7 +307,7 @@
 <body>
 
     <header class="header">
-        <a href="../" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <!-- aria-live="polite" 를 추가하여 내부 내용이 바뀔 때 스크린 리더가 읽어줍니다 -->
@@ -317,7 +319,7 @@
 
     <!-- 푸터 -->
     <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: 3rem; font-family: 'Fira Code', monospace; text-align: center;">
-        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);">_</span></div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);" aria-hidden="true">_</span></div>
         <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트의 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
     
@@ -339,7 +341,7 @@
                         ${code === '404' ? '<h1 class="system-message-title">404</h1>' : ''}
                         <h2 class="system-message-subtitle">${msg}</h2>
                         <p class="system-message-desc">${desc}</p>
-                        <a href="../" class="return-home-btn">> RETURN_TO_MAIN_</a>
+                        <a href="../" class="return-home-btn"><span aria-hidden="true">&gt;</span> RETURN_TO_MAIN<span aria-hidden="true">_</span></a>
                     </div>
                 `;
             };
@@ -397,14 +399,14 @@
                             <div class="hero-actions">
                                 <a href="${startTarget}?id=${firstPost.id}" class="start-btn">
                                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                                    START_CHAPTER_
+                                    START_CHAPTER<span aria-hidden="true">_</span>
                                 </a>
-                                <div class="chapter-stats">[ TOTAL_MODULES: <span>${chapterPosts.length}</span> ]</div>
+                                <div class="chapter-stats"><span aria-hidden="true">[</span> TOTAL_MODULES: <span>${chapterPosts.length}</span> <span aria-hidden="true">]</span></div>
                             </div>
                         </div>
                     </section>
                     <section class="curriculum-section">
-                        <h2 class="section-heading">LEARNING_PATH_</h2>
+                        <h2 class="section-heading">LEARNING_PATH<span aria-hidden="true">_</span></h2>
                         <ul class="module-list" style="list-style: none;">${modulesHTML}</ul>
                     </section>
                 `;

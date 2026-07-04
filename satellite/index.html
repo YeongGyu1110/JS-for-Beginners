@@ -154,14 +154,16 @@
             color: var(--text-heading);
             font-weight: 600;
         }
-        .current-category-title::before { content: "> "; color: var(--accent-color); }
+        /* 스크린 리더가 ">" 기호를 무시하도록 대체 텍스트 빈 문자열 적용 */
+        .current-category-title::before { content: "> " / ""; color: var(--accent-color); }
 
         .doc-count {
             font-size: 0.85rem;
             color: var(--text-secondary);
             font-family: 'Fira Code', monospace;
         }
-        .doc-count span { color: var(--accent-color); }
+        /* aria-hidden="true" 속성이 없는 span(실제 숫자)에만 주황색 적용 */
+        .doc-count span:not([aria-hidden="true"]) { color: var(--accent-color); }
 
         .docs-grid {
             display: flex;
@@ -303,13 +305,13 @@
 <body>
 
     <header class="header">
-        <a href="../" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <!-- 히어로 섹션 -->
     <section class="page-hero">
-        <span class="hero-meta">[ EXTRA_MODULES ]</span>
-        <h1 class="hero-title">SATELLITE_</h1>
+        <span class="hero-meta"><span aria-hidden="true">[</span> EXTRA_MODULES <span aria-hidden="true">]</span></span>
+        <h1 class="hero-title">SATELLITE<span aria-hidden="true">_</span></h1>
         <p class="hero-desc">
             정규 커리큘럼 외에 프레임워크, 마크다운, 기타 유틸리티 등 개발에 날개를 달아줄 확장 기술 문서가 모여있는 공간입니다.
         </p>
@@ -403,15 +405,15 @@
             const titleEl = document.getElementById('current-category-title');
             const countEl = document.getElementById('doc-count');
 
-            titleEl.textContent = formatCategoryName(currentCategory).toUpperCase() + '_';
+            titleEl.innerHTML = formatCategoryName(currentCategory).toUpperCase() + '<span aria-hidden="true">_</span>';
             const filteredDocs = docs.filter(doc => doc.category === currentCategory);
 
-            countEl.innerHTML = `[ DOCS: <span>${filteredDocs.length}</span> ]`;
+            countEl.innerHTML = `<span aria-hidden="true">[</span> DOCS: <span>${filteredDocs.length}</span> <span aria-hidden="true">]</span>`;
 
             if (filteredDocs.length === 0) {
                 gridEl.innerHTML = `
                     <div class="empty-state">
-                        <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;">[!]</div>
+                        <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;" aria-hidden="true">[!]</div>
                         해당 모듈에 연결된 데이터가 없습니다.
                     </div>
                 `;
@@ -425,7 +427,7 @@
                 return `
                     <div class="doc-card">
                         <div class="doc-meta">
-                            <span class="doc-category-badge">MODULE // ${currentCategory}</span>
+                            <span class="doc-category-badge">MODULE <span aria-hidden="true">//</span> ${currentCategory}</span>
                             ${badge}
                         </div>
                         <a href="${targetPage}?id=${post.id}" class="doc-title">${post.title}</a>
