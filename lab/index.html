@@ -346,18 +346,19 @@
 
     <div class="layout-container">
         <aside class="sidebar left-sidebar">
-            <form action="../search/" method="GET" class="search-form ui-element" id="ui-search">
-                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off">
-                <span class="search-icon"></span>
+            <form action="../search/" method="GET" class="search-form ui-element" id="ui-search" role="search">
+                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off" aria-label="문서 검색">
+                <span class="search-icon" aria-hidden="true"></span>
             </form>
 
-            <div class="lab-timer-box ui-element hidden" id="ui-timer">
+            <div class="lab-timer-box ui-element hidden" id="ui-timer" aria-hidden="true">
+                <!-- 매 초 바뀌는 타이머를 스크린 리더가 계속 읽으면 방해가 되므로 숨깁니다. -->
                 <span class="timer-label">SESSION_TIME_REMAINING</span>
                 <div class="timer-display" id="timer-display">45:00</div>
             </div>
 
-            <h3 class="sidebar-title">On this page</h3>
-            <nav id="toc" class="toc-container"></nav>
+            <h3 class="sidebar-title" aria-hidden="true">On this page</h3>
+            <nav id="toc" class="toc-container" aria-label="현재 문서 목차"></nav>
         </aside>
 
         <main class="content">
@@ -365,7 +366,7 @@
                 [Loading document database...]
             </div>
 
-            <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;">
+            <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;" aria-live="polite">
                 <div class="terminal-status">
                     <span class="status-tag" id="term-status-tag">[SYSTEM_READY]</span>
                     <span class="status-text" id="term-status-text">STBY_ENVIRONMENT_LOADED</span>
@@ -374,7 +375,7 @@
                 <button id="btn-restart-lab" class="terminal-btn" style="display: none;">> REBOOT_SESSION_</button>
             </div>
 
-            <article id="lab-content" class="markdown-body"></article>
+            <article id="lab-content" class="markdown-body" aria-live="polite"></article>
         </main>
 
         <aside class="sidebar right-sidebar">
@@ -385,7 +386,7 @@
                         <span class="chapter-count" id="side-chapter-count">[0/0]</span>
                     </h3>
                 </a>
-                <nav id="chapter-nav" class="right-toc-container"></nav>
+                <nav id="chapter-nav" class="right-toc-container" aria-label="현재 챕터의 문서 목록"></nav>
                 <h3 class="sidebar-title">Tags</h3>
                 <div class="tags-container" id="tags-container"></div>
             </div>
@@ -393,10 +394,11 @@
             <div id="ui-dashboard" class="ui-element hidden">
                 <div class="dashboard-box">
                     <span class="dash-label">MISSIONS_COMPLETED</span>
-                    <div class="dash-value"><span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span></div>
+                    <!-- 점수가 오를 때 스크린 리더가 읽어줍니다 -->
+                    <div class="dash-value" aria-live="polite"><span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span></div>
                 </div>
                 <button class="sidebar-action-btn" id="btn-end-lab">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     </svg>
                     TERMINATE_SESSION_
@@ -412,11 +414,11 @@
          ========================================= -->
     <div class="sheet-overlay" id="sheet-overlay"></div>
     
-    <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
-        <button class="bottom-tab-btn" id="tab-left">
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar" aria-label="모바일 도구 모음">
+        <button class="bottom-tab-btn" id="tab-left" aria-expanded="false">
             <span id="tab-left-text">> SEARCH_</span>
         </button>
-        <button class="bottom-tab-btn" id="tab-right">
+        <button class="bottom-tab-btn" id="tab-right" aria-expanded="false">
             <span id="tab-right-text">> TOC_</span>
         </button>
     </nav>
@@ -549,7 +551,7 @@
                 document.querySelectorAll('.markdown-body pre').forEach(pre => {
                     const overlay = document.createElement('div');
                     overlay.className = 'code-lock-overlay';
-                    overlay.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>[CODE_LOCKED]</span>`;
+                    overlay.innerHTML = `<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>[CODE_LOCKED]</span>`;
                     pre.appendChild(overlay);
                 });
 
@@ -649,8 +651,24 @@
 
             // 미션 버튼 이벤트 리스너 세팅 (최초 1회만 등록)
             document.querySelectorAll('.lab-task-btn').forEach(btn => {
+                // 키보드 포커스와 버튼 역할을 부여하여 접근성 향상
+                btn.setAttribute('role', 'button');
+                btn.setAttribute('tabindex', '0'); // Tab 키로 이동 가능하게 설정
+                btn.setAttribute('aria-pressed', 'false'); // 눌리지 않은 상태로 초기화
+                
+                // 키보드(Enter/Space)로도 클릭이 가능하게 이벤트 추가
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+
                 btn.addEventListener('click', async function() {
                     if (!isLabActive || this.classList.contains('completed') || this.classList.contains('processing')) return;
+
+                    // 클릭 시 버튼이 눌렸음을 스크린 리더에 알림
+                    this.setAttribute('aria-pressed', 'true');
 
                     // 다중 클릭 방지를 위해 즉시 processing 클래스 부여
                     this.classList.add('processing');
@@ -809,9 +827,15 @@
                 overlay.classList.add('show');
                 leftSidebar.classList.add('sheet-open');
                 
-                // 탭 액티브 상태
-                tabLeft.classList.toggle('active', target === 'left');
-                tabRight.classList.toggle('active', target === 'right');
+                // 탭 액티브 상태 & 스크린 리더 동기화
+                const isLeft = target === 'left';
+                const isRight = target === 'right';
+
+                tabLeft.classList.toggle('active', isLeft);
+                tabLeft.setAttribute('aria-expanded', isLeft);
+
+                tabRight.classList.toggle('active', isRight);
+                tabRight.setAttribute('aria-expanded', isRight);
 
                 // 상태에 따른 UI 토글
                  if (isLabActive) {
@@ -843,7 +867,9 @@
                 overlay.classList.remove('show');
                 leftSidebar.classList.remove('sheet-open');
                 tabLeft.classList.remove('active');
+                tabLeft.setAttribute('aria-expanded', 'false');
                 tabRight.classList.remove('active');
+                tabRight.setAttribute('aria-expanded', 'false');
             }
 
             if (tabLeft && tabRight) {
