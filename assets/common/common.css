@@ -99,7 +99,7 @@ body {
     font-family: 'Fira Code', monospace; font-size: 0.85rem; z-index: 9999; opacity: 0;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); pointer-events: none;
 }
-.toast-notification::before { content: "[!] "; color: var(--accent-color); font-weight: bold; }
+.toast-notification::before { content: "[!] " / ""; color: var(--accent-color); font-weight: bold; }
 .toast-notification.show { bottom: 40px; opacity: 1; }
 
 /* =========================================
@@ -123,9 +123,9 @@ body {
     outline: none !important; 
 }
 .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.9rem; font-family: 'Fira Code', monospace; pointer-events: none; transition: all 0.2s ease; }
-.search-icon::before { content: "·"; }
+.search-icon::before { content: "·" / ""; } /* 스크린 리더가 무시하도록 빈 문자열 할당 */
 .search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: 600; }
-.search-input:focus ~ .search-icon::before { content: ">"; }
+.search-input:focus ~ .search-icon::before { content: ">" / ""; }
 
 /* 문서 좌우 플로팅 네비게이션 버튼 */
 .side-nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 48px; height: 100px; background-color: rgba(19, 21, 26, 0.4); backdrop-filter: blur(8px); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); text-decoration: none; transition: all 0.1s ease; z-index: 999; opacity: 0.5; overflow: hidden; }

@@ -106,7 +106,7 @@ window.showConfirm = (message) => {
                 <p class="confirm-message">${message}</p>
                 <div class="confirm-buttons">
                     <button class="confirm-btn no" id="confirm-btn-cancel">CANCEL</button>
-                    <button class="confirm-btn yes" id="confirm-btn-ok">CONFIRM_</button>
+                    <button class="confirm-btn yes" id="confirm-btn-ok">CONFIRM<span aria-hidden="true">_</span></button>
                 </div>
             </div>
         `;
