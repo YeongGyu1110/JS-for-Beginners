@@ -124,7 +124,7 @@
             color: var(--text-heading);
             font-weight: 600;
         }
-        .section-title span { color: var(--accent-color); }
+        .section-title span:first-child { color: var(--accent-color); } /* 첫 번째 span(>)에만 색상 적용 */
 
         /* 검색 영역 스타일 */
         .search-wrapper {
@@ -149,7 +149,8 @@
             color: var(--text-secondary);
             letter-spacing: 1px;
         }
-        .stats-badge span { color: var(--accent-color); }
+        /* aria-hidden="true"가 속성이 없는 span(즉, 실제 숫자 데이터)에만 주황색 적용 */
+        .stats-badge span:not([aria-hidden="true"]) { color: var(--accent-color); }
 
         /* 커리큘럼 카드 디자인 */
         .chapter-grid {
@@ -202,7 +203,7 @@
             padding-left: 1.2rem;
         }
         .chapter-list li::before {
-            content: "■";
+            content: "■" / "";
             position: absolute;
             left: 0;
             top: 0.45em; 
@@ -357,7 +358,7 @@
         }
 
         .chapter-list li.more-item::before {
-            content: "»";
+            content: "»" / "";
             color: var(--accent-color);
             font-size: 0.8rem;
             top: 0.3em;
@@ -397,7 +398,7 @@
 
         /* 배경 장식 패턴 (우측 하단) */
         .extension-card::after {
-            content: "{ }"; /* 중괄호로 변경 */
+            content: "{ }" / "";  /* 중괄호로 변경 */
             position: absolute;
             right: -2%;
             bottom: -20%;
@@ -493,7 +494,7 @@
 <body>
 
     <header class="header">
-        <a href="./" class="logo">JFB<span>_</span></a>
+        <a href="./" class="logo">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <div class="hero-container">
@@ -518,7 +519,9 @@
         </p>
 
         <!-- JSON 로드 후 첫 번째 글 링크로 치환됩니다 -->
-        <a href="#" class="enter-btn" id="enter-btn">> INITIALIZING...</a>
+        <a href="#" class="enter-btn" id="enter-btn">
+            <span aria-hidden="true">&gt;</span> INITIALIZING...
+        </a>
     </div>
 
     <main class="main-container">
@@ -526,7 +529,7 @@
         <!-- 검색 섹션 -->
         <section class="section-block">
             <div class="section-header">
-                <h2 class="section-title"><span>></span> SEARCH_DOCS_</h2>
+                <h2 class="section-title"><span aria-hidden="true">&gt;</span> SEARCH_DOCS<span aria-hidden="true">_</span></h2>
             </div>
             
             <div class="search-wrapper">
@@ -542,8 +545,10 @@
         <!-- 챕터 (커리큘럼) 섹션 -->
         <section class="section-block">
             <div class="section-header">
-                <h2 class="section-title"><span>></span> EXPLORE_CHAPTERS_</h2>
-                <div class="stats-badge" id="stats-badge" aria-live="polite">[ LOADING_DATA... ]</div>
+                <h2 class="section-title"><span aria-hidden="true">&gt;</span> EXPLORE_CHAPTERS<span aria-hidden="true">_</span></h2>
+                <div class="stats-badge" id="stats-badge" aria-live="polite">
+                    <span aria-hidden="true">[</span> LOADING_DATA... <span aria-hidden="true">]</span>
+                </div>
             </div>
 
             <div class="chapter-grid" id="chapter-grid"></div>
@@ -553,12 +558,14 @@
         <!-- 확장 모듈 이동 섹션 -->
         <section class="section-block">
             <div class="section-header">
-                <h2 class="section-title"><span>></span> EXPAND_UNIVERSE_</h2>
+                <h2 class="section-title"><span aria-hidden="true">&gt;</span> EXPAND_UNIVERSE<span aria-hidden="true">_</span></h2>
             </div>
             
             <div class="extension-card">
                 <div class="extension-info">
-                    <div class="extension-meta">[ SIGNAL_DETECTED ]</div>
+                    <div class="extension-meta">
+                        <span aria-hidden="true">[</span> SIGNAL_DETECTED <span aria-hidden="true">]</span>
+                    </div>
                     <h3 class="extension-title">SATELLITE_MODULES</h3>
                     <p class="extension-desc">
                         메인 커리큘럼 밖의 새로운 영역을 탐색합니다.<br>
@@ -578,7 +585,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div>
-                <div class="footer-brand">JFB<span>_</span></div>
+                <div class="footer-brand">JFB<span aria-hidden="true">_</span></div>
                 <div class="footer-desc">자바스크립트의 우주를 항해하는<br>입문자를 위한 컴팩트 가이드.</div>
             </div>
             <div class="footer-sys-info">
@@ -618,9 +625,9 @@
                 if (posts.length > 0) {
                     const sortedPosts = [...posts].sort((a, b) => a.chapter !== b.chapter ? Number(a.chapter) - Number(b.chapter) : a.order - b.order);
                     enterBtn.href = `./path/?id=${sortedPosts[0].chapter}`;
-                    enterBtn.innerText = "> START_TUTORIAL_";
+                    enterBtn.innerHTML = "<span aria-hidden='true'>&gt;</span> START_TUTORIAL<span aria-hidden='true'>_</span>";
                 } else {
-                    enterBtn.innerText = "> NO_DATA_";
+                    enterBtn.innerHTML = "<span aria-hidden='true'>&gt;</span> NO_DATA<span aria-hidden='true'>_</span>";
                 }
 
                 // 태그 추출 및 무작위 4개 렌더링
@@ -639,7 +646,7 @@
                     (chaptersObj[p.chapter] = chaptersObj[p.chapter] || []).push(p);
                 });
 
-                statsBadge.innerHTML = `[ TOTAL_CHAPTERS: <span>${Object.keys(chaptersObj).length}</span> | DOCS_LOADED: <span>${posts.length}</span> ]`;
+                statsBadge.innerHTML = `<span aria-hidden="true">[</span> TOTAL_CHAPTERS: <span>${Object.keys(chaptersObj).length}</span> <span aria-hidden="true">|</span> DOCS_LOADED: <span>${posts.length}</span> <span aria-hidden="true">]</span>`;
 
                 grid.innerHTML = Object.keys(chaptersObj).sort((a, b) => Number(a) - Number(b)).map(chapterKey => {
                     const items = chaptersObj[chapterKey].sort((a, b) => a.order - b.order);
