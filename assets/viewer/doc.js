@@ -36,7 +36,7 @@ const DocCore = {
             // 3. 복사 버튼을 pre 안이 아닌 'Wrapper'에 추가
             const btn = document.createElement('button');
             btn.className = 'copy-button';
-            btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
+            btn.innerHTML = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
             wrapper.appendChild(btn);
             
             btn.addEventListener('click', async () => {
@@ -46,10 +46,10 @@ const DocCore = {
                 try {
                     await navigator.clipboard.writeText(codeEl.innerText);
                     btn.classList.add('copied');
-                    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>DONE</span>`;
+                    btn.innerHTML = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>DONE</span>`;
                     setTimeout(() => {
                         btn.classList.remove('copied');
-                        btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
+                        btn.innerHTML = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
                     }, 1500);
                 } catch (err) { btn.innerText = 'ERR'; }
             });
@@ -123,7 +123,7 @@ const DocCore = {
                     
                     const sidePrev = document.createElement('a');
                     sidePrev.href = prevUrl; sidePrev.className = 'side-nav-btn prev'; sidePrev.title = `이전 글: ${prevPost.title} (Ctrl + ←)`;
-                    sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+                    sidePrev.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
                     document.body.appendChild(sidePrev);
                 }
                 if (nextPost) {
@@ -133,7 +133,7 @@ const DocCore = {
                     
                     const sideNext = document.createElement('a');
                     sideNext.href = nextUrl; sideNext.className = 'side-nav-btn next'; sideNext.title = `다음 글: ${nextPost.title} (Ctrl + →)`;
-                    sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+                    sideNext.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
                     document.body.appendChild(sideNext);
                 }
                 contentArea.appendChild(navContainer);

@@ -84,6 +84,13 @@
 .markdown-body pre:hover .copy-button { opacity: 1; pointer-events: auto; }
 
 .code-wrapper:hover .copy-button { opacity: 1; pointer-events: auto; }
+.copy-button:focus-visible { 
+    opacity: 1; 
+    pointer-events: auto; 
+    /* 키보드로 접근 시 주황색 테두리로 현재 위치 강조 */
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
 .copy-button:hover { background-color: var(--surface-hover); border-color: var(--text-secondary); color: var(--text-heading); }
 .copy-button.copied { background-color: var(--accent-color); border-color: var(--accent-color); color: #fff; font-weight: 500; }
 
