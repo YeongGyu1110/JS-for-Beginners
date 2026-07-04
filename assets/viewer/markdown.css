@@ -41,7 +41,7 @@
 /* 리스트 (Lists) */
 .markdown-body ul { list-style: none; margin-bottom: 1.6rem; padding-left: 0; }
 .markdown-body ul li { position: relative; padding-left: 1.2rem; margin-bottom: 0.5rem; }
-.markdown-body ul li::before { content: "■"; position: absolute; left: 0; top: 2px; font-size: 0.55rem; color: var(--text-primary); }
+.markdown-body ul li::before { content: "■" / ""; position: absolute; left: 0; top: 2px; font-size: 0.55rem; color: var(--text-primary); }
 .markdown-body ol { margin-bottom: 1.6rem; padding-left: 1.2rem; }
 .markdown-body ol li { margin-bottom: 0.5rem; }
 
@@ -97,7 +97,7 @@
 /* 콜아웃 (Callouts) */
 .callout { margin: 2rem 0; padding: 1.2rem 1.5rem; border-radius: var(--radius-sm); border-left: 4px solid var(--text-secondary); background-color: var(--surface-color); position: relative; }
 .callout-title { font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-.callout-title::before { content: "[!]"; font-weight: 900; }
+.callout-title::before { content: "[!]" / ""; font-weight: 900; }
 .callout.note { border-left-color: #3b82f6; } .callout.note .callout-title { color: #3b82f6; }
 .callout.tip { border-left-color: #10b981; } .callout.tip .callout-title { color: #10b981; }
 .callout.important { border-left-color: #8b5cf6; } .callout.important .callout-title { color: #8b5cf6; }

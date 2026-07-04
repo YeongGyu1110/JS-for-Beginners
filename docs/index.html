@@ -68,7 +68,7 @@
         }
 
         .toc-container a::before {
-            content: "·";
+            content: "·" / "";
             position: absolute;
             left: 0;
             color: var(--text-secondary);
@@ -85,7 +85,7 @@
             font-weight: 500;
         }
         .toc-container a.active::before {
-            content: ">";
+            content: ">" / "";
             color: var(--accent-color);
             opacity: 1;
         }
@@ -168,7 +168,7 @@
 
         /* 기본 마커: 점(·) */
         .right-toc-container a::before {
-            content: "·";
+            content: "·" / "";
             position: absolute;
             left: 0;
             color: var(--text-secondary);
@@ -187,7 +187,7 @@
         
         /* 액티브 마커: 꺾쇠(>) */
         .right-toc-container a.active::before {
-            content: ">";
+            content: ">" / "";
             color: var(--accent-color);
             opacity: 1;
         }
@@ -334,7 +334,7 @@
     <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
     
     <header class="header">
-        <a href="../" class="logo" style="text-decoration: none;">JFB<span>_</span></a>
+        <a href="../" class="logo" style="text-decoration: none;">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <div class="layout-container">
@@ -352,7 +352,7 @@
         <main class="content">
             <article id="post-content" class="markdown-body" aria-live="polite">
                 <div style="font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 30vh; color: var(--text-secondary); font-size: 0.9rem;">
-                    [Loading document...]
+                    <span aria-hidden="true">[</span>Loading document...<span aria-hidden="true">]</span>
                 </div>
             </article>
         </main>
@@ -388,10 +388,10 @@
     
     <nav class="mobile-bottom-bar" id="mobile-bottom-bar" aria-label="모바일 도구 모음">
         <button class="bottom-tab-btn" id="tab-search" aria-expanded="false">
-            > SEARCH_
+            <span aria-hidden="true">&gt;</span> SEARCH<span aria-hidden="true">_</span>
         </button>
         <button class="bottom-tab-btn" id="tab-toc" aria-expanded="false">
-            > TOC_
+            <span aria-hidden="true">&gt;</span> TOC<span aria-hidden="true">_</span>
         </button>
     </nav>
 
@@ -487,11 +487,11 @@
                 } else if (currentPost.category) {
                     // 확장 라이브러리 데이터 (library.json)
                     chapterPosts = posts.filter(p => p.category === currentPost.category);
-                    sideTitle = currentPost.category.toUpperCase() + '_';
+                    sideTitle = currentPost.category.toUpperCase() + '<span aria-hidden="true">_</span>';
                     sideLink = `../satellite/?category=${currentPost.category}`;
                 }
                 
-                document.getElementById('side-chapter-title').textContent = sideTitle;
+                document.getElementById('side-chapter-title').innerHTML = sideTitle; // textContent -> innerHTML 로 변경
                 document.getElementById('side-chapter-title-link').href = sideLink;
                 
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, idx) => {
@@ -501,7 +501,7 @@
                 }).join('');
 
                 const countBadge = document.getElementById('side-chapter-count');
-                if(countBadge) countBadge.textContent = `[${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}]`;
+                if(countBadge) countBadge.innerHTML = `<span aria-hidden="true">[</span>${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}<span aria-hidden="true">]</span>`; // textContent -> innerHTML 로 변경
 
                 // 4. 마크다운 파일 렌더링
                 const mdResponse = await fetch(currentPost.path);
