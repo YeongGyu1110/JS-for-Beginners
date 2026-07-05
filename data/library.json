@@ -1,4 +1,14 @@
 {
+  "web-development": [
+    {
+      "id": "web-dev-basics", 
+      "title": "웹 개발 기초",
+      "description": "",
+      "type": "doc",
+      "tags": ["web-development"],
+      "path": "../content/web-development/01.md"
+    }
+  ],
   "test": [
     {
       "id": "test-style", 
