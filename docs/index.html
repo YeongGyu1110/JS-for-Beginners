@@ -472,7 +472,7 @@
                 document.title = currentPost.title + " - JFB";
                 
                 if (currentPost.tags && currentPost.tags.length > 0) {
-                    tagsContainer.innerHTML = currentPost.tags.map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                    tagsContainer.innerHTML = currentPost.tags.map(tag => `<a href="../search/?q=%23${tag}" class="post-tag">#${tag}</a>`).join('');
                 }
 
                 // 챕터 또는 카테고리에 따른 우측 사이드바 데이터 분기 처리

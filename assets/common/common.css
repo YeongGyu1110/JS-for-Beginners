@@ -60,12 +60,12 @@ body {
 /* =========================================
    4. 공통 UI 컴포넌트 (태그, 뱃지, 프로그레스 바)
    ========================================= */
-.tag {
+.post-tag {
     font-family: 'Fira Code', monospace; background-color: var(--surface-color); border: 1px solid var(--border-color);
     color: var(--text-secondary); text-decoration: none; padding: 0.25rem 0.5rem; border-radius: var(--radius-sm);
     font-size: 0.75rem; transition: all 0.15s ease; cursor: pointer; display: inline-block;
 }
-.tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
+.post-tag:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
 .lab-badge {
     font-family: 'Fira Code', monospace; font-size: 0.65rem; font-weight: 600;

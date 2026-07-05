@@ -626,7 +626,7 @@
                 const topTags = Object.keys(tagCounts).sort(() => Math.random() - 0.5).sort((a, b) => tagCounts[b] - tagCounts[a]).slice(0, 4);
                 
                 if (suggestedTagsContainer) {
-                    suggestedTagsContainer.innerHTML = topTags.map(tag => `<a href="./search/?q=${encodeURIComponent('#' + tag)}" class="tag">#${tag}</a>`).join('');
+                    suggestedTagsContainer.innerHTML = topTags.map(tag => `<a href="./search/?q=${encodeURIComponent('#' + tag)}" class="post-tag">#${tag}</a>`).join('');
                 }
 
                 // 챕터 그리드 렌더링

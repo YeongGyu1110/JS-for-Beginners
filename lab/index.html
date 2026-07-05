@@ -540,7 +540,7 @@
                 document.getElementById('side-chapter-count').textContent = `[${chapterPosts.findIndex(p=>p.id===postId)+1}/${chapterPosts.length}]`;
                 
                 if (currentPost.tags) {
-                    tagsContainer.innerHTML = currentPost.tags.map(t => `<a href="../search/?q=%23${t}" class="tag">#${t}</a>`).join('');
+                    tagsContainer.innerHTML = currentPost.tags.map(t => `<a href="../search/?q=%23${t}" class="post-tag">#${t}</a>`).join('');
                 }
 
                 // 4. 마크다운 렌더링
