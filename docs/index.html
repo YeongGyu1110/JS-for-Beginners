@@ -446,14 +446,17 @@
                 
                 const rawPosts = await postsResponse.json();
                 
-                // 기존 posts.json 데이터
+                // 1. posts.json 데이터 (chapter 속성과 기본 category 주입)
                 let posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
-                    items.map(item => ({ ...item, chapter: chapterKey }))
+                    items.map(item => ({ ...item, chapter: chapterKey, category: 'javascript-fundamentals' }))
                 );
                 
-                // library.json 데이터 병합
+                // 2. library.json 데이터 (객체 키를 category로 주입하며 평탄화)
                 if (libraryResponse.ok) {
-                    const libPosts = await libraryResponse.json();
+                    const rawLib = await libraryResponse.json();
+                    const libPosts = Object.entries(rawLib).flatMap(([catKey, items]) => 
+                        items.map(item => ({ ...item, category: catKey }))
+                    );
                     posts = [...posts, ...libPosts];
                 }
 

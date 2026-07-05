@@ -362,7 +362,11 @@
                 // 2. library.json (확장 모듈)
                 const libRes = await fetch('../data/library.json');
                 if (libRes.ok) {
-                    const libPosts = await libRes.json();
+                    const rawLib = await libRes.json();
+                    // 객체의 키(카테고리명)를 추출하여 내부 배열 요소에 category 필드로 일괄 주입합니다.
+                    const libPosts = Object.entries(rawLib).flatMap(([cat, posts]) => 
+                        posts.map(post => ({ ...post, category: cat }))
+                    );
                     allDocs = [...allDocs, ...libPosts];
                 }
             } catch (e) {
@@ -437,13 +441,10 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             const allDocs = await fetchAllDocuments();
+            
+            // Set은 배열에 추가된(JSON에 등록된) 순서를 그대로 유지합니다. 
+            // 별도의 알파벳 정렬 로직을 제거했습니다.
             let uniqueCategories = [...new Set(allDocs.map(doc => doc.category).filter(Boolean))];
-
-            uniqueCategories.sort((a, b) => {
-                if (a === 'javascript-fundamentals') return -1;
-                if (b === 'javascript-fundamentals') return 1;
-                return a.localeCompare(b);
-            });
 
             const urlParams = new URLSearchParams(window.location.search);
             let currentCategory = urlParams.get('category');

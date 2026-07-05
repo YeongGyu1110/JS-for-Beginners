@@ -1,20 +1,20 @@
-[
-  {
-    "id": "test-style", 
-    "title": "스타일 테스트",
-    "description": "",
-    "type": "doc",
-    "tags": ["test"],
-    "path": "../content/test/style-test.md",
-    "category": "test"
-  },
-  {
+{
+  "test": [
+    {
+      "id": "test-style", 
+      "title": "스타일 테스트",
+      "description": "",
+      "type": "doc",
+      "tags": ["test"],
+      "path": "../content/test/style-test.md"
+    },
+    {
       "id": "test-lab", 
       "title": "실습 테스트",
       "description": "",
       "type": "lab",
       "tags": ["test"],
-      "path": "../content/test/lab.md",
-      "category": "test"
-  }
-]
+      "path": "../content/test/lab.md"
+    }
+  ]
+}
