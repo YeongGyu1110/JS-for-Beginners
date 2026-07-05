@@ -7,6 +7,14 @@
       "type": "doc",
       "tags": ["web-development"],
       "path": "../content/web-development/01.md"
+    },
+    {
+      "id": "html-liveserver", 
+      "title": "HTML 및 Live Server",
+      "description": "",
+      "type": "lab",
+      "tags": ["web-development"],
+      "path": "../content/web-development/02.md"
     }
   ],
   "test": [
