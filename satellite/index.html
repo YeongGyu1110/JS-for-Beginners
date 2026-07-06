@@ -154,14 +154,16 @@
             color: var(--text-heading);
             font-weight: 600;
         }
-        .current-category-title::before { content: "> "; color: var(--accent-color); }
+        /* 스크린 리더가 ">" 기호를 무시하도록 대체 텍스트 빈 문자열 적용 */
+        .current-category-title::before { content: "> " / ""; color: var(--accent-color); }
 
         .doc-count {
             font-size: 0.85rem;
             color: var(--text-secondary);
             font-family: 'Fira Code', monospace;
         }
-        .doc-count span { color: var(--accent-color); }
+        /* aria-hidden="true" 속성이 없는 span(실제 숫자)에만 주황색 적용 */
+        .doc-count span:not([aria-hidden="true"]) { color: var(--accent-color); }
 
         .docs-grid {
             display: flex;
@@ -303,13 +305,13 @@
 <body>
 
     <header class="header">
-        <a href="../" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <!-- 히어로 섹션 -->
     <section class="page-hero">
-        <span class="hero-meta">[ EXTRA_MODULES ]</span>
-        <h1 class="hero-title">SATELLITE_</h1>
+        <span class="hero-meta"><span aria-hidden="true">[</span> EXTRA_MODULES <span aria-hidden="true">]</span></span>
+        <h1 class="hero-title">SATELLITE<span aria-hidden="true">_</span></h1>
         <p class="hero-desc">
             정규 커리큘럼 외에 프레임워크, 마크다운, 기타 유틸리티 등 개발에 날개를 달아줄 확장 기술 문서가 모여있는 공간입니다.
         </p>
@@ -317,16 +319,17 @@
 
     <div class="library-wrapper">
         <!-- 좌측 사이드바 (카테고리 트리) -->
-        <aside class="sidebar">
-            <h3 class="sidebar-title">DIR_</h3>
+        <nav class="sidebar" aria-label="모듈 카테고리 탐색">
+            <h3 class="sidebar-title" aria-hidden="true">DIR_</h3>
             <ul class="category-list" id="category-list">
                 <!-- 자바스크립트로 렌더링됩니다 -->
             </ul>
-        </aside>
+        </nav>
 
         <!-- 우측 메인 콘텐츠 (문서 리스트) -->
         <main class="main-content">
-            <div class="content-header">
+            <!-- 데이터가 로드되어 화면이 바뀌면 음성으로 알려줍니다 -->
+            <div class="content-header" aria-live="polite">
                 <h2 class="current-category-title" id="current-category-title">LOADING...</h2>
                 <div class="doc-count" id="doc-count">[ SEARCHING_DB... ]</div>
             </div>
@@ -387,10 +390,12 @@
             const listEl = document.getElementById('category-list');
             listEl.innerHTML = categories.map(category => {
                 const isActive = category === currentCategory ? 'active' : '';
+                // 현재 선택된 탭일 경우 스크린 리더에게 '현재 페이지'라고 알려주는 속성
+                const ariaCurrent = category === currentCategory ? 'aria-current="page"' : '';
                 const label = formatCategoryName(category);
                 return `
                     <li>
-                        <a href="./?category=${category}" class="category-link ${isActive}">
+                        <a href="./?category=${category}" class="category-link ${isActive}" ${ariaCurrent}>
                             ${label}
                         </a>
                     </li>
@@ -404,15 +409,15 @@
             const titleEl = document.getElementById('current-category-title');
             const countEl = document.getElementById('doc-count');
 
-            titleEl.textContent = formatCategoryName(currentCategory).toUpperCase() + '_';
+            titleEl.innerHTML = formatCategoryName(currentCategory).toUpperCase() + '<span aria-hidden="true">_</span>';
             const filteredDocs = docs.filter(doc => doc.category === currentCategory);
 
-            countEl.innerHTML = `[ DOCS: <span>${filteredDocs.length}</span> ]`;
+            countEl.innerHTML = `<span aria-hidden="true">[</span> DOCS: <span>${filteredDocs.length}</span> <span aria-hidden="true">]</span>`;
 
             if (filteredDocs.length === 0) {
                 gridEl.innerHTML = `
                     <div class="empty-state">
-                        <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;">[!]</div>
+                        <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;" aria-hidden="true">[!]</div>
                         해당 모듈에 연결된 데이터가 없습니다.
                     </div>
                 `;
@@ -426,7 +431,7 @@
                 return `
                     <div class="doc-card">
                         <div class="doc-meta">
-                            <span class="doc-category-badge">MODULE // ${currentCategory}</span>
+                            <span class="doc-category-badge">MODULE <span aria-hidden="true">//</span> ${currentCategory}</span>
                             ${badge}
                         </div>
                         <a href="${targetPage}?id=${post.id}" class="doc-title">${post.title}</a>
@@ -456,6 +461,9 @@
 
             renderSidebar(uniqueCategories, currentCategory);
             renderDocs(allDocs, currentCategory);
+            
+            // 문서 로딩이 끝나면 브라우저 탭 타이틀을 현재 카테고리명으로 업데이트합니다.
+            document.title = `${formatCategoryName(currentCategory)} - Satellite Modules - JFB`;
         });
     </script>
 </body>

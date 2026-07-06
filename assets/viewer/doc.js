@@ -36,7 +36,7 @@ const DocCore = {
             // 3. 복사 버튼을 pre 안이 아닌 'Wrapper'에 추가
             const btn = document.createElement('button');
             btn.className = 'copy-button';
-            btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
+            btn.innerHTML = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
             wrapper.appendChild(btn);
             
             btn.addEventListener('click', async () => {
@@ -46,10 +46,10 @@ const DocCore = {
                 try {
                     await navigator.clipboard.writeText(codeEl.innerText);
                     btn.classList.add('copied');
-                    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>DONE</span>`;
+                    btn.innerHTML = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg><span>DONE</span>`;
                     setTimeout(() => {
                         btn.classList.remove('copied');
-                        btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
+                        btn.innerHTML = `<svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="1" ry="1"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span>COPY</span>`;
                     }, 1500);
                 } catch (err) { btn.innerText = 'ERR'; }
             });
@@ -119,21 +119,21 @@ const DocCore = {
                 if (prevPost) {
                     const prevTarget = prevPost.type === 'lab' ? '../lab/' : '../docs/';
                     prevUrl = `${prevTarget}?id=${prevPost.id}`;
-                    navContainer.innerHTML += `<a href="${prevUrl}" class="nav-btn prev"><span class="nav-label">< PREVIOUS</span><span class="nav-title">${prevPost.title}</span></a>`;
-                    
+                    navContainer.innerHTML += `<a href="${prevUrl}" class="nav-btn prev"><span class="nav-label"><span aria-hidden="true">&lt;</span> PREVIOUS</span><span class="nav-title">${prevPost.title}</span></a>`;
+
                     const sidePrev = document.createElement('a');
                     sidePrev.href = prevUrl; sidePrev.className = 'side-nav-btn prev'; sidePrev.title = `이전 글: ${prevPost.title} (Ctrl + ←)`;
-                    sidePrev.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+                    sidePrev.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
                     document.body.appendChild(sidePrev);
                 }
                 if (nextPost) {
                     const nextTarget = nextPost.type === 'lab' ? '../lab/' : '../docs/';
                     nextUrl = `${nextTarget}?id=${nextPost.id}`;
-                    navContainer.innerHTML += `<a href="${nextUrl}" class="nav-btn next"><span class="nav-label">NEXT ></span><span class="nav-title">${nextPost.title}</span></a>`;
+                    navContainer.innerHTML += `<a href="${nextUrl}" class="nav-btn next"><span class="nav-label">NEXT <span aria-hidden="true">&gt;</span></span><span class="nav-title">${nextPost.title}</span></a>`;
                     
                     const sideNext = document.createElement('a');
                     sideNext.href = nextUrl; sideNext.className = 'side-nav-btn next'; sideNext.title = `다음 글: ${nextPost.title} (Ctrl + →)`;
-                    sideNext.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+                    sideNext.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
                     document.body.appendChild(sideNext);
                 }
                 contentArea.appendChild(navContainer);
@@ -153,23 +153,23 @@ const DocCore = {
 
     // 5. 공통 시스템/에러 화면 렌더러
     renderSystemMessage: (type, contentArea, tagsContainer, id = null) => {
-        let title = "Viewer - JFB", tagMsg = "[WAITING_FOR_INPUT]", icon = "", sub = "", desc = "", btn = "";
-        
+        let title = "Viewer - JFB", tagMsg = "<span aria-hidden='true'>[</span>WAITING_FOR_INPUT<span aria-hidden='true'>]</span>", icon = "", sub = "", desc = "", btn = "";
+
         if (type === 'empty') {
             icon = `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line>`;
             sub = "NO_FILE_SELECTED"; desc = "읽을 문서를 선택하거나 검색해주세요.";
-            btn = `<a href="../search/" class="return-home-btn">> OPEN_SEARCH_</a>`;
+            btn = `<a href="../search/" class="return-home-btn"><span aria-hidden="true">&gt;</span> OPEN_SEARCH<span aria-hidden="true">_</span></a>`;
         } else if (type === '404') {
-            title = "404 Not Found - JFB"; tagMsg = `<span style="color: var(--accent-color)">[SYS_ERR: 404]</span>`;
+            title = "404 Not Found - JFB"; tagMsg = `<span style="color: var(--accent-color)"><span aria-hidden="true">[</span>SYS_ERR: 404<span aria-hidden="true">]</span></span>`;
             icon = `<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>`;
             sub = "FILE_NOT_FOUND"; desc = "요청하신 문서를 찾을 수 없거나 삭제되었습니다.";
-            btn = `<h1 class="system-message-title" style="margin-top:-1rem">404</h1><a href="../" class="return-home-btn">> RETURN_TO_HOME_</a>`;
+            btn = `<h1 class="system-message-title" style="margin-top:-1rem">404</h1><a href="../" class="return-home-btn"><span aria-hidden="true">&gt;</span> RETURN_TO_HOME<span aria-hidden="true">_</span></a>`;
         } else if (type === 'wrong_type') {
-            title = "Access Denied - JFB"; tagMsg = `<span style="color: var(--accent-color)">[TYPE_MISMATCH]</span>`;
+            title = "Access Denied - JFB"; tagMsg = `<span style="color: var(--accent-color)"><span aria-hidden="true">[</span>TYPE_MISMATCH<span aria-hidden="true">]</span></span>`;
             icon = `<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>`;
             sub = "INVALID_VIEWER_TYPE"; desc = "이 문서는 해당 뷰어 환경과 맞지 않습니다.";
             const targetPage = window.location.pathname.includes('/lab/') ? '../docs/' : '../lab/'; 
-            btn = `<a href="${targetPage}?id=${id}" class="return-home-btn">> OPEN_IN_CORRECT_VIEWER_</a>`;
+            btn = `<a href="${targetPage}?id=${id}" class="return-home-btn"><span aria-hidden="true">&gt;</span> OPEN_IN_CORRECT_VIEWER<span aria-hidden="true">_</span></a>`;
         }
 
         document.title = title;
