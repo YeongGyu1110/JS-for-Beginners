@@ -76,16 +76,10 @@
             margin-bottom: 0.6rem; font-size: 0.8rem; font-family: 'Fira Code', monospace; 
             transition: color 0.15s ease; position: relative; padding-left: 12px;
         }
-        .toc-container a::before { 
-            content: "·"; 
-            position: absolute; 
-            left: 0; 
-            color: var(--text-secondary);
-            opacity: 0.5; 
-        }
+        .toc-container a::before { content: "·" / ""; position: absolute; left: 0; color: var(--text-secondary); opacity: 0.5; }
         .toc-container a:hover { color: var(--text-heading); }
         .toc-container a.active { color: var(--accent-color); font-weight: 500; }
-        .toc-container a.active::before { content: ">"; color: var(--accent-color); opacity: 1; }
+        .toc-container a.active::before { content: ">" / ""; color: var(--accent-color); opacity: 1; }
         .toc-h2 { margin-left: 0; }
         .toc-h3 { margin-left: 10px; font-size: 0.75rem !important; }
 
@@ -97,10 +91,10 @@
 
         .right-toc-container { position: relative; display: flex; flex-direction: column; margin-bottom: 2.5rem; }
         .right-toc-container a { display: block; color: var(--text-secondary); text-decoration: none; margin-bottom: 0.6rem; font-size: 0.8rem; font-family: 'Fira Code', monospace; transition: color 0.15s ease; position: relative; padding-left: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .right-toc-container a::before { content: "·"; position: absolute; left: 0; color: var(--text-secondary); opacity: 0.5; }
+        .right-toc-container a::before { content: "·" / ""; position: absolute; left: 0; color: var(--text-secondary); opacity: 0.5; }
         .right-toc-container a:hover { color: var(--text-heading); }
         .right-toc-container a.active { color: var(--accent-color); font-weight: 500; }
-        .right-toc-container a.active::before { content: ">"; color: var(--accent-color); opacity: 1; }
+        .right-toc-container a.active::before { content: ">" / ""; color: var(--accent-color); opacity: 1; }
 
         .tags-container { display: flex; flex-wrap: wrap; gap: 0.4rem; }
         /* =========================================
@@ -341,40 +335,41 @@
     <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
     
     <header class="header">
-        <a href="../" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <div class="layout-container">
         <aside class="sidebar left-sidebar">
-            <form action="../search/" method="GET" class="search-form ui-element" id="ui-search">
-                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off">
-                <span class="search-icon"></span>
+            <form action="../search/" method="GET" class="search-form ui-element" id="ui-search" role="search">
+                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off" aria-label="문서 검색">
+                <span class="search-icon" aria-hidden="true"></span>
             </form>
 
-            <div class="lab-timer-box ui-element hidden" id="ui-timer">
+            <div class="lab-timer-box ui-element hidden" id="ui-timer" aria-hidden="true">
+                <!-- 매 초 바뀌는 타이머를 스크린 리더가 계속 읽으면 방해가 되므로 숨깁니다. -->
                 <span class="timer-label">SESSION_TIME_REMAINING</span>
                 <div class="timer-display" id="timer-display">45:00</div>
             </div>
 
-            <h3 class="sidebar-title">On this page</h3>
-            <nav id="toc" class="toc-container"></nav>
+            <h3 class="sidebar-title" aria-hidden="true">On this page</h3>
+            <nav id="toc" class="toc-container" aria-label="현재 문서 목차"></nav>
         </aside>
 
         <main class="content">
             <div id="loader-state" style="font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 30vh; color: var(--text-secondary); font-size: 0.9rem;">
-                [Loading document database...]
+                <span aria-hidden="true">[</span>Loading document database...<span aria-hidden="true">]</span>
             </div>
 
-            <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;">
+            <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;" aria-live="polite">
                 <div class="terminal-status">
-                    <span class="status-tag" id="term-status-tag">[SYSTEM_READY]</span>
+                    <span class="status-tag" id="term-status-tag"><span aria-hidden="true">[</span>SYSTEM_READY<span aria-hidden="true">]</span></span>
                     <span class="status-text" id="term-status-text">STBY_ENVIRONMENT_LOADED</span>
                 </div>
-                <button id="btn-start-lab" class="terminal-btn">> INITIALIZE_WORKSPACE_</button>
-                <button id="btn-restart-lab" class="terminal-btn" style="display: none;">> REBOOT_SESSION_</button>
+                <button id="btn-start-lab" class="terminal-btn"><span aria-hidden="true">&gt;</span> INITIALIZE_WORKSPACE<span aria-hidden="true">_</span></button>
+                <button id="btn-restart-lab" class="terminal-btn" style="display: none;"><span aria-hidden="true">&gt;</span> REBOOT_SESSION<span aria-hidden="true">_</span></button>
             </div>
 
-            <article id="lab-content" class="markdown-body"></article>
+            <article id="lab-content" class="markdown-body" aria-live="polite"></article>
         </main>
 
         <aside class="sidebar right-sidebar">
@@ -385,7 +380,7 @@
                         <span class="chapter-count" id="side-chapter-count">[0/0]</span>
                     </h3>
                 </a>
-                <nav id="chapter-nav" class="right-toc-container"></nav>
+                <nav id="chapter-nav" class="right-toc-container" aria-label="현재 챕터의 문서 목록"></nav>
                 <h3 class="sidebar-title">Tags</h3>
                 <div class="tags-container" id="tags-container"></div>
             </div>
@@ -393,13 +388,14 @@
             <div id="ui-dashboard" class="ui-element hidden">
                 <div class="dashboard-box">
                     <span class="dash-label">MISSIONS_COMPLETED</span>
-                    <div class="dash-value"><span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span></div>
+                    <!-- 점수가 오를 때 스크린 리더가 읽어줍니다 -->
+                    <div class="dash-value" aria-live="polite"><span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span></div>
                 </div>
                 <button class="sidebar-action-btn" id="btn-end-lab">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     </svg>
-                    TERMINATE_SESSION_
+                    TERMINATE_SESSION<span aria-hidden="true">_</span>
                 </button>
             </div>
         </aside>
@@ -412,12 +408,12 @@
          ========================================= -->
     <div class="sheet-overlay" id="sheet-overlay"></div>
     
-    <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
-        <button class="bottom-tab-btn" id="tab-left">
-            <span id="tab-left-text">> SEARCH_</span>
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar" aria-label="모바일 도구 모음">
+        <button class="bottom-tab-btn" id="tab-left" aria-expanded="false">
+            <span id="tab-left-text"><span aria-hidden="true">&gt;</span> SEARCH<span aria-hidden="true">_</span></span>
         </button>
-        <button class="bottom-tab-btn" id="tab-right">
-            <span id="tab-right-text">> TOC_</span>
+        <button class="bottom-tab-btn" id="tab-right" aria-expanded="false">
+            <span id="tab-right-text"><span aria-hidden="true">&gt;</span> TOC<span aria-hidden="true">_</span></span>
         </button>
     </nav>
 
@@ -525,11 +521,11 @@
                     }
                 } else if (currentPost.category) {
                     chapterPosts = posts.filter(p => p.category === currentPost.category);
-                    sideTitle = currentPost.category.toUpperCase() + '_';
+                    sideTitle = currentPost.category.toUpperCase() + '<span aria-hidden="true">_</span>';
                     sideLink = `../satellite/?category=${currentPost.category}`;
-                }
+                    }
 
-                document.getElementById('side-chapter-title').textContent = sideTitle;
+                    document.getElementById('side-chapter-title').innerHTML = sideTitle; // textContent -> innerHTML로 변경
                 document.getElementById('side-chapter-title-link').href = sideLink;
                 
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
@@ -537,8 +533,8 @@
                     return `<a href="${target}?id=${p.id}" class="${p.id === postId ? 'active' : ''}">${String(i+1).padStart(2,'0')}. ${p.title}</a>`;
                 }).join('');
                 
-                document.getElementById('side-chapter-count').textContent = `[${chapterPosts.findIndex(p=>p.id===postId)+1}/${chapterPosts.length}]`;
-                
+                document.getElementById('side-chapter-count').innerHTML = `<span aria-hidden="true">[</span>${chapterPosts.findIndex(p=>p.id===postId)+1}/${chapterPosts.length}<span aria-hidden="true">]</span>`; // textContent -> innerHTML로 변경
+
                 if (currentPost.tags) {
                     tagsContainer.innerHTML = currentPost.tags.map(t => `<a href="../search/?q=%23${t}" class="post-tag">#${t}</a>`).join('');
                 }
@@ -554,7 +550,7 @@
                 document.querySelectorAll('.markdown-body pre').forEach(pre => {
                     const overlay = document.createElement('div');
                     overlay.className = 'code-lock-overlay';
-                    overlay.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span>[CODE_LOCKED]</span>`;
+                    overlay.innerHTML = `<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span><span aria-hidden="true">[</span>CODE_LOCKED<span aria-hidden="true">]</span></span>`;
                     pre.appendChild(overlay);
                 });
 
@@ -654,16 +650,32 @@
 
             // 미션 버튼 이벤트 리스너 세팅 (최초 1회만 등록)
             document.querySelectorAll('.lab-task-btn').forEach(btn => {
+                // 키보드 포커스와 버튼 역할을 부여하여 접근성 향상
+                btn.setAttribute('role', 'button');
+                btn.setAttribute('tabindex', '0'); // Tab 키로 이동 가능하게 설정
+                btn.setAttribute('aria-pressed', 'false'); // 눌리지 않은 상태로 초기화
+                
+                // 키보드(Enter/Space)로도 클릭이 가능하게 이벤트 추가
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+
                 btn.addEventListener('click', async function() {
                     if (!isLabActive || this.classList.contains('completed') || this.classList.contains('processing')) return;
+
+                    // 클릭 시 버튼이 눌렸음을 스크린 리더에 알림
+                    this.setAttribute('aria-pressed', 'true');
 
                     // 다중 클릭 방지를 위해 즉시 processing 클래스 부여
                     this.classList.add('processing');
 
                     const status = this.querySelector('.status-box');
                     const text = this.querySelector('.task-text');
-                    
-                    status.innerText = '[-]'; 
+
+                    status.innerHTML = '<span aria-hidden="true">[</span>-<span aria-hidden="true">]</span>'; 
                     text.innerText = 'CHECKING...';
                     
                     await new Promise(r => setTimeout(r, 1000)); // 체크 딜레이 시뮬레이션
@@ -755,7 +767,7 @@
                 labTerminal.style.display = 'flex';
                 labTerminal.className = isTimeout ? 'lab-terminal timeout ui-element' : 'lab-terminal completed ui-element';
                 
-                document.getElementById('term-status-tag').textContent = isTimeout ? '[SESSION_TIMEOUT]' : '[SESSION_TERMINATED]';
+                document.getElementById('term-status-tag').innerHTML = isTimeout ? '<span aria-hidden="true">[</span>SESSION_TIMEOUT<span aria-hidden="true">]</span>' : '<span aria-hidden="true">[</span>SESSION_TERMINATED<span aria-hidden="true">]</span>';
                 document.getElementById('term-status-text').textContent = `FINAL_SCORE: ${percentage}% | MISSIONS: ${completedTasks}/${totalTasks}`;
                 
                 document.getElementById('btn-start-lab').style.display = 'none';
@@ -768,8 +780,8 @@
                 // [추가] 바텀 시트 닫고 탭 텍스트 원복
                 closeBottomSheet();
                 tabLeft.style.display = '';
-                tabLeftText.textContent = "> SEARCH_";
-                tabRightText.textContent = "> TOC_";
+                tabLeftText.innerHTML = '<span aria-hidden="true">&gt;</span> SEARCH<span aria-hidden="true">_</span>';
+                tabRightText.innerHTML = '<span aria-hidden="true">&gt;</span> TOC<span aria-hidden="true">_</span>';
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             };
@@ -814,9 +826,15 @@
                 overlay.classList.add('show');
                 leftSidebar.classList.add('sheet-open');
                 
-                // 탭 액티브 상태
-                tabLeft.classList.toggle('active', target === 'left');
-                tabRight.classList.toggle('active', target === 'right');
+                // 탭 액티브 상태 & 스크린 리더 동기화
+                const isLeft = target === 'left';
+                const isRight = target === 'right';
+
+                tabLeft.classList.toggle('active', isLeft);
+                tabLeft.setAttribute('aria-expanded', isLeft);
+
+                tabRight.classList.toggle('active', isRight);
+                tabRight.setAttribute('aria-expanded', isRight);
 
                 // 상태에 따른 UI 토글
                  if (isLabActive) {
@@ -848,7 +866,9 @@
                 overlay.classList.remove('show');
                 leftSidebar.classList.remove('sheet-open');
                 tabLeft.classList.remove('active');
+                tabLeft.setAttribute('aria-expanded', 'false');
                 tabRight.classList.remove('active');
+                tabRight.setAttribute('aria-expanded', 'false');
             }
 
             if (tabLeft && tabRight) {

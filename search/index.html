@@ -170,33 +170,35 @@
 <body>
     
     <header class="header">
-        <a href="../" class="logo">JFB<span>_</span></a>
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <div class="layout-container">
         
         <section class="search-container">
             <!-- 구조 순서: input 먼저, icon 나중 -->
-            <form id="search-form" class="search-form">
+            <form id="search-form" class="search-form" role="search">
                 <!-- placeholder 값 필수로 입력해두어야 :not(:placeholder-shown) 문법이 정상작동함 -->
-                <input type="text" id="search-input" class="search-input" placeholder="Query" autocomplete="off" autofocus>
-                <span class="search-icon"></span>
+                <input type="text" id="search-input" class="search-input" placeholder="Query" autocomplete="off" autofocus aria-label="검색어 입력">
+                <span class="search-icon" aria-hidden="true"></span>
             </form>
             
             <div class="suggested-tags" id="suggested-tags"></div>
         </section>
 
         <main class="content">
-            <div id="search-status" class="search-status">
+            <!-- 검색 결과 안내 문구가 바뀔 때 스크린 리더가 읽어줍니다 -->
+            <div id="search-status" class="search-status" aria-live="polite">
                 Results for "<span id="query-display" class="keyword-highlight"></span>"
             </div>
-            <div id="search-results-container"></div>
+            <!-- 결과 없음(404) 메시지가 뜰 때도 읽어주도록 설정합니다 -->
+            <div id="search-results-container" aria-live="polite"></div>
         </main>
     </div>
 
     <!-- 푸터 추가 -->
     <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: auto; font-family: 'Fira Code', monospace; text-align: center; width: 100%;">
-        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);">_</span></div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);" aria-hidden="true">_</span></div>
         <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트의 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
     </footer>
 
@@ -225,7 +227,6 @@
                 
                 let html = tagsToShow.map(tag => `<button class="post-tag" data-tag="#${tag}">#${tag}</button>`).join('');
                 
-                // 태그가 총 4개를 초과할 때만 더보기/접기 버튼 추가
                 if (allTags.length > 4) {
                     const toggleText = isTagsExpanded ? "- LESS" : "+ MORE";
                     // 기존 태그와 구분되도록 점선 테두리 적용
@@ -276,12 +277,14 @@
             const renderSearch = (query) => {
                 if (!query.trim()) {
                     searchStatus.style.display = 'none';
-                    resultsContainer.innerHTML = `<div class="no-results">[SYS] 검색어를 입력하고 Enter를 누르세요.</div>`;
+                    resultsContainer.innerHTML = `<div class="no-results"><span aria-hidden="true">[</span>SYS<span aria-hidden="true">]</span> 검색어를 입력하고 Enter를 누르세요.</div>`;
+                    document.title = "Search - JFB";
                     return;
                 }
 
                 searchStatus.style.display = 'block';
                 queryDisplay.textContent = query;
+                document.title = `"${query}" 검색 결과 - JFB`; // 탭 이름에 검색어 표시
 
                 const isTag = query.startsWith('#');
                 const lowerQ = isTag ? query.substring(1).toLowerCase() : query.toLowerCase();
@@ -294,7 +297,7 @@
                 });
 
                 if (filtered.length === 0) {
-                    resultsContainer.innerHTML = `<div class="no-results">[SYS] 404_NOT_FOUND: 일치하는 문서를 찾을 수 없습니다.</div>`;
+                    resultsContainer.innerHTML = `<div class="no-results"><span aria-hidden="true">[</span>SYS<span aria-hidden="true">]</span> 404<span aria-hidden="true">_</span>NOT<span aria-hidden="true">_</span>FOUND: 일치하는 문서를 찾을 수 없습니다.</div>`;
                 } else {
                     resultsContainer.innerHTML = filtered.map(post => {
                         const target = post.type === 'lab' ? '../lab/' : '../docs/';

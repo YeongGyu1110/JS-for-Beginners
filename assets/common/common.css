@@ -17,6 +17,18 @@
 /* =========================================
    2. 초기화 및 전역 설정 (Reset & Global)
    ========================================= */
+/* 웹 접근성 유틸리티 클래스 */
+.sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
+}
+
+/* 마우스 없이 키보드(Tab)로 이동하는 사용자를 위한 뚜렷한 외곽선 */
+a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent-color) !important;
+    outline-offset: 3px;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; font-variant-ligatures: none; }
 html { scroll-behavior: smooth; }
 
@@ -87,7 +99,7 @@ body {
     font-family: 'Fira Code', monospace; font-size: 0.85rem; z-index: 9999; opacity: 0;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); pointer-events: none;
 }
-.toast-notification::before { content: "[!] "; color: var(--accent-color); font-weight: bold; }
+.toast-notification::before { content: "[!] " / ""; color: var(--accent-color); font-weight: bold; }
 .toast-notification.show { bottom: 40px; opacity: 1; }
 
 /* =========================================
@@ -105,12 +117,15 @@ body {
    7. 검색 입력창 공통 스타일
    ========================================= */
 .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.8rem; outline: none; transition: all 0.2s ease; }
-.search-input::placeholder { color: var(--text-secondary); opacity: 0.5; }
-.search-input:focus { border-color: var(--text-secondary); }
-.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.9rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
-.search-icon::before { content: "·"; }
+.search-input::placeholder { color: var(--text-secondary); }
+.search-input:focus { 
+    border-color: var(--text-secondary); 
+    outline: none !important; 
+}
+.search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.9rem; font-family: 'Fira Code', monospace; pointer-events: none; transition: all 0.2s ease; }
+.search-icon::before { content: "·" / ""; } /* 스크린 리더가 무시하도록 빈 문자열 할당 */
 .search-input:focus ~ .search-icon { color: var(--accent-color); opacity: 1; font-weight: 600; }
-.search-input:focus ~ .search-icon::before { content: ">"; }
+.search-input:focus ~ .search-icon::before { content: ">" / ""; }
 
 /* 문서 좌우 플로팅 네비게이션 버튼 */
 .side-nav-btn { position: fixed; top: 50%; transform: translateY(-50%); width: 48px; height: 100px; background-color: rgba(19, 21, 26, 0.4); backdrop-filter: blur(8px); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); text-decoration: none; transition: all 0.1s ease; z-index: 999; opacity: 0.5; overflow: hidden; }

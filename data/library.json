@@ -33,22 +33,22 @@
       "path": "../content/web-development/04.md"
     }
   ],
-  "test": [
+  "admin": [
     {
       "id": "test-style", 
       "title": "스타일 테스트",
       "description": "",
       "type": "doc",
-      "tags": ["test"],
-      "path": "../content/test/style-test.md"
+      "tags": ["admin"],
+      "path": "../content/.admin/style-test.md"
     },
     {
       "id": "test-lab", 
       "title": "실습 테스트",
       "description": "",
       "type": "lab",
-      "tags": ["test"],
-      "path": "../content/test/lab.md"
+      "tags": ["admin"],
+      "path": "../content/.admin/lab.md"
     }
   ]
 }

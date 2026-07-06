@@ -68,7 +68,7 @@
         }
 
         .toc-container a::before {
-            content: "·";
+            content: "·" / "";
             position: absolute;
             left: 0;
             color: var(--text-secondary);
@@ -85,7 +85,7 @@
             font-weight: 500;
         }
         .toc-container a.active::before {
-            content: ">";
+            content: ">" / "";
             color: var(--accent-color);
             opacity: 1;
         }
@@ -168,7 +168,7 @@
 
         /* 기본 마커: 점(·) */
         .right-toc-container a::before {
-            content: "·";
+            content: "·" / "";
             position: absolute;
             left: 0;
             color: var(--text-secondary);
@@ -187,7 +187,7 @@
         
         /* 액티브 마커: 꺾쇠(>) */
         .right-toc-container a.active::before {
-            content: ">";
+            content: ">" / "";
             color: var(--accent-color);
             opacity: 1;
         }
@@ -334,26 +334,25 @@
     <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
     
     <header class="header">
-        <a href="../" class="logo" style="text-decoration: none;">JFB<span>_</span></a>
+        <a href="../" class="logo" style="text-decoration: none;">JFB<span aria-hidden="true">_</span></a>
     </header>
 
     <div class="layout-container">
         <aside class="sidebar left-sidebar">
 
-            <form action="../search/" method="GET" class="search-form">
-                <!-- input을 먼저 배치해야 CSS 형제 선택자(~)로 아이콘을 제어할 수 있습니다 -->
-                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off">
-                <span class="search-icon"></span>
+            <form action="../search/" method="GET" class="search-form" role="search">
+                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off" aria-label="문서 검색">
+                <span class="search-icon" aria-hidden="true"></span>
             </form>
 
-            <h3 class="sidebar-title">On this page</h3>
-            <nav id="toc" class="toc-container"></nav>
+            <h3 class="sidebar-title" aria-hidden="true">On this page</h3>
+            <nav id="toc" class="toc-container" aria-label="현재 문서 목차"></nav>
         </aside>
 
         <main class="content">
-            <article id="post-content" class="markdown-body">
+            <article id="post-content" class="markdown-body" aria-live="polite">
                 <div style="font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 30vh; color: var(--text-secondary); font-size: 0.9rem;">
-                    [Loading document...]
+                    <span aria-hidden="true">[</span>Loading document...<span aria-hidden="true">]</span>
                 </div>
             </article>
         </main>
@@ -369,7 +368,7 @@
             </a>
             
             <!-- 네비게이션 리스트 -->
-            <nav id="chapter-nav" class="right-toc-container"></nav>
+            <nav id="chapter-nav" class="right-toc-container" aria-label="현재 챕터의 문서 목록"></nav>
             
             <!-- 태그 영역 -->
             <h3 class="sidebar-title">Tags</h3>
@@ -387,12 +386,12 @@
          ========================================= -->
     <div class="sheet-overlay" id="sheet-overlay"></div>
     
-    <nav class="mobile-bottom-bar" id="mobile-bottom-bar">
-        <button class="bottom-tab-btn" id="tab-search">
-            > SEARCH_
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar" aria-label="모바일 도구 모음">
+        <button class="bottom-tab-btn" id="tab-search" aria-expanded="false">
+            <span aria-hidden="true">&gt;</span> SEARCH<span aria-hidden="true">_</span>
         </button>
-        <button class="bottom-tab-btn" id="tab-toc">
-            > TOC_
+        <button class="bottom-tab-btn" id="tab-toc" aria-expanded="false">
+            <span aria-hidden="true">&gt;</span> TOC<span aria-hidden="true">_</span>
         </button>
     </nav>
 
@@ -491,11 +490,11 @@
                 } else if (currentPost.category) {
                     // 확장 라이브러리 데이터 (library.json)
                     chapterPosts = posts.filter(p => p.category === currentPost.category);
-                    sideTitle = currentPost.category.toUpperCase() + '_';
+                    sideTitle = currentPost.category.toUpperCase() + '<span aria-hidden="true">_</span>';
                     sideLink = `../satellite/?category=${currentPost.category}`;
                 }
                 
-                document.getElementById('side-chapter-title').textContent = sideTitle;
+                document.getElementById('side-chapter-title').innerHTML = sideTitle; // textContent -> innerHTML 로 변경
                 document.getElementById('side-chapter-title-link').href = sideLink;
                 
                 document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, idx) => {
@@ -505,7 +504,7 @@
                 }).join('');
 
                 const countBadge = document.getElementById('side-chapter-count');
-                if(countBadge) countBadge.textContent = `[${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}]`;
+                if(countBadge) countBadge.innerHTML = `<span aria-hidden="true">[</span>${chapterPosts.findIndex(p => p.id === postId) + 1}/${chapterPosts.length}<span aria-hidden="true">]</span>`; // textContent -> innerHTML 로 변경
 
                 // 4. 마크다운 파일 렌더링
                 const mdResponse = await fetch(currentPost.path);
@@ -553,9 +552,15 @@
                 overlay.classList.add('show');
                 leftSidebar.classList.add('sheet-open');
                 
-                // 2. 탭 활성화 상태 변경
-                tabSearch.classList.toggle('active', target === 'search');
-                tabToc.classList.toggle('active', target === 'toc');
+                // 2. 탭 활성화 상태 변경 및 스크린 리더 상태(aria-expanded) 동기화
+                const isSearch = target === 'search';
+                const isToc = target === 'toc';
+
+                tabSearch.classList.toggle('active', isSearch);
+                tabSearch.setAttribute('aria-expanded', isSearch);
+
+                tabToc.classList.toggle('active', isToc);
+                tabToc.setAttribute('aria-expanded', isToc);
 
                 // 3. 누른 탭에 따라 내용 토글
                 if (target === 'search') {
@@ -575,7 +580,9 @@
                 overlay.classList.remove('show');
                 leftSidebar.classList.remove('sheet-open');
                 tabSearch.classList.remove('active');
+                tabSearch.setAttribute('aria-expanded', 'false');
                 tabToc.classList.remove('active');
+                tabToc.setAttribute('aria-expanded', 'false');
             }
 
             // 이벤트 바인딩
