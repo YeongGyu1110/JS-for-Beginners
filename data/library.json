@@ -6,7 +6,7 @@
       "description": "",
       "type": "doc",
       "tags": ["admin"],
-      "path": "../content/.admin/style-test.md"
+      "path": "../content/admin/style-test.md"
     },
     {
       "id": "test-lab", 
@@ -14,7 +14,7 @@
       "description": "",
       "type": "lab",
       "tags": ["admin"],
-      "path": "../content/.admin/lab.md"
+      "path": "../content/admin/lab.md"
     }
   ]
 }
