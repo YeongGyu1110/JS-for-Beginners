@@ -346,7 +346,7 @@
                     return;
                 }
 
-                if (e.target.classList.contains('tag') && e.target.hasAttribute('data-tag')) {
+                if (e.target.classList.contains('post-tag') && e.target.hasAttribute('data-tag')) {
                     const tagQuery = e.target.getAttribute('data-tag');
                     searchInput.value = tagQuery;
                     renderSearch(tagQuery);
