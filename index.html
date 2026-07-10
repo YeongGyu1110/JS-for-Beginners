@@ -489,6 +489,17 @@
             .extension-btn { width: 100%; justify-content: center; }
             .extension-card::after { display: none; }
         }
+
+        .repo {
+            color: var(--text-primary);
+            text-decoration: underline;
+            transition: color 0.1s ease, text-decoration 0.2s ease;
+        }
+
+        .repo:hover {
+            text-decoration: underline;
+            color: var(--accent-color);
+        }
     </style>
 </head>
 <body>
@@ -589,9 +600,9 @@
                 <div class="footer-desc">자바스크립트의 우주를 항해하는<br>입문자를 위한 컴팩트 가이드.</div>
             </div>
             <div class="footer-sys-info">
-                <div>SYS_STATUS: <span style="color: #10b981;">ONLINE</span></div>
-                <div>BUILD_VERSION: <span class="highlight">v1.0.3_stable</span></div>
-                <div id="footer-sync">LAST_SYNC: <span class="highlight">...</span></div>
+                <div>env: <span class="highlight">production</span></div>
+                <div>source: <a href="https://github.com/YeongGyu1110/JS-for-Beginners" target="_blank" rel="noopener noreferrer" class="repo">GitHub</a></div>
+                <div>load_time: <span id="footer-loadtime" style="color: var(--accent-color);">0ms</span></div>
             </div>
         </div>
     </footer>
@@ -605,9 +616,14 @@
             const statsBadge = document.getElementById('stats-badge');
             const suggestedTagsContainer = document.getElementById('suggested-tags');
             
-            // 푸터 날짜 동기화
-            const now = new Date();
-            document.getElementById('footer-sync').innerHTML = `LAST_SYNC: <span class="highlight">${now.getFullYear()}.${String(now.getMonth()+1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}</span>`;
+            window.addEventListener('load', () => {
+                const loadTimeElement = document.getElementById('footer-loadtime');
+                if (loadTimeElement) {
+                    // performance.now()를 통해 페이지 시작부터 로드 완료까지 걸린 시간 계산
+                    const duration = performance.now().toFixed(0); 
+                    loadTimeElement.textContent = `${duration}ms`;
+                }
+            });
 
             try {
                 // 데이터 병렬 로드
