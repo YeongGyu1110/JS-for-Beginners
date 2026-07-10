@@ -1,0 +1,125 @@
+/* =========================================
+   Markdown 렌더링 공통 스타일 (markdown.css)
+   ========================================= */
+
+.markdown-body {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    padding-bottom: 4rem;
+}
+.markdown-body.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 제목 (Headings) */
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    color: var(--text-heading);
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+    scroll-margin-top: 90px;
+}
+.markdown-body h1 { font-size: 2.2rem; margin-top: 1rem; }
+.markdown-body h2 { font-size: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+.markdown-body h3 { font-size: 1.2rem; }
+
+/* 본문 및 인용구 */
+.markdown-body p { margin-bottom: 1.6rem; font-size: 0.98rem; color: var(--text-primary); word-break: keep-all; }
+.markdown-body blockquote {
+    margin: 2rem 0; padding: 1.2rem 1.5rem;
+    background-color: var(--surface-color);
+    border-left: 2px solid var(--accent-color);
+    border-radius: var(--radius-sm);
+    /* color: var(--text-secondary); */
+    color: var(--text-primary);
+}
+.markdown-body blockquote p { margin-bottom: 0; font-size: 0.95rem; }
+
+/* 리스트 (Lists) */
+.markdown-body ul { list-style: none; margin-bottom: 1.6rem; padding-left: 0; }
+.markdown-body ul li { position: relative; padding-left: 1.2rem; margin-bottom: 0.5rem; }
+.markdown-body ul li::before { content: "■" / ""; position: absolute; left: 0; top: 2px; font-size: 0.55rem; color: var(--text-primary); }
+.markdown-body ol { margin-bottom: 1.6rem; padding-left: 1.2rem; }
+.markdown-body ol li { margin-bottom: 0.5rem; }
+
+/* 구분선 및 이미지, 테이블 */
+.markdown-body hr { border: none; height: 1px; background-color: var(--border-color); margin: 3.5rem 0; }
+.markdown-body img { max-width: 100%; height: auto; border-radius: var(--radius-md); border: 1px solid var(--border-color); margin: 2.5rem auto; display: block; }
+
+.markdown-body table { width: 100%; border-collapse: collapse; margin: 2.5rem 0; font-size: 0.9rem; }
+.markdown-body th { background-color: var(--surface-color); color: var(--text-heading); font-weight: 600; border-top: 1px solid var(--border-color); border-bottom: 2px solid var(--border-color); padding: 10px 14px; text-align: left; }
+.markdown-body td { padding: 10px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); }
+.markdown-body tr:hover { background-color: var(--surface-hover); }
+
+/* 링크 및 인라인 코드 */
+.markdown-body a { color: var(--accent-color); text-decoration: none; border-bottom: 1px dashed rgba(255, 107, 0, 0.4); transition: all 0.2s ease; }
+.markdown-body a:hover { color: var(--text-heading); border-bottom-style: solid; border-bottom-color: var(--accent-color); }
+:not(pre) > code { background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.2em 0.4em; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.88em; }
+
+/* 코드 블록 (Pre) & 복사 버튼 */
+.code-wrapper {
+    position: relative;
+    margin: 2.5rem 0; /* 기존 pre에 있던 바깥 여백을 래퍼로 이동 */
+}
+
+.markdown-body pre {
+    background-color: var(--surface-color) !important;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin: 0 !important; /* 여백은 래퍼가 담당하므로 0으로 초기화 */
+    padding: 1.25rem !important;
+    overflow-x: auto; /* 가로 스크롤 허용 */
+}
+.markdown-body pre code { font-family: 'Fira Code', monospace !important; font-size: 0.9rem; transition: filter 0.6s ease; line-height: 1.6; }
+
+.copy-button {
+    position: absolute; top: 10px; right: 10px; background-color: var(--bg-color); border: 1px solid var(--border-color);
+    color: var(--text-secondary); padding: 4px 8px; border-radius: var(--radius-sm); font-size: 0.7rem; cursor: pointer;
+    opacity: 0; pointer-events: none; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'Fira Code', monospace; z-index: 5;
+}
+.markdown-body pre:hover .copy-button { opacity: 1; pointer-events: auto; }
+
+.code-wrapper:hover .copy-button { opacity: 1; pointer-events: auto; }
+.copy-button:focus-visible { 
+    opacity: 1; 
+    pointer-events: auto; 
+    /* 키보드로 접근 시 주황색 테두리로 현재 위치 강조 */
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+.copy-button:hover { background-color: var(--surface-hover); border-color: var(--text-secondary); color: var(--text-heading); }
+.copy-button.copied { background-color: var(--accent-color); border-color: var(--accent-color); color: #fff; font-weight: 500; }
+
+/* 콜아웃 (Callouts) */
+.callout { margin: 2rem 0; padding: 1.2rem 1.5rem; border-radius: var(--radius-sm); border-left: 4px solid var(--text-secondary); background-color: var(--surface-color); position: relative; }
+.callout-title { font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+.callout-title::before { content: "[!]" / ""; font-weight: 900; }
+.callout.note { border-left-color: #3b82f6; } .callout.note .callout-title { color: #3b82f6; }
+.callout.tip { border-left-color: #10b981; } .callout.tip .callout-title { color: #10b981; }
+.callout.important { border-left-color: #8b5cf6; } .callout.important .callout-title { color: #8b5cf6; }
+.callout.warning { border-left-color: #f59e0b; } .callout.warning .callout-title { color: #f59e0b; }
+.callout.caution { border-left-color: #ef4444; } .callout.caution .callout-title { color: #ef4444; }
+.callout p { margin-bottom: 0; font-size: 0.95rem; color: var(--text-primary); }
+
+/* 각주 (Footnotes) */
+.footnotes { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary); }
+.footnotes ol { padding-left: 1.5rem; }
+.footnotes li { margin-bottom: 0.8rem; }
+.footnote-ref { font-size: 0.75rem; vertical-align: super; margin-left: 2px; font-family: 'Fira Code', monospace; color: var(--accent-color) !important; border-bottom: none !important; }
+.footnote-backref { text-decoration: none; margin-left: 4px; color: var(--accent-color) !important; border-bottom: none !important; font-family: 'Fira Code', monospace; }
+
+/* 문서 하단 이전/다음 네비게이션 버튼 */
+.post-navigation { display: flex; gap: 1.5rem; margin-top: 5rem; border-top: 1px solid var(--border-color); padding-top: 3rem; }
+.markdown-body .nav-btn { flex: 1; display: flex; flex-direction: column; padding: 1.8rem; background-color: var(--surface-color); border: 1px solid var(--border-color) !important; border-radius: var(--radius-md); text-decoration: none !important; transition: all 0.25s ease; position: relative; overflow: hidden; color: inherit !important; }
+.markdown-body .nav-btn:hover { border-color: var(--accent-color) !important; background-color: var(--surface-hover); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5); }
+.nav-btn .nav-label { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; }
+.nav-btn .nav-title { font-size: 1.15rem; font-weight: 700; color: var(--text-heading); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.nav-btn:hover .nav-label { color: var(--accent-color); }
+.nav-btn:hover .nav-title { color: #fff; }
+.nav-btn.prev { text-align: left; align-items: flex-start; }
+.nav-btn.next { text-align: right; align-items: flex-end; }
+@media (max-width: 600px) { .post-navigation { flex-direction: column; } }

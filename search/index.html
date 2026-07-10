@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search - JFB</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="../favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="../assets/common/common.css">
+
+    <style>
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* =========================================
+           2. 레이아웃
+           ========================================= */
+        .layout-container {
+            display: grid; 
+            grid-template-columns: minmax(0, 800px); 
+            justify-content: center;
+            margin: 4rem auto; 
+            padding: 0 2rem; 
+            width: 100%;
+        }
+
+        /* 추천 태그 */
+        .suggested-tags { 
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem; 
+        }
+        /* =========================================
+           4. 검색 결과 리스트
+           ========================================= */
+        .search-status {
+            font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-secondary); 
+            margin-bottom: 2rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);
+            display: none; 
+        }
+        .keyword-highlight { color: var(--text-heading); font-weight: 600; }
+
+        .search-result-item {
+            padding: 1.5rem; background-color: var(--surface-color); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); margin-bottom: 1.5rem; transition: transform 0.2s, border-color 0.2s;
+        }
+        .search-result-item:hover { transform: translateY(-2px); border-color: var(--text-secondary); }
+        .search-result-title { 
+            font-size: 1.2rem; color: var(--text-heading); font-weight: 700; margin-bottom: 0.6rem; 
+            text-decoration: none; display: block; letter-spacing: -0.5px;
+        }
+        .search-result-title:hover { color: var(--accent-color); }
+        .search-result-summary { color: var(--text-primary); font-size: 0.95rem; margin-bottom: 1rem; word-break: keep-all; }
+        .search-result-meta { display: flex; gap: 0.5rem; }
+
+        .no-results {
+            text-align: center; padding: 4rem 0; color: var(--text-secondary); font-family: 'Fira Code', monospace; font-size: 0.85rem;
+        }
+
+        .search-container {
+            margin-bottom: 3.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 폼을 가운데 정렬 */
+        }
+
+        .search-form {
+            position: relative; /* 핵심: 아이콘(absolute)의 위치 기준점이 됨 */
+            width: 100%;
+            max-width: 600px;   /* 검색바가 너무 길어지지 않게 제한 */
+            margin-bottom: 1.2rem;
+        }
+
+        .search-input { width: 100%; background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-heading); padding: 0.75rem 1rem 0.75rem 2.2rem; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.95rem; outline: none; transition: all 0.2s ease; }
+
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 0.95rem; font-family: 'Fira Code', monospace; pointer-events: none; opacity: 0.5; transition: all 0.2s ease; }
+    
+        /* =========================================
+           5. 반응형 UI (Mobile)
+           ========================================= */
+        @media (max-width: 768px) {
+            /* 레이아웃 좌우 여백 및 마진 축소 */
+            .layout-container {
+                margin: 2rem auto;
+                padding: 0 1.25rem;
+            }
+
+            /* 검색 영역 간격 좁히기 */
+            .search-container {
+                margin-bottom: 2rem;
+            }
+
+            .search-form {
+                max-width: 100%; /* 모바일 해상도에서 꽉 차도록 설정 */
+                margin-bottom: 0.8rem;
+            }
+
+            /* 검색창 두께 및 폰트 크기 최적화 */
+            .search-input {
+                font-size: 0.9rem;
+                padding: 0.7rem 1rem 0.7rem 2.2rem;
+            }
+
+            .search-icon {
+                font-size: 0.9rem;
+                left: 12px;
+            }
+
+            /* 추천 태그 간격 축소 */
+            .suggested-tags {
+                gap: 0.35rem;
+            }
+            .suggested-tags .tag {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            /* 검색 결과 상단 안내 텍스트 수정 */
+            .search-status {
+                font-size: 0.8rem;
+                margin-bottom: 1.2rem;
+            }
+
+            /* 검색 결과 카드 컴팩트화 */
+            .search-result-item {
+                padding: 1.25rem 1.1rem; /* 안쪽 여백 축소 */
+                margin-bottom: 1rem;
+            }
+
+            .search-result-title {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.3;
+            }
+
+            .search-result-summary {
+                font-size: 0.88rem;
+                margin-bottom: 0.8rem;
+                line-height: 1.5;
+            }
+
+            .search-result-meta {
+                gap: 0.35rem;
+            }
+            .search-result-meta .tag {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            /* 검색 결과 없음 안내 여백 조절 */
+            .no-results {
+                padding: 2.5rem 0;
+                font-size: 0.8rem;
+            }
+
+            /* html 하단에 인라인 스타일로 정의된 footer 패딩 조절 */
+            footer[style] {
+                padding: 2rem 1.5rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <header class="header">
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
+    </header>
+
+    <div class="layout-container">
+        
+        <section class="search-container">
+            <!-- 구조 순서: input 먼저, icon 나중 -->
+            <form id="search-form" class="search-form" role="search">
+                <!-- placeholder 값 필수로 입력해두어야 :not(:placeholder-shown) 문법이 정상작동함 -->
+                <input type="text" id="search-input" class="search-input" placeholder="Query" autocomplete="off" autofocus aria-label="검색어 입력">
+                <span class="search-icon" aria-hidden="true"></span>
+            </form>
+            
+            <div class="suggested-tags" id="suggested-tags"></div>
+        </section>
+
+        <main class="content">
+            <!-- 검색 결과 안내 문구가 바뀔 때 스크린 리더가 읽어줍니다 -->
+            <div id="search-status" class="search-status" aria-live="polite">
+                Results for "<span id="query-display" class="keyword-highlight"></span>"
+            </div>
+            <!-- 결과 없음(404) 메시지가 뜰 때도 읽어주도록 설정합니다 -->
+            <div id="search-results-container" aria-live="polite"></div>
+        </main>
+    </div>
+
+    <!-- 푸터 추가 -->
+    <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: auto; font-family: 'Fira Code', monospace; text-align: center; width: 100%;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);" aria-hidden="true">_</span></div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트의 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
+    </footer>
+
+    <script src="../assets/common/common.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const searchForm = document.getElementById('search-form');
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.getElementById('search-results-container');
+            const searchStatus = document.getElementById('search-status');
+            const queryDisplay = document.getElementById('query-display');
+            const suggestedTagsContainer = document.getElementById('suggested-tags');
+            
+            let postsDatabase = [];
+
+            let allTags = [];              // 모든 태그 목록 저장
+            let isTagsExpanded = false;    // 태그 펼침 상태 저장
+
+            // 태그 렌더링 함수
+            const renderSuggestedTags = () => {
+                if (!suggestedTagsContainer) return;
+                
+                // 펼쳐진 상태면 전체, 아니면 4개만 자르기
+                const tagsToShow = isTagsExpanded ? allTags : allTags.slice(0, 4);
+                
+                let html = tagsToShow.map(tag => `<button class="tag" data-tag="#${tag}">#${tag}</button>`).join('');
+                
+                if (allTags.length > 4) {
+                    const toggleText = isTagsExpanded ? "- LESS" : "+ MORE";
+                    // aria-expanded 속성을 추가하여 버튼이 펼쳐진 상태인지 스크린 리더에게 알려줍니다.
+                    html += `<button class="tag toggle-tags-btn" style="background-color: transparent;" aria-expanded="${isTagsExpanded}">${toggleText}</button>`;
+                }
+                
+                suggestedTagsContainer.innerHTML = html;
+            };
+
+            try {
+                // posts.json과 library.json을 동시에 로드합니다.
+                const [postsRes, libRes] = await Promise.all([
+                    fetch('../data/posts.json'),
+                    fetch('../data/library.json').catch(() => ({ ok: false }))
+                ]);
+
+                // 1. posts.json 데이터 가공 (기본 카테고리 추가)
+                if(postsRes.ok) {
+                    const rawPosts = await postsRes.json();
+                    postsDatabase = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                        items.map(item => ({ ...item, chapter: chapterKey, category: 'javascript-fundamentals' }))
+                    );
+                }
+
+                // 2. library.json 데이터 병합 (객체 키를 category로 주입하며 평탄화)
+                if(libRes.ok) {
+                    const rawLib = await libRes.json();
+                    const libPosts = Object.entries(rawLib).flatMap(([catKey, items]) => 
+                        items.map(item => ({ ...item, category: catKey }))
+                    );
+                    postsDatabase = [...postsDatabase, ...libPosts];
+                }
+                
+                // 3. 태그 카운팅 및 전체 태그 목록 생성 (병합된 전체 데이터 기준)
+                const tagCounts = {};
+                postsDatabase.forEach(p => (p.tags || []).forEach(t => tagCounts[t] = (tagCounts[t] || 0) + 1));
+
+                // 많이 사용된 순으로 정렬하여 전체 배열 저장
+                allTags = Object.keys(tagCounts)
+                    .sort(() => Math.random() - 0.5)
+                    .sort((a, b) => tagCounts[b] - tagCounts[a]);
+                
+                // 함수를 호출하여 화면에 렌더링
+                renderSuggestedTags();
+            } catch(e) { console.error(e); }
+
+            const renderSearch = (query) => {
+                if (!query.trim()) {
+                    searchStatus.style.display = 'none';
+                    resultsContainer.innerHTML = `<div class="no-results"><span aria-hidden="true">[</span>SYS<span aria-hidden="true">]</span> 검색어를 입력하고 Enter를 누르세요.</div>`;
+                    document.title = "Search - JFB";
+                    return;
+                }
+
+                searchStatus.style.display = 'block';
+                queryDisplay.textContent = query;
+                document.title = `"${query}" 검색 결과 - JFB`; // 탭 이름에 검색어 표시
+
+                const isTag = query.startsWith('#');
+                const lowerQ = isTag ? query.substring(1).toLowerCase() : query.toLowerCase();
+
+                const filtered = postsDatabase.filter(post => {
+                    if (isTag) return post.tags && post.tags.some(t => t.toLowerCase() === lowerQ);
+                    return (post.title && post.title.toLowerCase().includes(lowerQ)) || 
+                           (post.description && post.description.toLowerCase().includes(lowerQ)) || 
+                           (post.tags && post.tags.some(t => t.toLowerCase().includes(lowerQ)));
+                });
+
+                if (filtered.length === 0) {
+                    resultsContainer.innerHTML = `<div class="no-results"><span aria-hidden="true">[</span>SYS<span aria-hidden="true">]</span> 404<span aria-hidden="true">_</span>NOT<span aria-hidden="true">_</span>FOUND: 일치하는 문서를 찾을 수 없습니다.</div>`;
+                } else {
+                    resultsContainer.innerHTML = filtered.map(post => {
+                        const target = post.type === 'lab' ? '../lab/' : '../docs/';
+                        const badge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                        const tagsHtml = post.tags.map(t => `<button class="tag result-tag" data-tag="#${t}">#${t}</button>`).join('');
+                        return `
+                            <article class="search-result-item">
+                                <a href="${target}?id=${post.id}" class="search-result-title">${post.title}${badge}</a>
+                                <p class="search-result-summary">${post.description}</p>
+                                <div class="search-result-meta">${tagsHtml}</div>
+                            </article>`;
+                    }).join('');
+                }
+            };
+
+            const initialQuery = new URLSearchParams(window.location.search).get('q') || '';
+            searchInput.value = initialQuery;
+            renderSearch(initialQuery);
+
+            const keepFocus = () => {
+                searchInput.focus();
+                const val = searchInput.value;
+                searchInput.value = ''; searchInput.value = val;
+            };
+            keepFocus();
+
+            searchForm.addEventListener('submit', (e) => {
+                e.preventDefault(); 
+                const query = searchInput.value.trim();
+                if (query === '') {
+                    window.showToast('검색어를 입력해주세요.'); // common.js의 함수 호출
+                    searchInput.value = '';
+                    return searchInput.focus();
+                }
+                renderSearch(query);
+                const newUrl = query ? `?q=${encodeURIComponent(query)}` : window.location.pathname;
+                window.history.pushState({ path: newUrl }, '', newUrl);
+                keepFocus(); 
+            });
+
+            document.addEventListener('click', (e) => {
+                // 1) 모든 태그 보기/접기 버튼 클릭 처리
+                if (e.target.classList.contains('toggle-tags-btn')) {
+                    isTagsExpanded = !isTagsExpanded; // 상태 반전
+                    renderSuggestedTags();            // 다시 그리기
+                    return;
+                }
+
+                if (e.target.classList.contains('tag') && e.target.hasAttribute('data-tag')) {
+                    const tagQuery = e.target.getAttribute('data-tag');
+                    searchInput.value = tagQuery;
+                    renderSearch(tagQuery);
+                    window.history.pushState({ path: `?q=${encodeURIComponent(tagQuery)}` }, '', `?q=${encodeURIComponent(tagQuery)}`);
+                    if (e.target.classList.contains('result-tag')) window.scrollTo({ top: 0, behavior: 'smooth' });
+                    keepFocus();
+                }
+            });
+
+            window.addEventListener('popstate', () => {
+                const q = new URLSearchParams(window.location.search).get('q') || '';
+                searchInput.value = q; renderSearch(q);
+            });
+        });
+    </script>
+</body>
+</html>

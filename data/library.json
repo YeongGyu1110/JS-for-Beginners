@@ -1,0 +1,20 @@
+{
+  "admin": [
+    {
+      "id": "test-style", 
+      "title": "스타일 테스트",
+      "description": "",
+      "type": "doc",
+      "tags": ["admin"],
+      "path": "../content/admin/style-test.md"
+    },
+    {
+      "id": "test-lab", 
+      "title": "실습 테스트",
+      "description": "",
+      "type": "lab",
+      "tags": ["admin"],
+      "path": "../content/admin/lab.md"
+    }
+  ]
+}
