@@ -39,6 +39,14 @@
       "type": "doc",
       "tags": ["web-development"],
       "path": "../content/web-development/05.md"
+    },
+    {
+      "id": "img-audio-video", 
+      "title": "HTML 및 Live Server",
+      "description": "",
+      "type": "doc",
+      "tags": ["web-development"],
+      "path": "../content/web-development/06.md"
     }
   ],
   "admin": [
