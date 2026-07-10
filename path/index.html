@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter Preview - JFB</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="icon" href="../favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="../assets/common/common.css">
+
+    <style>
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Pretendard', sans-serif;
+            font-size: 15px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-attachment: fixed;
+        }
+        /* =========================================
+           3. 챕터 히어로 섹션
+           ========================================= */
+        .chapter-hero {
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,107,0,0.03) 0%, transparent 100%);
+            padding: 5rem 2rem 4rem 2rem;
+        }
+
+        .hero-content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .chapter-meta-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            display: inline-block;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-sm);
+            background-color: rgba(255, 107, 0, 0.05);
+        }
+
+        .chapter-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            min-height: 3rem;
+        }
+
+        .chapter-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 700px;
+            margin-bottom: 2.5rem;
+            word-break: keep-all;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.8rem 1.8rem;
+            background-color: var(--surface-color);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+
+        .start-btn:hover {
+            background-color: var(--accent-color);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.2);
+        }
+        .start-btn svg { width: 16px; height: 16px; }
+
+        .chapter-stats {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        /* aria-hidden="true"가 없는 span(실제 숫자)에만 색상 및 굵기 적용 */
+        .chapter-stats span:not([aria-hidden="true"]) { color: var(--text-primary); font-weight: 600; }
+
+        /* =========================================
+           4. 커리큘럼 모듈 리스트 (문서 목록)
+           ========================================= */
+        .curriculum-section {
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-heading {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.2rem;
+            color: var(--text-heading);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        /* 스크린 리더가 "검은색 사각형" 기호를 무시하도록 빈 문자열 할당 */
+        .section-heading::before { content: "■" / ""; color: var(--accent-color); font-size: 0.6rem; }
+
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* 
+          전체 클릭(a태그)을 해제하고 div로 변경하여 태그 클릭 시 꼬임 방지
+        */
+        .module-card {
+            display: flex;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: transparent;
+            transition: background-color 0.2s ease;
+        }
+
+        .module-card:hover {
+            border-color: var(--text-secondary);
+            background-color: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .module-card:hover::before {
+            background-color: var(--accent-color);
+        }
+
+        .module-number {
+            font-family: 'Fira Code', monospace;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--border-color);
+            margin-right: 2rem;
+            line-height: 1;
+            transition: color 0.2s ease;
+            user-select: none;
+        }
+
+        /* 호버 시 번호 색상을 뚜렷하게 변경 */
+        .module-card:hover .module-number { 
+            color: rgba(255, 107, 0, 0.7); 
+        }
+
+        .module-content { flex: 1; }
+
+        /* 타이틀을 a 태그로 변경 및 호버 이펙트 추가 */
+        .module-title {
+            display: inline-block;
+            font-size: 1.25rem;
+            color: var(--text-heading);
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .module-title:hover {
+            color: var(--accent-color);
+        }
+
+        .module-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        .module-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            /* 1. 챕터 히어로 섹션 (상단) */
+            .chapter-hero {
+                padding: 3.5rem 1.5rem 2.5rem 1.5rem;
+            }
+
+            .chapter-meta-badge {
+                font-size: 0.75rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .chapter-title {
+                font-size: 1.8rem;
+                min-height: auto;
+                word-break: keep-all; /* 단어 단위 줄바꿈 유지 */
+                margin-bottom: 1rem;
+            }
+
+            .chapter-desc {
+                font-size: 0.95rem;
+                margin-bottom: 2rem;
+            }
+
+            /* 버튼 터치 영역 확장 및 세로 배치 */
+            .hero-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1.2rem;
+            }
+
+            .start-btn {
+                justify-content: center; /* 텍스트 및 아이콘 중앙 정렬 */
+                padding: 0.9rem;
+                font-size: 1rem;
+            }
+
+            .chapter-stats {
+                text-align: center;
+            }
+
+            /* 2. 커리큘럼(문서) 리스트 영역 */
+            .curriculum-section {
+                margin: 2.5rem auto;
+                padding: 0 1.5rem;
+            }
+
+            .section-heading {
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            /* 모듈 카드 세로형 레이아웃으로 변경 */
+            .module-card {
+                flex-direction: column;
+                padding: 1.5rem;
+                border-radius: var(--radius-sm); /* 모바일에서는 둥글기 살짝 완화 */
+            }
+
+            .module-number {
+                margin-right: 0;
+                margin-bottom: 0.8rem;
+                font-size: 1.5rem;
+            }
+
+            .module-title {
+                font-size: 1.15rem;
+                margin-bottom: 0.5rem;
+                line-height: 1.4;
+            }
+
+            .module-desc {
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+            }
+
+            /* 태그 크기 미세 조정 */
+            .module-tags {
+                gap: 0.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
+    </header>
+
+    <!-- aria-live="polite" 를 추가하여 내부 내용이 바뀔 때 스크린 리더가 읽어줍니다 -->
+    <div id="app-container" aria-live="polite">
+        <div class="system-message-container">
+            <span style="font-family: 'Fira Code', monospace; color: var(--text-secondary);">[INITIALIZING_MODULE...]</span>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: 3rem; font-family: 'Fira Code', monospace; text-align: center;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);" aria-hidden="true">_</span></div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트의 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
+    </footer>
+    
+    <script src="../assets/common/common.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const container = document.getElementById('app-container');
+            const chapterId = new URLSearchParams(window.location.search).get('id');
+
+            const renderError = (code, msg, desc) => {
+                document.title = `${code} - JFB`;
+                container.innerHTML = `
+                    <div class="system-message-container">
+                        <!-- 장식용 에러 아이콘 숨김 -->
+                        <svg class="system-message-icon" aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        ${code === '404' ? '<h1 class="system-message-title">404</h1>' : ''}
+                        <h2 class="system-message-subtitle">${msg}</h2>
+                        <p class="system-message-desc">${desc}</p>
+                        <a href="../" class="return-home-btn"><span aria-hidden="true">&gt;</span> RETURN_TO_MAIN<span aria-hidden="true">_</span></a>
+                    </div>
+                `;
+            };
+
+            if (!chapterId) return renderError('', 'NO_CHAPTER_SELECTED', '조회할 챕터를 선택해주세요.');
+
+            try {
+                const [postsRes, chaptersRes] = await Promise.all([fetch('../data/posts.json'), fetch('../data/chapters.json').catch(()=>({ok:false}))]);
+                if (!postsRes.ok) throw new Error();
+                
+                const rawPosts = await postsRes.json();
+                const posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                    items.map(item => ({ ...item, chapter: chapterKey }))
+                );
+                const chaptersData = chaptersRes.ok ? await chaptersRes.json() : {};
+                const chapterPosts = posts.filter(p => p.chapter === chapterId).sort((a, b) => a.order - b.order);
+
+                if (chapterPosts.length === 0) return renderError('404', 'CHAPTER_NOT_FOUND', '요청하신 챕터를 찾을 수 없거나 비어 있습니다.');
+
+                const info = chaptersData[chapterId] || { meta: `SECTION 0${chapterId}`, title: `Chapter ${chapterId}` };
+                const desc = info.description || "이 챕터의 상세 설명이 아직 등록되지 않았습니다. 하단의 학습 모듈을 확인하세요.";
+                
+                document.title = `${info.title} - JFB`;
+                
+                const firstPost = chapterPosts[0];
+                const startTarget = firstPost.type === 'lab' ? '../lab/' : '../docs/';
+
+                // 모듈 카드를 <li> 태그로 변경하여 스크린 리더가 목록의 갯수를 인지하게 함
+                const modulesHTML = chapterPosts.map((post, index) => {
+                    const targetPage = post.type === 'lab' ? '../lab/' : '../docs/';
+                    const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                    const tagsHTML = (post.tags || []).map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                    
+                    return `
+                    <li class="module-card">
+                        <div class="module-number" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div>
+                        <div class="module-content">
+                            <a href="${targetPage}?id=${post.id}" class="module-title">${post.title}${labBadge}</a>
+                            <p class="module-desc">${post.description || '상세 설명이 제공되지 않은 문서입니다.'}</p>
+                            <div class="module-tags">${tagsHTML}</div>
+                        </div>
+                    </li>`;
+                }).join('');
+
+                // 타이틀 스크램블 분리 및 모듈 리스트를 <ul> 태그로 변경
+                container.innerHTML = `
+                    <section class="chapter-hero">
+                        <div class="hero-content-wrapper">
+                            <span class="chapter-meta-badge">${info.meta}</span>
+                            <h1 class="chapter-title">
+                                <span id="hero-title" aria-hidden="true"></span>
+                                <span class="sr-only">${info.title}</span>
+                            </h1>
+                            <p class="chapter-desc">${desc}</p>
+                            <div class="hero-actions">
+                                <a href="${startTarget}?id=${firstPost.id}" class="start-btn">
+                                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    START_CHAPTER<span aria-hidden="true">_</span>
+                                </a>
+                                <div class="chapter-stats"><span aria-hidden="true">[</span> TOTAL_MODULES: <span>${chapterPosts.length}</span> <span aria-hidden="true">]</span></div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="curriculum-section">
+                        <h2 class="section-heading">LEARNING_PATH<span aria-hidden="true">_</span></h2>
+                        <ul class="module-list" style="list-style: none;">${modulesHTML}</ul>
+                    </section>
+                `;
+
+                setTimeout(() => {
+                    const titleEl = document.getElementById('hero-title');
+                    if(titleEl) {
+                        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                        if (prefersReducedMotion) {
+                            titleEl.innerText = info.title; // 애니메이션 생략
+                        } else {
+                            new TextScrambler(titleEl).setText(info.title);
+                        }
+                    }
+                }, 100);
+
+                if (Object.keys(chaptersData).length > 0) {
+                    // 챕터 ID들을 정렬 (숫자형 문자열을 숫자로 변환하여 정렬)
+                    const chapterIds = Object.keys(chaptersData).sort((a, b) => {
+                        const numA = parseInt(a);
+                        const numB = parseInt(b);
+                        if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+                        return a.localeCompare(b);
+                    });
+
+                    const currentIndex = chapterIds.indexOf(chapterId);
+                    let prevUrl = null;
+                    let nextUrl = null;
+
+                    if (currentIndex !== -1) {
+                        // 이전 챕터 버튼 생성
+                        if (currentIndex > 0) {
+                            const prevId = chapterIds[currentIndex - 1];
+                            prevUrl = `./?id=${prevId}`;
+                            const sidePrev = document.createElement('a');
+                            sidePrev.href = prevUrl;
+                            sidePrev.className = 'side-nav-btn prev';
+                            sidePrev.title = `이전 챕터: ${chaptersData[prevId].title} (Ctrl + ←)`;
+                            sidePrev.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>`;
+                            document.body.appendChild(sidePrev);
+                        }
+
+                        // 다음 챕터 버튼 생성
+                        if (currentIndex < chapterIds.length - 1) {
+                            const nextId = chapterIds[currentIndex + 1];
+                            nextUrl = `./?id=${nextId}`;
+                            const sideNext = document.createElement('a');
+                            sideNext.href = nextUrl;
+                            sideNext.className = 'side-nav-btn next';
+                            sideNext.title = `다음 챕터: ${chaptersData[nextId].title} (Ctrl + →)`;
+                            sideNext.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+                            document.body.appendChild(sideNext);
+                        }
+
+                        // 단축키 (Ctrl + 좌/우) 이벤트 리스너 추가
+                        window.addEventListener('keydown', (e) => {
+                            if (e.ctrlKey) {
+                                if (e.key === 'ArrowLeft' && prevUrl) window.location.href = prevUrl;
+                                else if (e.key === 'ArrowRight' && nextUrl) window.location.href = nextUrl;
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                renderError('404', 'LOAD_FAILURE', '데이터베이스에 연결할 수 없습니다.');
+            }
+        });
+    </script>
+</body>
+</html>

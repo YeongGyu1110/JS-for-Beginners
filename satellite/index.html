@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Satellite Modules - JFB</title>
+    
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="icon" href="../favicon.png" type="image/png">
+    <link rel="stylesheet" href="../assets/common/common.css">
+    
+    <style>
+        /* =========================================
+           1. 히어로 섹션 (chapter.html과 통일)
+           ========================================= */
+        .page-hero {
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(180deg, rgba(255,107,0,0.03) 0%, transparent 100%);
+            padding: 5rem 2rem 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-meta {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            display: inline-block;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            padding: 0.2rem 0.6rem;
+            border-radius: var(--radius-sm);
+            background-color: rgba(255, 107, 0, 0.05);
+        }
+
+        .hero-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 600px;
+            margin: 0 auto;
+            word-break: keep-all;
+        }
+
+        /* =========================================
+           2. 메인 레이아웃 (사이드바 + 그리드)
+           ========================================= */
+        .library-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem 6rem 2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 4rem;
+            min-height: 50vh;
+        }
+
+        /* =========================================
+           3. 좌측 사이드바 (디렉토리 트리 스타일)
+           ========================================= */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+        }
+
+        .sidebar-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .category-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+            margin-left: 0.5rem;
+        }
+
+        .category-link {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        /* 트리 구조 연결선 느낌 */
+        .category-link::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 10px;
+            height: 1px;
+            background-color: var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .category-link:hover {
+            color: var(--text-primary);
+            background-color: var(--surface-hover);
+        }
+        .category-link:hover::before { background-color: var(--text-primary); width: 14px; }
+
+        .category-link.active {
+            color: var(--accent-color);
+            background-color: rgba(255, 107, 0, 0.05);
+            font-weight: 600;
+        }
+        .category-link.active::before {
+            background-color: var(--accent-color);
+            width: 14px;
+        }
+
+        /* =========================================
+           4. 우측 메인 콘텐츠 영역 (모듈 카드)
+           ========================================= */
+        .main-content {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+        }
+
+        .current-category-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            color: var(--text-heading);
+            font-weight: 600;
+        }
+        /* 스크린 리더가 ">" 기호를 무시하도록 대체 텍스트 빈 문자열 적용 */
+        .current-category-title::before { content: "> " / ""; color: var(--accent-color); }
+
+        .doc-count {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'Fira Code', monospace;
+        }
+        /* aria-hidden="true" 속성이 없는 span(실제 숫자)에만 주황색 적용 */
+        .doc-count span:not([aria-hidden="true"]) { color: var(--accent-color); }
+
+        .docs-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* 개별 문서 카드 디자인 (chapter.html 모듈 카드와 동일한 형태) */
+        .doc-card {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 좌측 강조 테두리 (Hover 시 표시) */
+        .doc-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0; width: 3px;
+            background-color: transparent;
+            transition: background-color 0.2s ease;
+        }
+
+        .doc-card:hover {
+            border-color: var(--text-secondary);
+            background-color: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        .doc-card:hover::before { background-color: var(--accent-color); }
+
+        .doc-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .doc-category-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .doc-title {
+            display: inline-block;
+            text-decoration: none;
+            color: var(--text-heading);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            line-height: 1.4;
+            letter-spacing: -0.5px;
+            transition: color 0.15s ease;
+        }
+
+        .doc-title:hover { color: var(--accent-color); }
+
+        .doc-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            word-break: keep-all;
+        }
+
+        .doc-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: auto;
+        }
+
+        /* 빈 상태 메시지 */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: var(--surface-color);
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* =========================================
+           5. 반응형 레이아웃 (모바일)
+           ========================================= */
+        @media (max-width: 768px) {
+            .page-hero { padding: 3.5rem 1.5rem 2.5rem 1.5rem; }
+            .hero-title { font-size: 1.8rem; }
+            .hero-desc { font-size: 0.95rem; }
+
+            .library-wrapper {
+                flex-direction: column;
+                padding: 2rem 1.5rem 4rem 1.5rem;
+                gap: 2rem;
+            }
+
+            /* 사이드바 가로 스크롤 탭으로 변환 */
+            .sidebar { width: 100%; position: static; }
+            .sidebar-title { display: none; }
+
+            .category-list {
+                flex-direction: row;
+                border-left: none;
+                margin-left: 0;
+                overflow-x: auto;
+                border-bottom: 1px solid var(--border-color);
+                scrollbar-width: none;
+            }
+            .category-list::-webkit-scrollbar { display: none; }
+
+            .category-link {
+                white-space: nowrap;
+                padding: 0.8rem 1.2rem;
+            }
+            .category-link::before { display: none; }
+            .category-link.active {
+                border-bottom: 2px solid var(--accent-color);
+                background-color: transparent;
+            }
+
+            .content-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .current-category-title { font-size: 1.2rem; }
+            
+            .doc-card { padding: 1.5rem; }
+            .doc-title { font-size: 1.15rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="page-hero">
+        <span class="hero-meta"><span aria-hidden="true">[</span> EXTRA_MODULES <span aria-hidden="true">]</span></span>
+        <h1 class="hero-title">SATELLITE<span aria-hidden="true">_</span></h1>
+        <p class="hero-desc">
+            정규 커리큘럼 외에 프레임워크, 마크다운, 기타 유틸리티 등 개발에 날개를 달아줄 확장 기술 문서가 모여있는 공간입니다.
+        </p>
+    </section>
+
+    <div class="library-wrapper">
+        <!-- 좌측 사이드바 (카테고리 트리) -->
+        <nav class="sidebar" aria-label="모듈 카테고리 탐색">
+            <h3 class="sidebar-title" aria-hidden="true">DIR_</h3>
+            <ul class="category-list" id="category-list">
+                <!-- 자바스크립트로 렌더링됩니다 -->
+            </ul>
+        </nav>
+
+        <!-- 우측 메인 콘텐츠 (문서 리스트) -->
+        <main class="main-content">
+            <!-- 데이터가 로드되어 화면이 바뀌면 음성으로 알려줍니다 -->
+            <div class="content-header" aria-live="polite">
+                <h2 class="current-category-title" id="current-category-title">LOADING...</h2>
+                <div class="doc-count" id="doc-count">[ SEARCHING_DB... ]</div>
+            </div>
+
+            <div class="docs-grid" id="docs-grid">
+                <!-- 자바스크립트로 문서 카드가 렌더링됩니다 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- 푸터 -->
+    <footer class="footer" style="border-top: 1px solid var(--border-color); padding: 3rem 2rem; margin-top: auto; font-family: 'Fira Code', monospace; text-align: center;">
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-heading); margin-bottom: 0.5rem;">JFB<span style="color: var(--accent-color);">_</span></div>
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-family: 'Pretendard', sans-serif;">자바스크립트의 우주를 항해하는 입문자를 위한 컴팩트 가이드.</div>
+    </footer>
+
+    <script src="../assets/common/common.js"></script>
+
+    <script>
+        async function fetchAllDocuments() {
+            let allDocs = [];
+            try {
+                // 1. posts.json (메인 튜토리얼)
+                const postsRes = await fetch('../data/posts.json');
+                if (postsRes.ok) {
+                    const rawPosts = await postsRes.json();
+                    const jsPosts = Object.values(rawPosts)
+                        .flat()
+                        .map(post => ({ ...post, category: 'javascript-fundamentals' }));
+                    allDocs = [...allDocs, ...jsPosts];
+                }
+
+                // 2. library.json (확장 모듈)
+                const libRes = await fetch('../data/library.json');
+                if (libRes.ok) {
+                    const rawLib = await libRes.json();
+                    // 객체의 키(카테고리명)를 추출하여 내부 배열 요소에 category 필드로 일괄 주입합니다.
+                    const libPosts = Object.entries(rawLib).flatMap(([cat, posts]) => 
+                        posts.map(post => ({ ...post, category: cat }))
+                    );
+                    allDocs = [...allDocs, ...libPosts];
+                }
+            } catch (e) {
+                console.warn('데이터 로드 중 일부 실패:', e);
+            }
+            return allDocs;
+        }
+
+        // 카테고리 ID 포맷터
+        function formatCategoryName(categoryId) {
+            if (categoryId === 'javascript-fundamentals') return 'JavaScript Fundamentals';
+            if (categoryId === 'discord-js') return 'Discord.js';
+            return categoryId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+
+        // 좌측 디렉토리 트리 렌더링
+        function renderSidebar(categories, currentCategory) {
+            const listEl = document.getElementById('category-list');
+            listEl.innerHTML = categories.map(category => {
+                const isActive = category === currentCategory ? 'active' : '';
+                // 현재 선택된 탭일 경우 스크린 리더에게 '현재 페이지'라고 알려주는 속성
+                const ariaCurrent = category === currentCategory ? 'aria-current="page"' : '';
+                const label = formatCategoryName(category);
+                return `
+                    <li>
+                        <a href="./?category=${category}" class="category-link ${isActive}" ${ariaCurrent}>
+                            ${label}
+                        </a>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // 우측 메인 카드 렌더링
+        function renderDocs(docs, currentCategory) {
+            const gridEl = document.getElementById('docs-grid');
+            const titleEl = document.getElementById('current-category-title');
+            const countEl = document.getElementById('doc-count');
+
+            titleEl.innerHTML = formatCategoryName(currentCategory).toUpperCase() + '<span aria-hidden="true">_</span>';
+            const filteredDocs = docs.filter(doc => doc.category === currentCategory);
+
+            countEl.innerHTML = `<span aria-hidden="true">[</span> DOCS: <span>${filteredDocs.length}</span> <span aria-hidden="true">]</span>`;
+
+            if (filteredDocs.length === 0) {
+                gridEl.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;" aria-hidden="true">[!]</div>
+                        해당 모듈에 연결된 데이터가 없습니다.
+                    </div>
+                `;
+                return;
+            }
+
+            gridEl.innerHTML = filteredDocs.map(post => {
+                const targetPage = post.type === 'lab' ? '../lab/' : '../docs/';
+                const badge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
+                const tagsHTML = (post.tags || []).map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                return `
+                    <div class="doc-card">
+                        <div class="doc-meta">
+                            <span class="doc-category-badge">MODULE <span aria-hidden="true">//</span> ${currentCategory}</span>
+                            ${badge}
+                        </div>
+                        <a href="${targetPage}?id=${post.id}" class="doc-title">${post.title}</a>
+                        <p class="doc-desc">${post.description || '모듈 상세 설명이 로드되지 않았습니다.'}</p>
+                        <div class="doc-tags">
+                            ${tagsHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const allDocs = await fetchAllDocuments();
+            
+            // Set은 배열에 추가된(JSON에 등록된) 순서를 그대로 유지합니다. 
+            // 별도의 알파벳 정렬 로직을 제거했습니다.
+            let uniqueCategories = [...new Set(allDocs.map(doc => doc.category).filter(Boolean))];
+
+            const urlParams = new URLSearchParams(window.location.search);
+            let currentCategory = urlParams.get('category');
+            
+            if (!currentCategory || !uniqueCategories.includes(currentCategory)) {
+                currentCategory = uniqueCategories.length > 0 ? uniqueCategories[0] : 'javascript-fundamentals';
+                window.history.replaceState({}, '', `?category=${currentCategory}`);
+            }
+
+            renderSidebar(uniqueCategories, currentCategory);
+            renderDocs(allDocs, currentCategory);
+            
+            // 문서 로딩이 끝나면 브라우저 탭 타이틀을 현재 카테고리명으로 업데이트합니다.
+            document.title = `${formatCategoryName(currentCategory)} - Satellite Modules - JFB`;
+        });
+    </script>
+</body>
+</html>

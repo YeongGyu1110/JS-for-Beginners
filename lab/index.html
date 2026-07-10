@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Environment - JFB</title>
+    
+    <!-- 코드 하이라이팅 테마 (Tomorrow Night) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <!-- 웹 폰트: Pretendard (본문용), Fira Code (코드용) -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="../favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="../assets/common/common.css">
+    <link rel="stylesheet" href="../assets/viewer/markdown.css">
+
+    <style>
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            font-size: 15px;
+            line-height: 1.75;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 32px 32px;
+            background-attachment: fixed; 
+        }
+
+        /* =========================================
+           3. 3단 레이아웃
+           ========================================= */
+        .layout-container {
+            display: grid;
+            grid-template-columns: 200px minmax(0, 760px) 200px;
+            gap: 4rem;
+            max-width: 1360px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            align-items: start;
+            justify-content: center;
+        }
+
+        .sidebar { 
+            position: sticky; 
+            top: 100px; 
+            max-height: calc(100vh - 120px); 
+            overflow-y: auto; 
+        }
+        .sidebar::-webkit-scrollbar { width: 0; }
+
+        .sidebar-title {
+            font-family: 'Fira Code', monospace; font-size: 0.75rem; font-weight: 600;
+            color: var(--text-secondary); margin-bottom: 1.2rem; text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        .ui-element { transition: opacity 0.4s ease, transform 0.4s ease; opacity: 1; transform: translateY(0); width: 100%; }
+        .ui-element.hidden { opacity: 0; transform: translateY(10px); pointer-events: none; position: absolute; visibility: hidden; top: 0; left: 0; right: 0; height: 0; overflow: hidden; }
+
+        /* =========================================
+           4. 사이드바 요소 (검색, 목차, 챕터, 태그)
+           ========================================= */
+        .search-form { margin-bottom: 2.5rem; position: relative; }
+
+        .toc-container {
+            position: relative;
+        }
+
+        .toc-container a { 
+            display: block; color: var(--text-secondary); text-decoration: none; 
+            margin-bottom: 0.6rem; font-size: 0.8rem; font-family: 'Fira Code', monospace; 
+            transition: color 0.15s ease; position: relative; padding-left: 12px;
+        }
+        .toc-container a::before { content: "·" / ""; position: absolute; left: 0; color: var(--text-secondary); opacity: 0.5; }
+        .toc-container a:hover { color: var(--text-heading); }
+        .toc-container a.active { color: var(--accent-color); font-weight: 500; }
+        .toc-container a.active::before { content: ">" / ""; color: var(--accent-color); opacity: 1; }
+        .toc-h2 { margin-left: 0; }
+        .toc-h3 { margin-left: 10px; font-size: 0.75rem !important; }
+
+        .sidebar-title-link { text-decoration: none; display: inline-block; margin-top: 2rem; margin-bottom: 1.2rem; transition: opacity 0.2s ease; }
+        .sidebar-title-link:hover { opacity: 0.7; }
+        .sidebar-title-link .sidebar-title { margin-bottom: 0; display: flex; align-items: center; gap: 8px; transition: color 0.2s ease; }
+        .sidebar-title-link:hover .sidebar-title { color: var(--accent-color); }
+        .chapter-count { color: var(--text-secondary); font-size: 0.7rem; font-weight: 400; letter-spacing: 0; }
+
+        .right-toc-container { position: relative; display: flex; flex-direction: column; margin-bottom: 2.5rem; }
+        .right-toc-container a { display: block; color: var(--text-secondary); text-decoration: none; margin-bottom: 0.6rem; font-size: 0.8rem; font-family: 'Fira Code', monospace; transition: color 0.15s ease; position: relative; padding-left: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .right-toc-container a::before { content: "·" / ""; position: absolute; left: 0; color: var(--text-secondary); opacity: 0.5; }
+        .right-toc-container a:hover { color: var(--text-heading); }
+        .right-toc-container a.active { color: var(--accent-color); font-weight: 500; }
+        .right-toc-container a.active::before { content: ">" / ""; color: var(--accent-color); opacity: 1; }
+
+        .tags-container { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        /* =========================================
+           5. 실습 특수 UI (타이머 & 대시보드)
+           ========================================= */
+        .lab-timer-box { background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 2.5rem; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .timer-label { font-family: 'Fira Code', monospace; font-size: 0.7rem; color: var(--text-secondary); display: block; margin-bottom: 0.5rem; letter-spacing: 1px; text-align: center; width: 100%; word-break: break-all; line-height: 1.4; }
+        .timer-display { font-family: 'Fira Code', monospace; font-size: 2.2rem; font-weight: 700; color: #10b981; line-height: 1; letter-spacing: -1px; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3); transition: color 0.3s; }
+        .timer-display.warning { color: #ef4444; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); animation: pulseTimer 1s infinite alternate; }
+        @keyframes pulseTimer { 0% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        .dashboard-box { background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; transition: all 0.2s ease; }
+        .sidebar-action-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background-color: var(--bg-color); border: 1px solid var(--accent-color); color: var(--accent-color); padding: 0.8rem 1rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border-radius: var(--radius-sm); margin-bottom: 1.5rem; }
+        .sidebar-action-btn:hover { background-color: var(--accent-color); color: #fff; box-shadow: 0 0 12px rgba(255, 107, 0, 0.3); }
+
+        .dash-label { font-size: 0.75rem; color: var(--text-secondary); font-family: 'Fira Code', monospace; margin-bottom: 0.5rem; display: block; }
+        .dash-value { font-size: 1.5rem; color: var(--text-heading); font-family: 'Fira Code', monospace; font-weight: 700; }
+        .dash-value span { color: var(--accent-color); }
+
+        /* =========================================
+           6. 마크다운 본문 스타일 (Unified)
+           ========================================= */
+        .content { padding: 0 0 4rem 0; }
+
+        /* 🔒 실습 모드 특화 스타일 */
+        .lab-state-standby .markdown-body pre code,
+        .lab-state-completed .markdown-body pre code { filter: blur(6px); user-select: none; }
+
+        .lab-state-standby .copy-button,
+        .lab-state-completed .copy-button { display: none !important; }
+
+        .lab-state-standby .lab-task-btn,
+        .lab-state-completed .lab-task-btn { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+
+        .code-lock-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 10; background: rgba(12, 13, 15, 0.4); backdrop-filter: blur(2px); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-secondary); font-family: 'Fira Code', monospace; font-size: 0.85rem; transition: opacity 0.5s ease; }
+        .lab-state-active .code-lock-overlay { opacity: 0; pointer-events: none; }
+
+        /* 실습 상호작용 요소 */
+        .lab-terminal { display: flex; align-items: center; justify-content: space-between; background-color: var(--surface-color); border: 1px solid var(--border-color); border-left: 4px solid var(--accent-color); border-radius: var(--radius-sm); padding: 0.8rem 1.5rem; margin-bottom: 2.5rem; font-family: 'Fira Code', monospace; }
+        .terminal-status { display: flex; align-items: center; gap: 15px; font-size: 0.85rem; }
+        .status-tag { color: var(--accent-color); font-weight: 600; }
+        .status-text { color: var(--text-secondary); font-size: 0.85rem; }
+        .terminal-btn { background-color: var(--bg-color); border: 1px solid var(--accent-color); color: var(--accent-color); padding: 0.5rem 1.2rem; font-family: 'Fira Code', monospace; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border-radius: var(--radius-sm); }
+        .terminal-btn:hover { background-color: var(--accent-color); color: #fff; transform: translateY(-2px); }
+
+        .lab-task-btn { display: flex; align-items: center; width: 100%; padding: 1.2rem 1.5rem; margin: 2rem 0; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; text-align: left; font-family: 'Fira Code', monospace; font-size: 0.9rem; color: var(--text-primary); }
+        .lab-task-btn .status-box { font-weight: bold; margin-right: 15px; color: var(--text-secondary); width: 40px; }
+        .lab-task-btn.completed { border-color: var(--accent-color); background-color: rgba(255, 107, 0, 0.05); }
+        .lab-task-btn.completed .status-box { color: var(--accent-color); }
+        .lab-task-btn.completed .task-text { color: var(--text-secondary); text-decoration: line-through; }
+
+        /* 🔒 실습 활성 상태일 때 네비게이션 숨김 */
+        .lab-state-active .post-navigation,
+        .lab-state-active .side-nav-btn {
+            display: none !important;
+        }
+
+        /* 실습 종료 시 상단 터미널 상태 변화 */
+        .lab-terminal.completed {
+            border-left-color: #10b981; /* 성공 (초록) */
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        .lab-terminal.completed .status-tag { color: #10b981; }
+
+        .lab-terminal.timeout {
+            border-left-color: #ef4444; /* 실패/타임아웃 (빨강) */
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+        .lab-terminal.timeout .status-tag { color: #ef4444; }
+
+        /* 터미널 내 재시작 버튼 스타일 */
+        #btn-restart-lab {
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+        #btn-restart-lab:hover {
+            background-color: var(--surface-hover);
+            color: var(--text-heading);
+            border-color: var(--text-heading);
+        }
+                        
+        /* =========================================
+        8. 커스텀 확인 창 (Custom Confirm Dialog)
+        ========================================= */
+        .confirm-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(12, 13, 15, 0.85);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10000;
+            opacity: 0; transition: opacity 0.2s ease;
+        }
+        .confirm-overlay.show { opacity: 1; }
+
+        .confirm-box {
+            background-color: var(--surface-color);
+            border: 1px solid var(--accent-color);
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            max-width: 420px; width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            transform: translateY(15px); transition: transform 0.2s ease;
+        }
+        .confirm-overlay.show .confirm-box { transform: translateY(0); }
+
+        .confirm-message {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 0.95rem; color: var(--text-primary);
+            line-height: 1.6; margin-bottom: 2rem;
+            word-break: keep-all;
+        }
+
+        .confirm-buttons {
+            display: flex; gap: 10px; justify-content: flex-end;
+        }
+
+        .confirm-btn {
+            padding: 0.6rem 1.2rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; border-radius: var(--radius-sm);
+            transition: all 0.15s ease;
+        }
+
+        .confirm-btn.yes {
+            background-color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            color: #fff;
+        }
+        .confirm-btn.yes:hover {
+            box-shadow: 0 0 10px rgba(255, 107, 0, 0.4);
+        }
+
+        .confirm-btn.no {
+            background-color: transparent;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-secondary);
+        }
+        .confirm-btn.no:hover {
+            border-color: var(--text-primary);
+            color: var(--text-heading);
+        }
+
+        /* =========================================
+           [추가] 모바일 UX 대응 (Bottom Sheet & Layout)
+           ========================================= */
+
+        .content, .right-sidebar { min-width: 0; max-width: 100vw; }
+        .markdown-body { overflow-wrap: break-word; word-break: break-word; }
+
+        .mobile-bottom-bar, .sheet-overlay { display: none; }
+
+        @media (max-width: 1024px) {
+            .layout-container {
+                grid-template-columns: 1fr; gap: 2rem; padding: 0 1.5rem; padding-bottom: 120px; 
+            }
+
+            .right-sidebar {
+                order: 2; position: static; border-top: 1px solid var(--border-color); padding-top: 2rem; margin-top: 2rem;
+            }
+
+            .left-sidebar {
+                position: fixed; top: auto; bottom: 0; left: 0; width: 100%;
+                background-color: var(--surface-color); border-top: 1px solid var(--border-color); border-radius: 0; 
+                padding: 2rem; padding-bottom: 100px; z-index: 2000;
+                transform: translateY(100%); visibility: hidden; 
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.3s;
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.8); max-height: 75vh; overflow-y: auto;
+            }
+            .left-sidebar.sheet-open { transform: translateY(0); visibility: visible; }
+
+            .sheet-overlay {
+                display: block; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background-color: rgba(12, 13, 15, 0.85); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+                z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            }
+            .sheet-overlay.show { opacity: 1; pointer-events: auto; }
+
+            .mobile-bottom-bar {
+                display: flex; position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+                width: calc(100% - 3rem); max-width: 400px; 
+                background-color: rgba(19, 21, 26, 1); border: 1px solid var(--border-color); border-radius: var(--radius-sm); 
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 1); z-index: 2001; 
+                transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s ease;
+            }
+            .mobile-bottom-bar.hide { transform: translate(-50%, 150px); opacity: 0; pointer-events: none; }
+
+            .bottom-tab-btn {
+                flex: 1; display: flex; align-items: center; justify-content: center;
+                background: transparent; border: none; color: var(--text-secondary); padding: 0.8rem 0; 
+                cursor: pointer; transition: all 0.2s ease; font-family: 'Fira Code', monospace; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px;
+            }
+            /* .bottom-tab-btn:first-child { border-right: 1px solid rgba(255, 107, 0, 0.3); } */
+            .bottom-tab-btn.active, .bottom-tab-btn:active { color: var(--accent-color); background-color: rgba(255, 107, 0, 0.05); }
+            
+            .sheet-item-hidden { display: none !important; }
+
+            /* ★ 실습 대시보드가 모바일 바텀시트에 들어갔을 때의 여백 최적화 */
+            #ui-dashboard.sheet-item { padding-top: 1rem; }
+        }
+
+        /* (삭제할 코드: .bottom-tab-btn:first-child { border-right: 1px solid rgba(255, 107, 0, 0.3); }) */
+
+        /* =========================================
+           [추가] 모바일 터미널 UI 최적화
+           ========================================= */
+        @media (max-width: 768px) {
+            .lab-terminal {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.2rem;
+                padding: 1.2rem;
+            }
+            .terminal-status {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .terminal-btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body, html { overflow-x: hidden; }
+            .layout-container { padding: 0 1rem; padding-bottom: 80px; }
+            .header { padding: 1rem; }
+            .search-input { font-size: 16px; }
+            .markdown-body pre { margin: 2rem -1rem !important; padding: 1rem !important; border-radius: 0; border-left: none; border-right: none; }
+        }
+    </style>
+</head>
+<body class="lab-state-standby">
+    <div class="progress-container"><div class="progress-bar" id="myBar"></div></div>
+    
+    <header class="header">
+        <a href="../" class="logo">JFB<span aria-hidden="true">_</span></a>
+    </header>
+
+    <div class="layout-container">
+        <aside class="sidebar left-sidebar">
+            <form action="../search/" method="GET" class="search-form ui-element" id="ui-search" role="search">
+                <input type="text" name="q" class="search-input" placeholder="Search..." autocomplete="off" aria-label="문서 검색">
+                <span class="search-icon" aria-hidden="true"></span>
+            </form>
+
+            <div class="lab-timer-box ui-element hidden" id="ui-timer" aria-hidden="true">
+                <!-- 매 초 바뀌는 타이머를 스크린 리더가 계속 읽으면 방해가 되므로 숨깁니다. -->
+                <span class="timer-label">SESSION_TIME_REMAINING</span>
+                <div class="timer-display" id="timer-display">45:00</div>
+            </div>
+
+            <h3 class="sidebar-title" aria-hidden="true">On this page</h3>
+            <nav id="toc" class="toc-container" aria-label="현재 문서 목차"></nav>
+        </aside>
+
+        <main class="content">
+            <div id="loader-state" style="font-family: 'Fira Code', monospace; display: flex; justify-content: center; align-items: center; height: 30vh; color: var(--text-secondary); font-size: 0.9rem;">
+                <span aria-hidden="true">[</span>Loading document database...<span aria-hidden="true">]</span>
+            </div>
+
+            <div id="lab-terminal" class="lab-terminal ui-element" style="display: none;" aria-live="polite">
+                <div class="terminal-status">
+                    <span class="status-tag" id="term-status-tag"><span aria-hidden="true">[</span>SYSTEM_READY<span aria-hidden="true">]</span></span>
+                    <span class="status-text" id="term-status-text">STBY_ENVIRONMENT_LOADED</span>
+                </div>
+                <button id="btn-start-lab" class="terminal-btn"><span aria-hidden="true">&gt;</span> INITIALIZE_WORKSPACE<span aria-hidden="true">_</span></button>
+                <button id="btn-restart-lab" class="terminal-btn" style="display: none;"><span aria-hidden="true">&gt;</span> REBOOT_SESSION<span aria-hidden="true">_</span></button>
+            </div>
+
+            <article id="lab-content" class="markdown-body" aria-live="polite"></article>
+        </main>
+
+        <aside class="sidebar right-sidebar">
+            <div id="ui-chapter-tags" class="ui-element">
+                <a href="#" id="side-chapter-title-link" class="sidebar-title-link">
+                    <h3 class="sidebar-title">
+                        <span id="side-chapter-title">Chapter</span> 
+                        <span class="chapter-count" id="side-chapter-count">[0/0]</span>
+                    </h3>
+                </a>
+                <nav id="chapter-nav" class="right-toc-container" aria-label="현재 챕터의 문서 목록"></nav>
+                <h3 class="sidebar-title">Tags</h3>
+                <div class="tags-container" id="tags-container"></div>
+            </div>
+
+            <div id="ui-dashboard" class="ui-element hidden">
+                <div class="dashboard-box">
+                    <span class="dash-label">MISSIONS_COMPLETED</span>
+                    <!-- 점수가 오를 때 스크린 리더가 읽어줍니다 -->
+                    <div class="dash-value" aria-live="polite"><span id="dash-completed">0</span> / <span id="dash-total" style="color: var(--text-secondary);">0</span></div>
+                </div>
+                <button class="sidebar-action-btn" id="btn-end-lab">
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    </svg>
+                    TERMINATE_SESSION<span aria-hidden="true">_</span>
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    </div> <!-- // 기존 .layout-container 닫는 태그 -->
+
+    <!-- =========================================
+         [추가] 모바일 전용 Bottom Bar & Overlay (lab.html 용)
+         ========================================= -->
+    <div class="sheet-overlay" id="sheet-overlay"></div>
+    
+    <nav class="mobile-bottom-bar" id="mobile-bottom-bar" aria-label="모바일 도구 모음">
+        <button class="bottom-tab-btn" id="tab-left" aria-expanded="false">
+            <span id="tab-left-text"><span aria-hidden="true">&gt;</span> SEARCH<span aria-hidden="true">_</span></span>
+        </button>
+        <button class="bottom-tab-btn" id="tab-right" aria-expanded="false">
+            <span id="tab-right-text"><span aria-hidden="true">&gt;</span> TOC<span aria-hidden="true">_</span></span>
+        </button>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked-footnote/dist/index.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="../assets/common/common.js"></script>
+    <script src="../assets/viewer/doc.js"></script>
+
+    <!-- 커스텀 자바스크립트 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+
+            const body = document.body;
+            const loaderState = document.getElementById('loader-state');
+            const labTerminal = document.getElementById('lab-terminal');
+            const labContent = document.getElementById('lab-content');
+            const btnStart = document.getElementById('btn-start-lab');
+            const btnRestart = document.getElementById('btn-restart-lab');
+            const btnEnd = document.getElementById('btn-end-lab');
+            const uiSearch = document.getElementById('ui-search');
+            const uiChapterTags = document.getElementById('ui-chapter-tags');
+            const uiTimer = document.getElementById('ui-timer');
+            const uiDashboard = document.getElementById('ui-dashboard');
+            const tagsContainer = document.getElementById('tags-container');
+
+            let isLabActive = false;
+            let totalTasks = 0, completedTasks = 0;
+            let timerInterval;
+
+            // 1. 공통 유틸리티 초기화
+            initProgressBar();
+            DocCore.initMarked();
+
+            const searchForm = document.querySelector('.search-form');
+            const searchInput = document.querySelector('.search-input');
+            if (searchForm && searchInput) {
+                searchForm.addEventListener('submit', (e) => {
+                    if (searchInput.value.trim() === '') {
+                        e.preventDefault();
+                        showToast('검색어를 입력해주세요.');
+                    }
+                });
+            }
+
+            // 파라미터가 없으면 빈 화면 출력
+            if (!postId) {
+                loaderState.style.display = 'none';
+                return DocCore.renderSystemMessage('empty', labContent, tagsContainer);
+            }
+
+            try {
+                // 2. 데이터 로드 및 검증
+                const [postsRes, chaptersRes, libraryRes] = await Promise.all([
+                    fetch('../data/posts.json'), 
+                    fetch('../data/chapters.json'),
+                    fetch('../data/library.json').catch(() => ({ok: false}))
+                ]);
+                
+                const rawPosts = await postsRes.json();
+                
+                // 1. posts.json 데이터 (chapter 속성과 기본 category 주입)
+                let posts = Object.entries(rawPosts).flatMap(([chapterKey, items]) => 
+                    items.map(item => ({ ...item, chapter: chapterKey, category: 'javascript-fundamentals' }))
+                );
+                
+                // 2. library.json 데이터 (객체 키를 category로 주입하며 평탄화)
+                if (libraryRes.ok) {
+                    const rawLib = await libraryRes.json();
+                    const libPosts = Object.entries(rawLib).flatMap(([catKey, items]) => 
+                        items.map(item => ({ ...item, category: catKey }))
+                    );
+                    posts = [...posts, ...libPosts];
+                }
+
+                const chapters = await chaptersRes.json();
+                const currentPost = posts.find(p => p.id === postId);
+
+                if (!currentPost) {
+                    loaderState.style.display = 'none';
+                    return DocCore.renderSystemMessage('404', labContent, tagsContainer);
+                }
+                if (currentPost.type !== 'lab') {
+                    loaderState.style.display = 'none';
+                    return DocCore.renderSystemMessage('wrong_type', labContent, tagsContainer, postId);
+                }
+
+                // 3. UI 업데이트 (사이드바, 태그, 제목)
+                document.title = `${currentPost.title} (Lab) - JFB`;
+
+                let chapterPosts = [];
+                let sideTitle = 'MODULE';
+                let sideLink = '#';
+
+                if (currentPost.chapter) {
+                    chapterPosts = posts.filter(p => p.chapter === currentPost.chapter).sort((a,b) => a.order - b.order);
+                    const chapterInfo = chapters[currentPost.chapter];
+                    if (chapterInfo) {
+                        sideTitle = chapterInfo.title;
+                        sideLink = `../path/?id=${currentPost.chapter}`;
+                    }
+                } else if (currentPost.category) {
+                    chapterPosts = posts.filter(p => p.category === currentPost.category);
+                    sideTitle = currentPost.category.toUpperCase() + '<span aria-hidden="true">_</span>';
+                    sideLink = `../satellite/?category=${currentPost.category}`;
+                    }
+
+                    document.getElementById('side-chapter-title').innerHTML = sideTitle; // textContent -> innerHTML로 변경
+                document.getElementById('side-chapter-title-link').href = sideLink;
+                
+                document.getElementById('chapter-nav').innerHTML = chapterPosts.map((p, i) => {
+                    const target = p.type === 'lab' ? '../lab/' : '../docs/';
+                    return `<a href="${target}?id=${p.id}" class="${p.id === postId ? 'active' : ''}">${String(i+1).padStart(2,'0')}. ${p.title}</a>`;
+                }).join('');
+                
+                document.getElementById('side-chapter-count').innerHTML = `<span aria-hidden="true">[</span>${chapterPosts.findIndex(p=>p.id===postId)+1}/${chapterPosts.length}<span aria-hidden="true">]</span>`; // textContent -> innerHTML로 변경
+
+                if (currentPost.tags) {
+                    tagsContainer.innerHTML = currentPost.tags.map(t => `<a href="../search/?q=%23${t}" class="tag">#${t}</a>`).join('');
+                }
+
+                // 4. 마크다운 렌더링
+                const mdRes = await fetch(currentPost.path);
+                if (!mdRes.ok) throw new Error("MD_LOAD_FAIL");
+                labContent.innerHTML = marked.parse(await mdRes.text());
+                
+                Prism.highlightAll();
+
+                // 🔒 랩 전용: 시작 전 코드 잠금 오버레이 추가
+                document.querySelectorAll('.markdown-body pre').forEach(pre => {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'code-lock-overlay';
+                    overlay.innerHTML = `<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg><span><span aria-hidden="true">[</span>CODE_LOCKED<span aria-hidden="true">]</span></span>`;
+                    pre.appendChild(overlay);
+                });
+
+                // 5. 공통 기능 부착
+                DocCore.createCopyButtons(labContent);
+                DocCore.buildToC(labContent, 'toc');
+
+                // 정규 커리큘럼은 전체 챕터 글을 넘겨 챕터 간 이동 허용
+                // 라이브러리는 현재 카테고리(chapterPosts) 내에서만 이동하도록 제한
+                let navTargetPosts;
+                if (currentPost.chapter) {
+                    navTargetPosts = posts.filter(p => p.chapter);
+                } else {
+                    navTargetPosts = chapterPosts.map((p, i) => ({ ...p, chapter: '1', order: i }));
+                }
+
+                DocCore.buildNavigation(postId, navTargetPosts, labContent);
+
+                // 랩 전용 미션 개수 파악
+                totalTasks = document.querySelectorAll('.lab-task-btn').length;
+                document.getElementById('dash-total').textContent = totalTasks;
+
+                loaderState.style.display = 'none';
+                labTerminal.style.display = 'flex';
+                setTimeout(() => labContent.classList.add('loaded'), 100);
+
+            } catch (e) {
+                console.error(e);
+                loaderState.style.display = 'none';
+                DocCore.renderSystemMessage('404', labContent, tagsContainer);
+            }
+
+            // =========================================
+            // 랩(Lab) 전용 상호작용 로직
+            // =========================================
+
+            // 실습 세션 시작/재시작 공통 함수
+            const startLabSession = (isRestart = false) => {
+                isLabActive = true;
+                
+                // 1. 상태 변수 및 미션 진행도 초기화
+                completedTasks = 0;
+                document.getElementById('dash-completed').textContent = '0';
+                clearInterval(timerInterval);
+
+                // 2. 바디 상태 클래스 전환 (Standby/Completed -> Active)
+                body.classList.remove('lab-state-standby', 'lab-state-completed');
+                body.classList.add('lab-state-active');
+
+                // 3. UI 토글 (터미널/아웃트로 숨기고 -> 타이머/대시보드 표시)
+                labTerminal.style.display = 'none';
+
+                uiSearch.classList.add('hidden');
+                uiChapterTags.classList.add('hidden');
+                
+                setTimeout(() => {
+                    uiSearch.style.display = 'none'; uiChapterTags.style.display = 'none';
+                    uiTimer.style.display = 'block'; uiDashboard.style.display = 'block';
+                    setTimeout(() => { uiTimer.classList.remove('hidden'); uiDashboard.classList.remove('hidden'); }, 50);
+                }, 400);
+
+                // 4. 미션 버튼 상태 완전 초기화
+                document.querySelectorAll('.lab-task-btn').forEach(btn => {
+                    btn.classList.remove('completed', 'processing');
+                    
+                    // 버튼 내부 텍스트 요소 찾기
+                    const status = btn.querySelector('.status-box');
+                    const text = btn.querySelector('.task-text');
+                    
+                    // 원본 텍스트 백업이 없다면 최초 1회 저장
+                    if (!text.hasAttribute('data-original')) {
+                        text.setAttribute('data-original', text.innerText);
+                    }
+                    if (!status.hasAttribute('data-original')) {
+                        status.setAttribute('data-original', status.innerText);
+                    }
+
+                    // 텍스트와 아이콘을 원본으로 복원
+                    status.innerText = status.getAttribute('data-original');
+                    text.innerText = text.getAttribute('data-original');
+                });
+
+                if (window.innerWidth <= 1024) {
+                    leftSidebar.appendChild(uiDashboard);
+                    uiDashboard.classList.add('sheet-item-hidden');
+                }
+
+                // [추가] 플로팅 탭 텍스트 변경
+                tabLeft.style.display = 'none';
+                tabRightText.innerHTML = `⏱ 45:00 &nbsp;&nbsp;|&nbsp;&nbsp; MISSIONS: 0 / ${totalTasks}`;
+
+                // 5. 타이머 시작 및 스크롤 최상단 이동
+                startTimer(45); // 타이머 45분
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                showToast(isRestart ? "새로운 세션으로 실습이 재시작되었습니다." : "실습 세션이 시작되었습니다.");
+            };
+
+            // 미션 버튼 이벤트 리스너 세팅 (최초 1회만 등록)
+            document.querySelectorAll('.lab-task-btn').forEach(btn => {
+                // 키보드 포커스와 버튼 역할을 부여하여 접근성 향상
+                btn.setAttribute('role', 'button');
+                btn.setAttribute('tabindex', '0'); // Tab 키로 이동 가능하게 설정
+                btn.setAttribute('aria-pressed', 'false'); // 눌리지 않은 상태로 초기화
+                
+                // 키보드(Enter/Space)로도 클릭이 가능하게 이벤트 추가
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+
+                btn.addEventListener('click', async function() {
+                    if (!isLabActive || this.classList.contains('completed') || this.classList.contains('processing')) return;
+
+                    // 클릭 시 버튼이 눌렸음을 스크린 리더에 알림
+                    this.setAttribute('aria-pressed', 'true');
+
+                    // 다중 클릭 방지를 위해 즉시 processing 클래스 부여
+                    this.classList.add('processing');
+
+                    const status = this.querySelector('.status-box');
+                    const text = this.querySelector('.task-text');
+
+                    status.innerHTML = '<span aria-hidden="true">[</span>-<span aria-hidden="true">]</span>'; 
+                    text.innerText = 'CHECKING...';
+                    
+                    await new Promise(r => setTimeout(r, 1000)); // 체크 딜레이 시뮬레이션
+                    
+                    // 처리가 끝나면 processing은 지우고 completed 부여
+                    this.classList.remove('processing');
+                    this.classList.add('completed');
+
+                    this.classList.add('completed');
+                    status.innerText = '✔'; 
+                    text.innerText = text.getAttribute('data-original'); // 원본 텍스트 복원
+                    
+                    completedTasks++;
+                    document.getElementById('dash-completed').textContent = completedTasks;
+                    const currentTimer = document.getElementById('timer-display').textContent;
+                    tabRightText.innerHTML = `⏱ ${currentTimer} &nbsp;&nbsp;|&nbsp;&nbsp; MISSIONS: ${completedTasks} / ${totalTasks}`;
+                });
+            });
+
+            // 시작 버튼 클릭 (실제 모바일/태블릿 기기 감지 로직 적용)
+            btnStart.addEventListener('click', async () => {
+                
+                // 1. 디바이스 감지 함수 (User-Agent + Touch Points)
+                const checkIsMobileDevice = () => {
+                    const ua = navigator.userAgent.toLowerCase();
+                    // 안드로이드, iOS, 기타 모바일 OS 감지
+                    const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+                    // iPadOS 13 이상은 자신을 Mac(데스크탑)으로 위장하므로, Mac이면서 터치스크린인 경우를 태블릿으로 간주
+                    const isMacTouch = navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /macintel/i.test(navigator.platform);
+                    
+                    return isMobileUA || isMacTouch;
+                };
+
+                // 2. 모바일/태블릿 기기일 경우에만 경고창 출력
+                if (checkIsMobileDevice()) {
+                    const proceed = await showConfirm(
+                        "<span style='color: var(--accent-color); font-family: \"Fira Code\", monospace; font-weight: bold;'>[SYS_WARNING] ENV_MISMATCH</span><br><br>이 실습 세션은 물리적 키보드가 있는 데스크탑 환경에 최적화되어 있습니다.<br>현재 접속하신 터치 디바이스에서는 코드 복사 및 타이핑 등 정상적인 실습 진행이 매우 불편할 수 있습니다.<br><br>그래도 세션을 강제로 시작하시겠습니까?"
+                    );
+                    
+                    // 취소 시 중단
+                    if (!proceed) return; 
+                }
+                
+                // 데스크탑이거나, 모바일에서 진행을 수락한 경우 세션 시작
+                startLabSession(false);
+            });
+
+            // 재시작 버튼 클릭 (커스텀 confirm 적용)
+            btnRestart.addEventListener('click', async () => {
+                if (await showConfirm("새로운 세션으로 실습을 다시 시작하시겠습니까?")) {
+                    startLabSession(true);
+                }
+            });
+
+            // 실습 종료 프로세스
+            const terminateLab = async (isTimeout = false) => {
+                if (!isTimeout && completedTasks < totalTasks) {
+                    const confirmed = await showConfirm("모든 미션을 완료하지 않았습니다. 정말 종료하시겠습니까?");
+                    if (!confirmed) return;
+                }
+
+                isLabActive = false;
+                clearInterval(timerInterval);
+                
+                // 1. 상태 전환: Active -> Completed
+                body.classList.remove('lab-state-active');
+                body.classList.add('lab-state-completed');
+
+                // 2. 타이머 & 대시보드 숨기고 다시 검색 & 목차 띄우기
+                uiTimer.classList.add('hidden');
+                uiDashboard.classList.add('hidden');
+                
+                setTimeout(() => {
+                    uiTimer.style.display = 'none'; 
+                    uiDashboard.style.display = 'none';
+                    
+                    uiSearch.style.display = 'block'; 
+                    uiChapterTags.style.display = 'block';
+                    setTimeout(() => { 
+                        uiSearch.classList.remove('hidden'); 
+                        uiChapterTags.classList.remove('hidden'); 
+                    }, 50);
+                }, 400);
+
+                // 3. 상단 터미널 상태 변경 및 표시 (디자인 유지, 텍스트 변경)
+                const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 100;
+                const isPerfect = completedTasks === totalTasks;
+
+                labTerminal.style.display = 'flex';
+                labTerminal.className = isTimeout ? 'lab-terminal timeout ui-element' : 'lab-terminal completed ui-element';
+                
+                document.getElementById('term-status-tag').innerHTML = isTimeout ? '<span aria-hidden="true">[</span>SESSION_TIMEOUT<span aria-hidden="true">]</span>' : '<span aria-hidden="true">[</span>SESSION_TERMINATED<span aria-hidden="true">]</span>';
+                document.getElementById('term-status-text').textContent = `FINAL_SCORE: ${percentage}% | MISSIONS: ${completedTasks}/${totalTasks}`;
+                
+                document.getElementById('btn-start-lab').style.display = 'none';
+                document.getElementById('btn-restart-lab').style.display = 'block';
+
+                if (window.innerWidth <= 1024) {
+                    document.querySelector('.right-sidebar').appendChild(uiDashboard);
+                }
+
+                // [추가] 바텀 시트 닫고 탭 텍스트 원복
+                closeBottomSheet();
+                tabLeft.style.display = '';
+                tabLeftText.innerHTML = '<span aria-hidden="true">&gt;</span> SEARCH<span aria-hidden="true">_</span>';
+                tabRightText.innerHTML = '<span aria-hidden="true">&gt;</span> TOC<span aria-hidden="true">_</span>';
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            btnEnd.addEventListener('click', () => terminateLab(false));
+
+            // 타이머 함수
+            function startTimer(min) {
+                let sec = min * 60;
+                const display = document.getElementById('timer-display');
+                display.classList.remove('warning'); // 타이머 재시작 시 경고색상 초기화
+                
+                timerInterval = setInterval(() => {
+                    const m = String(Math.floor(sec/60)).padStart(2,'0'), s = String(sec%60).padStart(2,'0');
+                    display.textContent = `${m}:${s}`;
+                    tabRightText.innerHTML = `⏱ ${m}:${s} &nbsp;&nbsp;|&nbsp;&nbsp; MISSIONS: ${completedTasks} / ${totalTasks}`;
+                    
+                    if (sec <= 300 && !display.classList.contains('warning')) {
+                        display.classList.add('warning'); 
+                    }
+                    if (sec <= 0) terminateLab(true);
+                    sec--;
+                }, 1000);
+            }
+
+            // =========================================
+            // [추가] 모바일 바텀 시트 로직 변수
+            // =========================================
+            const leftSidebar = document.querySelector('.left-sidebar');
+            const overlay = document.getElementById('sheet-overlay');
+            const bottomBar = document.getElementById('mobile-bottom-bar');
+            
+            const tabLeft = document.getElementById('tab-left');
+            const tabRight = document.getElementById('tab-right');
+            const tabLeftText = document.getElementById('tab-left-text');
+            const tabRightText = document.getElementById('tab-right-text');
+
+            const tocTitleEl = leftSidebar.querySelector('h3.sidebar-title');
+            const tocContainerEl = leftSidebar.querySelector('.toc-container');
+
+            function openBottomSheet(target) {
+                overlay.classList.add('show');
+                leftSidebar.classList.add('sheet-open');
+                
+                // 탭 액티브 상태 & 스크린 리더 동기화
+                const isLeft = target === 'left';
+                const isRight = target === 'right';
+
+                tabLeft.classList.toggle('active', isLeft);
+                tabLeft.setAttribute('aria-expanded', isLeft);
+
+                tabRight.classList.toggle('active', isRight);
+                tabRight.setAttribute('aria-expanded', isRight);
+
+                // 상태에 따른 UI 토글
+                 if (isLabActive) {
+                    // 실습 중: 왼쪽/오른쪽 버튼 모두 "대시보드"를 띄우도록 함
+                    uiDashboard.classList.remove('sheet-item-hidden');
+                    
+                    uiTimer.classList.add('sheet-item-hidden');
+                    
+                    // 나머지 숨김
+                    uiSearch.classList.add('sheet-item-hidden');
+                    tocTitleEl.classList.add('sheet-item-hidden');
+                    tocContainerEl.classList.add('sheet-item-hidden');
+                } else {
+                    // 대기/종료 중: Search / ToC 로직 (index.html과 동일)
+                    if (target === 'left') { // Search
+                        uiSearch.classList.remove('sheet-item-hidden');
+                        tocTitleEl.classList.add('sheet-item-hidden');
+                        tocContainerEl.classList.add('sheet-item-hidden');
+                        setTimeout(() => leftSidebar.querySelector('.search-input').focus(), 300);
+                    } else if (target === 'right') { // ToC
+                        uiSearch.classList.add('sheet-item-hidden');
+                        tocTitleEl.classList.remove('sheet-item-hidden');
+                        tocContainerEl.classList.remove('sheet-item-hidden');
+                    }
+                }
+            }
+
+            function closeBottomSheet() {
+                overlay.classList.remove('show');
+                leftSidebar.classList.remove('sheet-open');
+                tabLeft.classList.remove('active');
+                tabLeft.setAttribute('aria-expanded', 'false');
+                tabRight.classList.remove('active');
+                tabRight.setAttribute('aria-expanded', 'false');
+            }
+
+            if (tabLeft && tabRight) {
+                tabLeft.addEventListener('click', () => {
+                    if (leftSidebar.classList.contains('sheet-open') && tabLeft.classList.contains('active')) {
+                        closeBottomSheet();
+                    } else {
+                        openBottomSheet('left');
+                    }
+                });
+
+                tabRight.addEventListener('click', () => {
+                    if (leftSidebar.classList.contains('sheet-open') && tabRight.classList.contains('active')) {
+                        closeBottomSheet();
+                    } else {
+                        openBottomSheet('right');
+                    }
+                });
+
+                overlay.addEventListener('click', closeBottomSheet);
+                tocContainerEl.addEventListener('click', (e) => {
+                    if (e.target.tagName.toLowerCase() === 'a') closeBottomSheet();
+                });
+            }
+
+            // 스크롤 숨김 로직 (index.html과 동일)
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!bottomBar || window.innerWidth > 1024) return;
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        const currentScrollY = window.scrollY;
+                        if (leftSidebar.classList.contains('sheet-open')) {
+                            bottomBar.classList.remove('hide');
+                        } else {
+                            if (currentScrollY < 10 || currentScrollY < lastScrollY) bottomBar.classList.remove('hide');
+                            else if (currentScrollY > lastScrollY && currentScrollY > 50) bottomBar.classList.add('hide');
+                        }
+                        lastScrollY = currentScrollY;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        });
+    </script>
+</body>
+</html>
