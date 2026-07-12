@@ -55,6 +55,14 @@
       "type": "doc",
       "tags": ["web-development"],
       "path": "../content/web-development/07.md"
+    },
+    {
+      "id": "form", 
+      "title": "HTML 및 Live Server",
+      "description": "",
+      "type": "doc",
+      "tags": ["web-development"],
+      "path": "../content/web-development/08.md"
     }
   ],
   "admin": [
