@@ -71,6 +71,14 @@
       "type": "doc",
       "tags": ["web-development"],
       "path": "../content/web-development/09.md"
+    },
+    {
+      "id": "text-style", 
+      "title": "HTML 및 Live Server",
+      "description": "",
+      "type": "doc",
+      "tags": ["web-development"],
+      "path": "../content/web-development/10.md"
     }
   ],
   "admin": [
