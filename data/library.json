@@ -1,100 +1,100 @@
 {
-  "web-development": [
+  "web-fundamentals": [
     {
       "id": "web-dev-basics", 
       "title": "웹 개발 기초",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/01.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/01.md"
     },
     {
       "id": "html-liveserver", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "lab",
-      "tags": ["web-development"],
-      "path": "../content/web-development/02.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/02.md"
     },
     {
       "id": "tag", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/03.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/03.md"
     },
     {
       "id": "text", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/04.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/04.md"
     },
     {
       "id": "list-and-table", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/05.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/05.md"
     },
     {
       "id": "img-audio-video", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/06.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/06.md"
     },
     {
       "id": "hyperlink", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/07.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/07.md"
     },
     {
       "id": "form", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/08.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/08.md"
     },
     {
       "id": "style", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/09.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/09.md"
     },
     {
       "id": "text-style", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/10.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/10.md"
     },
     {
       "id": "list-style", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/11.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/11.md"
     },
     {
       "id": "table-style", 
       "title": "HTML 및 Live Server",
       "description": "",
       "type": "doc",
-      "tags": ["web-development"],
-      "path": "../content/web-development/12.md"
+      "tags": ["web-fundamentals"],
+      "path": "../content/web-fundamentals/12.md"
     }
   ],
   "admin": [
