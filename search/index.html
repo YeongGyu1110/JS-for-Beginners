@@ -290,7 +290,7 @@
                 const lowerQ = isTag ? query.substring(1).toLowerCase() : query.toLowerCase();
 
                 const filtered = postsDatabase.filter(post => {
-                    if (isTag) return post.tags && post.tags.some(t => t.toLowerCase().includes(lowerQ));
+                    if (isTag) return post.tags && post.tags.some(t => t.toLowerCase() === lowerQ);
                     return (post.title && post.title.toLowerCase().includes(lowerQ)) || 
                            (post.description && post.description.toLowerCase().includes(lowerQ)) || 
                            (post.tags && post.tags.some(t => t.toLowerCase().includes(lowerQ)));
