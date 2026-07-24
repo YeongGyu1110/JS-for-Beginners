@@ -2,98 +2,98 @@
   "web-fundamentals": [
     {
       "id": "web-dev-basics", 
-      "title": "웹 개발 기초",
-      "description": "",
+      "title": "HTML과 웹 브라우저의 동작 원리",
+      "description": "웹 페이지의 구조를 정의하는 HTML의 개념과 마크업 언어인 이유를 이해하고, HTML 문서를 해독하여 화면에 그리는 브라우저의 렌더링 과정(파싱, DOM 트리 구축, 페인팅)을 알아봅니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "렌더링"],
       "path": "../content/web-fundamentals/01.md"
     },
     {
-      "id": "html-liveserver", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "id": "html-liveServer", 
+      "title": "실습: 첫 HTML 파일 만들기와 Live Server 활용",
+      "description": "VS Code에서 첫 HTML 파일을 생성하고 브라우저로 직접 열어본 뒤, Live Server 확장 프로그램을 설치하여 코드를 저장할 때마다 실시간으로 렌더링되는 개발 환경을 구축하는 실습을 진행합니다.",
       "type": "lab",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "렌더링", "확장_프로그램", "LAB"],
       "path": "../content/web-fundamentals/02.md"
     },
     {
-      "id": "tag", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "id": "html-structure-and-tags", 
+      "title": "HTML 문서의 기본 뼈대와 태그",
+      "description": "HTML 태그의 기본 문법과 문서의 필수 뼈대인 !DOCTYPE html, html, head, body의 역할을 이해하고, 웹 접근성과 SEO를 높이는 시맨틱 태그의 종류와 활용법을 학습합니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "tag"],
       "path": "../content/web-fundamentals/03.md"
     },
     {
-      "id": "text", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "id": "text-formatting-tags", 
+      "title": "텍스트 관련 태그 (제목, 문단, 꾸밈)",
+      "description": "글의 구조를 잡는 제목(h1~h6) 및 문단(p) 태그부터 줄바꿈(br), 구분선(hr), 인용구(blockquote), 그리고 의미와 강조를 더하는 다양한 텍스트 서식 태그들의 쓰임새를 배웁니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "text", "font"],
       "path": "../content/web-fundamentals/04.md"
     },
     {
       "id": "list-and-table", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "title": "목록과 표 (List & Table)",
+      "description": "항목을 나열하는 목록 태그(ul, ol, dl)의 사용법과 표를 구성하는 기본 태그(table, tr, th, td), 의미론적 표 구조(thead, tbody, tfoot), 그리고 셀 병합 속성(colspan, rowspan)을 학습합니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "list", "table"],
       "path": "../content/web-fundamentals/05.md"
     },
     {
       "id": "img-audio-video", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "title": "멀티미디어 (이미지, 오디오, 비디오)",
+      "description": "이미지(img) 태그의 필수 속성과 상대 경로의 개념을 이해하고, 웹 페이지에 음성과 영상을 삽입하는 audio, video 태그의 주요 제어 속성 및 브라우저 자동 재생 정책을 다룹니다",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "src", "alt"],
       "path": "../content/web-fundamentals/06.md"
     },
     {
       "id": "hyperlink", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "title": "하이퍼링크 (Hyperlink)",
+      "description": "a 태그와 href 속성을 통해 외부 및 내부 페이지를 연결하고, target=\"_blank\"를 통한 새 탭 열기, id 속성을 활용한 내부 앵커 점프 기능, 특수 링크(mailto:, tel:) 작성법을 배웁니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "a", "href"],
       "path": "../content/web-fundamentals/07.md"
     },
     {
       "id": "form", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "title": "폼과 사용자 입력 (Form)",
+      "description": "사용자 데이터를 서버로 전송하는 form 태그의 작동 방식(GET/POST)과 input의 다양한 type, 접근성을 높이는 label 태그, textarea, select 요소 및 보조 속성 활용법을 다룹니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["HTML", "input", "form", "label"],
       "path": "../content/web-fundamentals/08.md"
     },
     {
-      "id": "style", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "id": "css-basics", 
+      "title": "CSS의 기초와 스타일 적용 방법",
+      "description": "CSS의 기본 개념과 스타일 작성 문법을 이해하고, 웹 문서에 CSS를 적용하는 3가지 방법(인라인, 내부, 외부) 및 기본 선택자 사용법과 캐스케이딩(Cascading) 우선순위 규칙을 알아봅니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["CSS", "style", "selector", "선택자", "cascading", "캐스케이딩"],
       "path": "../content/web-fundamentals/09.md"
     },
     {
-      "id": "text-style", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "id": "font-and-text", 
+      "title": "글꼴과 텍스트 스타일",
+      "description": "font-family와 예비 글꼴 설정부터 px, rem 단위 기반의 글자 크기, 두께, 기울임 제어, 그리고 문단 정렬과 행간, 자간 조절 등 가독성을 높이는 텍스트 타이포그래피 속성을 학습합니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["CSS", "text", "font", "align"],
       "path": "../content/web-fundamentals/10.md"
     },
     {
       "id": "list-style", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "title": "목록 스타일링 (List Style)",
+      "description": "목록 기호의 형태, 위치, 이미지를 제어하는 list-style 속성을 배우고, 기본 불릿을 제거한 뒤 ul과 li 태그를 활용해 가로형 내비게이션 메뉴바를 제작하는 실무 응용법을 다룹니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["CSS", "list"],
       "path": "../content/web-fundamentals/11.md"
     },
     {
       "id": "table-style", 
-      "title": "HTML 및 Live Server",
-      "description": "",
+      "title": "표 스타일링 (Table Style)",
+      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
-      "tags": ["web-fundamentals"],
+      "tags": ["CSS", "table"],
       "path": "../content/web-fundamentals/12.md"
     }
   ],
@@ -101,7 +101,7 @@
     {
       "id": "test-style", 
       "title": "스타일 테스트",
-      "description": "",
+      "description": "실습 기능을 테스트하고 점검하기 위한 테스트용 문서입니다. 실제 콘텐츠가 아닌, 실습 전용 요소가 올바르게 동작되는지 확인하는 용도로 사용하세요.",
       "type": "doc",
       "tags": ["admin"],
       "path": "../content/admin/style-test.md"
@@ -109,7 +109,7 @@
     {
       "id": "test-lab", 
       "title": "실습 테스트",
-      "description": "",
+      "description": "마크다운 렌더링 품질과 CSS 스타일을 점검하기 위한 테스트용 문서입니다. 실제 콘텐츠가 아닌, 모든 마크다운 요소가 의도한 대로 표시되는지 확인하는 용도로 사용하세요.",
       "type": "lab",
       "tags": ["admin"],
       "path": "../content/admin/lab.md"

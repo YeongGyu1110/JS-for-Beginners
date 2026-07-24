@@ -23,7 +23,7 @@
       "title": "자바스크립트 개발 환경 구축하기",
       "description": "본격적인 코딩을 위해 코드 에디터 VS Code와 실행 엔진 Node.js를 설치하여 로컬 개발 환경을 구축합니다",
       "type": "doc",
-      "tags": ["환경설정", "Visual_Studio_Code", "VS_Code", "Node.js"],
+      "tags": ["환경설정", "Visual_Studio_Code", "VS_Code", "Node.js", "확장_프로그램"],
       "path": "../content/javascript-fundamentals/chapter01/03.md",
       "order": 3
     },
