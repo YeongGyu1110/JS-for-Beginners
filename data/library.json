@@ -111,6 +111,22 @@
       "type": "doc",
       "tags": ["CSS", "table"],
       "path": "../content/web-fundamentals/14.md"
+    },
+    {
+      "id": "display-and-float", 
+      "title": "표 스타일링 (Table Style)",
+      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "type": "doc",
+      "tags": ["CSS", "table"],
+      "path": "../content/web-fundamentals/15.md"
+    },
+    {
+      "id": "position", 
+      "title": "표 스타일링 (Table Style)",
+      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "type": "doc",
+      "tags": ["CSS", "table"],
+      "path": "../content/web-fundamentals/16.md"
     }
   ],
   "admin": [
