@@ -1,12 +1,12 @@
 {
-  "web-fundamentals": [
+  "web-fundamentals: HTML": [
     {
       "id": "web-dev-basics", 
       "title": "HTML과 웹 브라우저의 동작 원리",
       "description": "웹 페이지의 구조를 정의하는 HTML의 개념과 마크업 언어인 이유를 이해하고, HTML 문서를 해독하여 화면에 그리는 브라우저의 렌더링 과정(파싱, DOM 트리 구축, 페인팅)을 알아봅니다.",
       "type": "doc",
       "tags": ["HTML", "렌더링"],
-      "path": "../content/web-fundamentals/01.md"
+      "path": "../content/web-fundamentals/HTML/01.md"
     },
     {
       "id": "html-liveServer", 
@@ -14,7 +14,7 @@
       "description": "VS Code에서 첫 HTML 파일을 생성하고 브라우저로 직접 열어본 뒤, Live Server 확장 프로그램을 설치하여 코드를 저장할 때마다 실시간으로 렌더링되는 개발 환경을 구축하는 실습을 진행합니다.",
       "type": "lab",
       "tags": ["HTML", "렌더링", "확장_프로그램", "LAB"],
-      "path": "../content/web-fundamentals/02.md"
+      "path": "../content/web-fundamentals/HTML/02.md"
     },
     {
       "id": "html-structure-and-tags", 
@@ -22,7 +22,7 @@
       "description": "HTML 태그의 기본 문법과 문서의 필수 뼈대인 !DOCTYPE html, html, head, body의 역할을 이해하고, 웹 접근성과 SEO를 높이는 시맨틱 태그의 종류와 활용법을 학습합니다.",
       "type": "doc",
       "tags": ["HTML", "tag"],
-      "path": "../content/web-fundamentals/03.md"
+      "path": "../content/web-fundamentals/HTML/03.md"
     },
     {
       "id": "text-formatting-tags", 
@@ -30,7 +30,7 @@
       "description": "글의 구조를 잡는 제목(h1~h6) 및 문단(p) 태그부터 줄바꿈(br), 구분선(hr), 인용구(blockquote), 그리고 의미와 강조를 더하는 다양한 텍스트 서식 태그들의 쓰임새를 배웁니다.",
       "type": "doc",
       "tags": ["HTML", "text", "font"],
-      "path": "../content/web-fundamentals/04.md"
+      "path": "../content/web-fundamentals/HTML/04.md"
     },
     {
       "id": "list-and-table", 
@@ -38,7 +38,7 @@
       "description": "항목을 나열하는 목록 태그(ul, ol, dl)의 사용법과 표를 구성하는 기본 태그(table, tr, th, td), 의미론적 표 구조(thead, tbody, tfoot), 그리고 셀 병합 속성(colspan, rowspan)을 학습합니다.",
       "type": "doc",
       "tags": ["HTML", "list", "table"],
-      "path": "../content/web-fundamentals/05.md"
+      "path": "../content/web-fundamentals/HTML/05.md"
     },
     {
       "id": "img-audio-video", 
@@ -46,7 +46,7 @@
       "description": "이미지(img) 태그의 필수 속성과 상대 경로의 개념을 이해하고, 웹 페이지에 음성과 영상을 삽입하는 audio, video 태그의 주요 제어 속성 및 브라우저 자동 재생 정책을 다룹니다",
       "type": "doc",
       "tags": ["HTML", "src", "alt"],
-      "path": "../content/web-fundamentals/06.md"
+      "path": "../content/web-fundamentals/HTML/06.md"
     },
     {
       "id": "hyperlink", 
@@ -54,7 +54,7 @@
       "description": "a 태그와 href 속성을 통해 외부 및 내부 페이지를 연결하고, target=\"_blank\"를 통한 새 탭 열기, id 속성을 활용한 내부 앵커 점프 기능, 특수 링크(mailto:, tel:) 작성법을 배웁니다.",
       "type": "doc",
       "tags": ["HTML", "a", "href"],
-      "path": "../content/web-fundamentals/07.md"
+      "path": "../content/web-fundamentals/HTML/07.md"
     },
     {
       "id": "form", 
@@ -62,15 +62,17 @@
       "description": "사용자 데이터를 서버로 전송하는 form 태그의 작동 방식(GET/POST)과 input의 다양한 type, 접근성을 높이는 label 태그, textarea, select 요소 및 보조 속성 활용법을 다룹니다.",
       "type": "doc",
       "tags": ["HTML", "input", "form", "label"],
-      "path": "../content/web-fundamentals/08.md"
-    },
+      "path": "../content/web-fundamentals/HTML/08.md"
+    }
+  ],
+  "web-fundamentals: CSS": [
     {
       "id": "css-basics", 
       "title": "CSS의 기초와 스타일 적용 방법",
       "description": "CSS의 기본 개념과 스타일 작성 문법을 이해하고, 웹 문서에 CSS를 적용하는 3가지 방법(인라인, 내부, 외부) 및 기본 선택자 사용법과 캐스케이딩(Cascading) 우선순위 규칙을 알아봅니다.",
       "type": "doc",
       "tags": ["CSS", "style", "selector", "선택자", "cascading", "캐스케이딩"],
-      "path": "../content/web-fundamentals/09.md"
+      "path": "../content/web-fundamentals/CSS/01.md"
     },
     {
       "id": "font-and-text", 
@@ -78,7 +80,7 @@
       "description": "font-family와 예비 글꼴 설정부터 px, rem 단위 기반의 글자 크기, 두께, 기울임 제어, 그리고 문단 정렬과 행간, 자간 조절 등 가독성을 높이는 텍스트 타이포그래피 속성을 학습합니다.",
       "type": "doc",
       "tags": ["CSS", "text", "font", "align"],
-      "path": "../content/web-fundamentals/10.md"
+      "path": "../content/web-fundamentals/CSS/02.md"
     },
     {
       "id": "list-style", 
@@ -86,7 +88,7 @@
       "description": "목록 기호의 형태, 위치, 이미지를 제어하는 list-style 속성을 배우고, 기본 불릿을 제거한 뒤 ul과 li 태그를 활용해 가로형 내비게이션 메뉴바를 제작하는 실무 응용법을 다룹니다.",
       "type": "doc",
       "tags": ["CSS", "list"],
-      "path": "../content/web-fundamentals/11.md"
+      "path": "../content/web-fundamentals/CSS/03.md"
     },
     {
       "id": "table-style", 
@@ -94,7 +96,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/12.md"
+      "path": "../content/web-fundamentals/CSS/04.md"
     },
     {
       "id": "box-model", 
@@ -102,7 +104,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/13.md"
+      "path": "../content/web-fundamentals/CSS/05.md"
     },
     {
       "id": "margin-border-padding", 
@@ -110,7 +112,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/14.md"
+      "path": "../content/web-fundamentals/CSS/06.md"
     },
     {
       "id": "display-and-float", 
@@ -118,7 +120,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/15.md"
+      "path": "../content/web-fundamentals/CSS/07.md"
     },
     {
       "id": "position", 
@@ -126,7 +128,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/16.md"
+      "path": "../content/web-fundamentals/CSS/08.md"
     }
   ],
   "admin": [
