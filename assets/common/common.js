@@ -1,53 +1,87 @@
 // =========================================
-// 1. 텍스트 스크램블 애니메이션 (main, chapter)
+// 1. 텍스트 스크램블 애니메이션 (60Hz 정밀 보정 버전)
 // =========================================
 class TextScrambler {
     constructor(el) {
         this.el = el;
         this.chars = '!<>-_\\/[]{}—=+*^?#@&%0123456789';
         this.update = this.update.bind(this);
+        
+        // --- [60Hz 환경 역산 정밀 상수 설정] ---
+        this.FRAME_TIME = 1000 / 60; // 60Hz의 1프레임 = 16.666...ms
+        
+        // 60Hz에서 Math.random() < 0.28 일 때 문자가 바뀌는 주기 (약 59.5ms)
+        this.SCRAMBLE_INTERVAL = this.FRAME_TIME / 0.28; 
+        
+        // 60Hz에서 최대 40프레임 = 약 666.67ms
+        this.MAX_START_DELAY = 40 * this.FRAME_TIME; 
+        this.MAX_DURATION = 40 * this.FRAME_TIME; 
     }
+
     setText(newText) {
         const oldText = this.el.innerText;
         const length = Math.max(oldText.length, newText.length);
         const promise = new Promise((resolve) => (this.resolve = resolve));
         this.queue = [];
+
         for (let i = 0; i < length; i++) {
             const from = oldText[i] || '';
             const to = newText[i] || '';
-            const start = Math.floor(Math.random() * 40);
-            const end = start + Math.floor(Math.random() * 40);
-            this.queue.push({ from, to, start, end });
+            
+            // 60Hz 환경에서의 프레임 기반 무작위성을 시간(ms)으로 정확히 환산
+            const start = Math.floor(Math.random() * this.MAX_START_DELAY);
+            const end = start + Math.floor(Math.random() * this.MAX_DURATION);
+
+            this.queue.push({ 
+                from, 
+                to, 
+                start, 
+                end, 
+                lastScrambleTime: 0, 
+                char: '' 
+            });
         }
+
         cancelAnimationFrame(this.frameRequest);
-        this.frame = 0;
-        this.update();
+        this.startTime = null;
+        this.frameRequest = requestAnimationFrame(this.update);
+
         return promise;
     }
-    update() {
+
+    update(timestamp) {
+        if (!this.startTime) this.startTime = timestamp;
+        const elapsed = timestamp - this.startTime; // 애니메이션 시작 후 경과 시간
+
         let output = '';
         let complete = 0;
+
         for (let i = 0, n = this.queue.length; i < n; i++) {
-            let { from, to, start, end, char } = this.queue[i];
-            if (this.frame >= end) {
+            let item = this.queue[i];
+
+            if (elapsed >= item.end) {
+                // 목표 시간 도달 시 정답 글자 고정
                 complete++;
-                output += to;
-            } else if (this.frame >= start) {
-                if (!char || Math.random() < 0.28) {
-                    char = this.chars[Math.floor(Math.random() * this.chars.length)];
-                    this.queue[i].char = char;
+                output += item.to;
+            } else if (elapsed >= item.start) {
+                // 60Hz 기준 28% 확률(약 59.5ms 주기)과 동일한 간격으로만 글자 변경
+                if (!item.char || (timestamp - item.lastScrambleTime) >= this.SCRAMBLE_INTERVAL) {
+                    item.char = this.chars[Math.floor(Math.random() * this.chars.length)];
+                    item.lastScrambleTime = timestamp;
                 }
-                output += `<span style="color: var(--accent-color)">${char}</span>`;
+                output += `<span style="color: var(--accent-color)">${item.char}</span>`;
             } else {
-                output += from;
+                // 시작 전에는 기존 글자 유지
+                output += item.from;
             }
         }
+
         this.el.innerHTML = output;
+
         if (complete === this.queue.length) {
             this.resolve();
         } else {
             this.frameRequest = requestAnimationFrame(this.update);
-            this.frame++;
         }
     }
 }
