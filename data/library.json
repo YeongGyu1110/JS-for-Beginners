@@ -72,7 +72,15 @@
       "description": "CSS의 기본 개념과 스타일 작성 문법을 이해하고, 웹 문서에 CSS를 적용하는 3가지 방법(인라인, 내부, 외부) 및 기본 선택자 사용법과 캐스케이딩(Cascading) 우선순위 규칙을 알아봅니다.",
       "type": "doc",
       "tags": ["CSS", "style", "selector", "선택자", "cascading", "캐스케이딩"],
-      "path": "../content/web-fundamentals/CSS/01.md"
+      "path": "../content/web-fundamentals/CSS/01-1.md"
+    },
+    {
+      "id": "css-basics2", 
+      "title": "CSS의 기초와 스타일 적용 방법",
+      "description": "CSS의 기본 개념과 스타일 작성 문법을 이해하고, 웹 문서에 CSS를 적용하는 3가지 방법(인라인, 내부, 외부) 및 기본 선택자 사용법과 캐스케이딩(Cascading) 우선순위 규칙을 알아봅니다.",
+      "type": "doc",
+      "tags": ["CSS", "style", "selector", "선택자", "cascading", "캐스케이딩"],
+      "path": "../content/web-fundamentals/CSS/01-2.md"
     },
     {
       "id": "font-and-text", 
