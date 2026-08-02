@@ -128,7 +128,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/CSS/07.md"
+      "path": "../content/web-fundamentals/CSS/07-1.md"
     },
     {
       "id": "position", 
@@ -136,7 +136,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/CSS/08.md"
+      "path": "../content/web-fundamentals/CSS/07-2.md"
     },
     {
       "id": "background", 
@@ -144,7 +144,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/CSS/09.md"
+      "path": "../content/web-fundamentals/CSS/08-1.md"
     },
     {
       "id": "gradient", 
@@ -152,7 +152,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/CSS/10.md"
+      "path": "../content/web-fundamentals/CSS/08-2.md"
     },
     {
       "id": "ResponsiveWeb", 
@@ -160,7 +160,7 @@
       "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
       "type": "doc",
       "tags": ["CSS", "table"],
-      "path": "../content/web-fundamentals/CSS/11.md"
+      "path": "../content/web-fundamentals/CSS/09.md"
     }
   ],
   "admin": [
