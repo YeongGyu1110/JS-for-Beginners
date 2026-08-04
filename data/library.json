@@ -66,18 +66,18 @@
     },
     {
       "id": "block-and-inline", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "화면 배치 원리와 그룹화 태그",
+      "description": "웹 페이지 레이아웃의 기본이 되는 블록(Block)과 인라인(Inline) 요소의 개념 및 중첩 규칙을 이해하고, 구역을 그룹화하는 투명 컨테이너 태그인 div와 span의 역할과 쓰임새를 학습합니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["HTML", "block", "inline", "div", "span", "레이아웃"],
       "path": "../content/web-fundamentals/HTML/09.md"
     },
     {
       "id": "button-iframe-meta", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "웹 페이지의 완성도 높이기",
+      "description": "자식 요소를 자유롭게 품는 버튼(button) 태그와 외부 콘텐츠를 내 화면에 띄우는 아이프레임(iframe) 태그의 활용법을 익히고, 파비콘(Favicon) 설정 및 링크 공유 시 미리보기를 제공하는 오픈 그래프(Open Graph) 메타 태그 작성법을 배웁니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["HTML", "button", "iframe", "meta", "favicon", "open-graph"],
       "path": "../content/web-fundamentals/HTML/10.md"
     }
   ],
@@ -85,17 +85,17 @@
     {
       "id": "css-basics", 
       "title": "CSS의 기초와 스타일 적용 방법",
-      "description": "CSS의 기본 개념과 스타일 작성 문법을 이해하고, 웹 문서에 CSS를 적용하는 3가지 방법(인라인, 내부, 외부) 및 기본 선택자 사용법과 캐스케이딩(Cascading) 우선순위 규칙을 알아봅니다.",
+      "description": "CSS의 기본 개념과 스타일 및 스타일 시트의 차이를 이해하고, 선택자·속성·값 구조의 기본 문법과 웹 문서에 스타일을 적용하는 3가지 방법(인라인, 내부, 외부)을 학습합니다.",
       "type": "doc",
-      "tags": ["CSS", "style", "selector", "선택자", "cascading", "캐스케이딩"],
+      "tags": ["CSS", "inline"],
       "path": "../content/web-fundamentals/CSS/01-1.md"
     },
     {
-      "id": "css-basics2", 
-      "title": "CSS의 기초와 스타일 적용 방법",
-      "description": "CSS의 기본 개념과 스타일 작성 문법을 이해하고, 웹 문서에 CSS를 적용하는 3가지 방법(인라인, 내부, 외부) 및 기본 선택자 사용법과 캐스케이딩(Cascading) 우선순위 규칙을 알아봅니다.",
+      "id": "css-selectors-cascading", 
+      "title": "CSS 선택자와 캐스케이딩 원리",
+      "description": "전체, 태그, 클래스, 아이디 선택자 등 4가지 기본 선택자의 사용법을 익히고, 명시도 점수, 스타일 상속, 코드 순서에 기반한 캐스케이딩(Cascading) 우선순위 규칙을 다룹니다.",
       "type": "doc",
-      "tags": ["CSS", "style", "selector", "선택자", "cascading", "캐스케이딩"],
+      "tags": ["CSS", "selector", "선택자"],
       "path": "../content/web-fundamentals/CSS/01-2.md"
     },
     {
@@ -124,74 +124,74 @@
     },
     {
       "id": "box-model", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "박스 모델과 크기 제어",
+      "description": "웹 페이지 요소의 기본 구조인 박스 모델의 4가지 영역(콘텐츠, 패딩, 테두리, 마진)을 이해하고, 박스 크기 계산 방식을 직관적으로 바꾸는 box-sizing 속성과 입체감을 더하는 box-shadow 속성의 활용법을 학습합니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "margin", "padding", "border"],
       "path": "../content/web-fundamentals/CSS/05.md"
     },
     {
       "id": "margin-border-padding", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "여백과 테두리 상세 가이드",
+      "description": "박스의 안팎 간격을 제어하는 패딩과 마진의 축약형 작성법부터 테두리를 다루는 border 및 border-radius 속성을 배우고, 수직 마진이 겹칠 때 발생하는 마진 병합(Margin Collapsing) 현상의 원리와 해결 방법을 다룹니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "margin", "padding", "border"],
       "path": "../content/web-fundamentals/CSS/06.md"
     },
     {
       "id": "display-and-float", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "CSS 레이아웃 기초 1부 (Display & Float)",
+      "description": "요소의 배치 성질을 결정하는 display 속성(block, inline, inline-block, none)의 차이를 알아보고, 요소를 가로로 정렬하는 float 속성과 레이아웃 붕괴를 방지하는 clear 속성의 원리를 학습합니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "display", "레이아웃"],
       "path": "../content/web-fundamentals/CSS/07-1.md"
     },
     {
       "id": "position", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "CSS 레이아웃 기초 2부 (Position & 좌표 제어)",
+      "description": "요소의 배치 기준점을 정하는 position 속성(static, relative, absolute, fixed, sticky)과 좌표 속성(top, right, bottom, left)을 배우고, 요소 간 z축 깊이 순서를 정하는 z-index의 활용법을 다룹니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "position", "레이아웃"],
       "path": "../content/web-fundamentals/CSS/07-2.md"
     },
     {
       "id": "background", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "CSS 배경 스타일링 1부 (이미지와 제어 속성)",
+      "description": "요소 배경에 이미지를 삽입하는 background-image 속성과 함께, 이미지의 반복 패턴(repeat), 크기 조절(size: cover/contain), 위치(position), 기준점 및 잘림 영역(origin/clip)을 제어하는 다양한 배경 속성을 학습합니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "background"],
       "path": "../content/web-fundamentals/CSS/08-1.md"
     },
     {
       "id": "gradient", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "CSS 배경 스타일링 2부 (그레이디언트와 단축 속성)",
+      "description": "CSS 코드만으로 자연스러운 색상 전환을 만드는 선형·원형·원뿔형 그레이디언트 작성법과 다중 배경 배치 기법을 익히고, 여러 배경 속성을 한 줄로 깔끔하게 축약하는 background 단축 속성 사용법을 다룹니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "background"],
       "path": "../content/web-fundamentals/CSS/08-2.md"
     },
     {
-      "id": "ResponsiveWeb", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "id": "responsive-web", 
+      "title": "반응형 웹과 미디어 쿼리",
+      "description": "다양한 기기 해상도에 맞춰 레이아웃이 유연하게 변하는 반응형 웹의 기본 개념과 viewport 메타 태그를 이해하고, 미디어 쿼리(@media) 작성법 및 모바일 퍼스트 전략에 기반한 브레이크포인트 설정을 학습합니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "반응형_웹"],
       "path": "../content/web-fundamentals/CSS/09.md"
     },
     {
       "id": "flexbox-layout", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "플렉스 박스 레이아웃 (Flexbox)",
+      "description": "1차원 방향으로 요소를 유연하게 배치하는 플렉스 박스(Flexbox)의 컨테이너와 아이템 관계를 이해하고, 주축/교차축 기준 정렬(justify-content, align-items), 줄바꿈(flex-wrap) 및 완벽한 중앙 정렬 기법을 다룹니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "레이아웃", "반응형_웹"],
       "path": "../content/web-fundamentals/CSS/10.md"
     },
     {
       "id": "advanced-selectors", 
-      "title": "표 스타일링 (Table Style)",
-      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "title": "CSS 고급 선택자 (Advanced Selectors)",
+      "description": "HTML 계층 구조를 이용하는 연결 선택자와 특정 속성값을 찾는 속성 선택자, 요소의 상태 및 순서를 감지하는 가상 클래스(:hover, :nth-child), 그리고 가상 요소(::before, ::after)를 활용해 요소를 정밀하게 타격하는 스타일링 기법을 학습합니다.",
       "type": "doc",
-      "tags": ["CSS", "table"],
+      "tags": ["CSS", "selector", "선택자"],
       "path": "../content/web-fundamentals/CSS/11.md"
     }
   ],
