@@ -95,7 +95,7 @@
       "title": "CSS 선택자와 캐스케이딩 원리",
       "description": "전체, 태그, 클래스, 아이디 선택자 등 4가지 기본 선택자의 사용법을 익히고, 명시도 점수, 스타일 상속, 코드 순서에 기반한 캐스케이딩(Cascading) 우선순위 규칙을 다룹니다.",
       "type": "doc",
-      "tags": ["CSS", "selector", "선택자"],
+      "tags": ["CSS", "selector", "선택자", "px", "rem", "em", "폰트"],
       "path": "../content/web-fundamentals/CSS/01-2.md"
     },
     {
