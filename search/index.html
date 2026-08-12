@@ -225,12 +225,13 @@
                 // 펼쳐진 상태면 전체, 아니면 4개만 자르기
                 const tagsToShow = isTagsExpanded ? allTags : allTags.slice(0, 4);
                 
-                let html = tagsToShow.map(tag => `<button class="tag" data-tag="#${tag}">#${tag}</button>`).join('');
+                let html = tagsToShow.map(tag => `<button class="post-tag" data-tag="#${tag}">#${tag}</button>`).join('');
                 
                 if (allTags.length > 4) {
                     const toggleText = isTagsExpanded ? "- LESS" : "+ MORE";
-                    // aria-expanded 속성을 추가하여 버튼이 펼쳐진 상태인지 스크린 리더에게 알려줍니다.
-                    html += `<button class="tag toggle-tags-btn" style="background-color: transparent;" aria-expanded="${isTagsExpanded}">${toggleText}</button>`;
+                    // 기존 태그와 구분되도록 점선 테두리 적용
+                    // html += `<button class="tag toggle-tags-btn" style="border-style: dashed; background-color: transparent;">${toggleText}</button>`;
+                    html += `<button class="post-tag toggle-tags-btn" style="background-color: transparent;">${toggleText}</button>`;
                 }
                 
                 suggestedTagsContainer.innerHTML = html;
@@ -301,7 +302,7 @@
                     resultsContainer.innerHTML = filtered.map(post => {
                         const target = post.type === 'lab' ? '../lab/' : '../docs/';
                         const badge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                        const tagsHtml = post.tags.map(t => `<button class="tag result-tag" data-tag="#${t}">#${t}</button>`).join('');
+                        const tagsHtml = post.tags.map(t => `<button class="post-tag result-tag" data-tag="#${t}">#${t}</button>`).join('');
                         return `
                             <article class="search-result-item">
                                 <a href="${target}?id=${post.id}" class="search-result-title">${post.title}${badge}</a>
@@ -345,7 +346,7 @@
                     return;
                 }
 
-                if (e.target.classList.contains('tag') && e.target.hasAttribute('data-tag')) {
+                if (e.target.classList.contains('post-tag') && e.target.hasAttribute('data-tag')) {
                     const tagQuery = e.target.getAttribute('data-tag');
                     searchInput.value = tagQuery;
                     renderSearch(tagQuery);

@@ -1,9 +1,205 @@
 {
+  "web-fundamentals: HTML": [
+    {
+      "id": "web-dev-basics", 
+      "title": "HTML과 웹 브라우저의 동작 원리",
+      "description": "웹 페이지의 구조를 정의하는 HTML의 개념과 마크업 언어인 이유를 이해하고, HTML 문서를 해독하여 화면에 그리는 브라우저의 렌더링 과정(파싱, DOM 트리 구축, 페인팅)을 알아봅니다.",
+      "type": "doc",
+      "tags": ["HTML", "렌더링"],
+      "path": "../content/web-fundamentals/HTML/01.md"
+    },
+    {
+      "id": "html-liveServer", 
+      "title": "실습: 첫 HTML 파일 만들기와 Live Server 활용",
+      "description": "VS Code에서 첫 HTML 파일을 생성하고 브라우저로 직접 열어본 뒤, Live Server 확장 프로그램을 설치하여 코드를 저장할 때마다 실시간으로 렌더링되는 개발 환경을 구축하는 실습을 진행합니다.",
+      "type": "lab",
+      "tags": ["HTML", "렌더링", "확장_프로그램", "LAB"],
+      "path": "../content/web-fundamentals/HTML/02.md"
+    },
+    {
+      "id": "html-structure-and-tags", 
+      "title": "HTML 문서의 기본 뼈대와 태그",
+      "description": "HTML 태그의 기본 문법과 문서의 필수 뼈대인 !DOCTYPE html, html, head, body의 역할을 이해하고, 웹 접근성과 SEO를 높이는 시맨틱 태그의 종류와 활용법을 학습합니다.",
+      "type": "doc",
+      "tags": ["HTML", "tag"],
+      "path": "../content/web-fundamentals/HTML/03.md"
+    },
+    {
+      "id": "text-formatting-tags", 
+      "title": "텍스트 관련 태그 (제목, 문단, 꾸밈)",
+      "description": "글의 구조를 잡는 제목(h1~h6) 및 문단(p) 태그부터 줄바꿈(br), 구분선(hr), 인용구(blockquote), 그리고 의미와 강조를 더하는 다양한 텍스트 서식 태그들의 쓰임새를 배웁니다.",
+      "type": "doc",
+      "tags": ["HTML", "text", "font"],
+      "path": "../content/web-fundamentals/HTML/04.md"
+    },
+    {
+      "id": "list-and-table", 
+      "title": "목록과 표 (List & Table)",
+      "description": "항목을 나열하는 목록 태그(ul, ol, dl)의 사용법과 표를 구성하는 기본 태그(table, tr, th, td), 의미론적 표 구조(thead, tbody, tfoot), 그리고 셀 병합 속성(colspan, rowspan)을 학습합니다.",
+      "type": "doc",
+      "tags": ["HTML", "list", "table"],
+      "path": "../content/web-fundamentals/HTML/05.md"
+    },
+    {
+      "id": "img-audio-video", 
+      "title": "멀티미디어 (이미지, 오디오, 비디오)",
+      "description": "이미지(img) 태그의 필수 속성과 상대 경로의 개념을 이해하고, 웹 페이지에 음성과 영상을 삽입하는 audio, video 태그의 주요 제어 속성 및 브라우저 자동 재생 정책을 다룹니다",
+      "type": "doc",
+      "tags": ["HTML", "src", "alt"],
+      "path": "../content/web-fundamentals/HTML/06.md"
+    },
+    {
+      "id": "hyperlink", 
+      "title": "하이퍼링크 (Hyperlink)",
+      "description": "a 태그와 href 속성을 통해 외부 및 내부 페이지를 연결하고, target=\"_blank\"를 통한 새 탭 열기, id 속성을 활용한 내부 앵커 점프 기능, 특수 링크(mailto:, tel:) 작성법을 배웁니다.",
+      "type": "doc",
+      "tags": ["HTML", "a", "href"],
+      "path": "../content/web-fundamentals/HTML/07.md"
+    },
+    {
+      "id": "form", 
+      "title": "폼과 사용자 입력 (Form)",
+      "description": "사용자 데이터를 서버로 전송하는 form 태그의 작동 방식(GET/POST)과 input의 다양한 type, 접근성을 높이는 label 태그, textarea, select 요소 및 보조 속성 활용법을 다룹니다.",
+      "type": "doc",
+      "tags": ["HTML", "input", "form", "label"],
+      "path": "../content/web-fundamentals/HTML/08.md"
+    },
+    {
+      "id": "block-and-inline", 
+      "title": "화면 배치 원리와 그룹화 태그",
+      "description": "웹 페이지 레이아웃의 기본이 되는 블록(Block)과 인라인(Inline) 요소의 개념 및 중첩 규칙을 이해하고, 구역을 그룹화하는 투명 컨테이너 태그인 div와 span의 역할과 쓰임새를 학습합니다.",
+      "type": "doc",
+      "tags": ["HTML", "block", "inline", "div", "span", "레이아웃"],
+      "path": "../content/web-fundamentals/HTML/09.md"
+    },
+    {
+      "id": "button-iframe-meta", 
+      "title": "웹 페이지의 완성도 높이기",
+      "description": "자식 요소를 자유롭게 품는 버튼(button) 태그와 외부 콘텐츠를 내 화면에 띄우는 아이프레임(iframe) 태그의 활용법을 익히고, 파비콘(Favicon) 설정 및 링크 공유 시 미리보기를 제공하는 오픈 그래프(Open Graph) 메타 태그 작성법을 배웁니다.",
+      "type": "doc",
+      "tags": ["HTML", "button", "iframe", "meta", "favicon", "open-graph"],
+      "path": "../content/web-fundamentals/HTML/10.md"
+    }
+  ],
+  "web-fundamentals: CSS": [
+    {
+      "id": "css-basics", 
+      "title": "CSS의 기초와 스타일 적용 방법",
+      "description": "CSS의 기본 개념과 스타일 및 스타일 시트의 차이를 이해하고, 선택자·속성·값 구조의 기본 문법과 웹 문서에 스타일을 적용하는 3가지 방법(인라인, 내부, 외부)을 학습합니다.",
+      "type": "doc",
+      "tags": ["CSS", "inline"],
+      "path": "../content/web-fundamentals/CSS/01-1.md"
+    },
+    {
+      "id": "css-selectors-cascading", 
+      "title": "CSS 선택자와 캐스케이딩 원리",
+      "description": "전체, 태그, 클래스, 아이디 선택자 등 4가지 기본 선택자의 사용법을 익히고, 명시도 점수, 스타일 상속, 코드 순서에 기반한 캐스케이딩(Cascading) 우선순위 규칙을 다룹니다.",
+      "type": "doc",
+      "tags": ["CSS", "selector", "선택자", "px", "rem", "em", "폰트"],
+      "path": "../content/web-fundamentals/CSS/01-2.md"
+    },
+    {
+      "id": "font-and-text", 
+      "title": "글꼴과 텍스트 스타일",
+      "description": "font-family와 예비 글꼴 설정부터 px, rem 단위 기반의 글자 크기, 두께, 기울임 제어, 그리고 문단 정렬과 행간, 자간 조절 등 가독성을 높이는 텍스트 타이포그래피 속성을 학습합니다.",
+      "type": "doc",
+      "tags": ["CSS", "text", "font", "align"],
+      "path": "../content/web-fundamentals/CSS/02.md"
+    },
+    {
+      "id": "list-style", 
+      "title": "목록 스타일링 (List Style)",
+      "description": "목록 기호의 형태, 위치, 이미지를 제어하는 list-style 속성을 배우고, 기본 불릿을 제거한 뒤 ul과 li 태그를 활용해 가로형 내비게이션 메뉴바를 제작하는 실무 응용법을 다룹니다.",
+      "type": "doc",
+      "tags": ["CSS", "list"],
+      "path": "../content/web-fundamentals/CSS/03.md"
+    },
+    {
+      "id": "table-style", 
+      "title": "표 스타일링 (Table Style)",
+      "description": "border-collapse 속성을 통한 이중 테두리 정리부터 셀 패딩, 정렬 방식 설정, 그리고 가독성을 높이는 얼룩말 무늬 디자인과 마우스 호버 효과를 활용해 표를 스타일링합니다.",
+      "type": "doc",
+      "tags": ["CSS", "table"],
+      "path": "../content/web-fundamentals/CSS/04.md"
+    },
+    {
+      "id": "box-model", 
+      "title": "박스 모델과 크기 제어",
+      "description": "웹 페이지 요소의 기본 구조인 박스 모델의 4가지 영역(콘텐츠, 패딩, 테두리, 마진)을 이해하고, 박스 크기 계산 방식을 직관적으로 바꾸는 box-sizing 속성과 입체감을 더하는 box-shadow 속성의 활용법을 학습합니다.",
+      "type": "doc",
+      "tags": ["CSS", "margin", "padding", "border"],
+      "path": "../content/web-fundamentals/CSS/05.md"
+    },
+    {
+      "id": "margin-border-padding", 
+      "title": "여백과 테두리 상세 가이드",
+      "description": "박스의 안팎 간격을 제어하는 패딩과 마진의 축약형 작성법부터 테두리를 다루는 border 및 border-radius 속성을 배우고, 수직 마진이 겹칠 때 발생하는 마진 병합(Margin Collapsing) 현상의 원리와 해결 방법을 다룹니다.",
+      "type": "doc",
+      "tags": ["CSS", "margin", "padding", "border"],
+      "path": "../content/web-fundamentals/CSS/06.md"
+    },
+    {
+      "id": "display-and-float", 
+      "title": "Display와 Float (CSS 레이아웃의 기초 1부) ",
+      "description": "요소의 배치 성질을 결정하는 display 속성(block, inline, inline-block, none)의 차이를 알아보고, 요소를 가로로 정렬하는 float 속성과 레이아웃 붕괴를 방지하는 clear 속성의 원리를 학습합니다.",
+      "type": "doc",
+      "tags": ["CSS", "display", "레이아웃"],
+      "path": "../content/web-fundamentals/CSS/07-1.md"
+    },
+    {
+      "id": "position", 
+      "title": "Position과 좌표 제어 (CSS 레이아웃의 기초 2부)",
+      "description": "요소의 배치 기준점을 정하는 position 속성(static, relative, absolute, fixed, sticky)과 좌표 속성(top, right, bottom, left)을 배우고, 요소 간 z축 깊이 순서를 정하는 z-index의 활용법을 다룹니다.",
+      "type": "doc",
+      "tags": ["CSS", "position", "레이아웃"],
+      "path": "../content/web-fundamentals/CSS/07-2.md"
+    },
+    {
+      "id": "background", 
+      "title": "이미지와 제어 속성 (CSS 배경 스타일링 1부)",
+      "description": "요소 배경에 이미지를 삽입하는 background-image 속성과 함께, 이미지의 반복 패턴(repeat), 크기 조절(size: cover/contain), 위치(position), 기준점 및 잘림 영역(origin/clip)을 제어하는 다양한 배경 속성을 학습합니다.",
+      "type": "doc",
+      "tags": ["CSS", "background"],
+      "path": "../content/web-fundamentals/CSS/08-1.md"
+    },
+    {
+      "id": "gradient", 
+      "title": "그레이디언트와 단축 속성 (CSS 배경 스타일링 2부)",
+      "description": "CSS 코드만으로 자연스러운 색상 전환을 만드는 선형·원형·원뿔형 그레이디언트 작성법과 다중 배경 배치 기법을 익히고, 여러 배경 속성을 한 줄로 깔끔하게 축약하는 background 단축 속성 사용법을 다룹니다.",
+      "type": "doc",
+      "tags": ["CSS", "background"],
+      "path": "../content/web-fundamentals/CSS/08-2.md"
+    },
+    {
+      "id": "responsive-web", 
+      "title": "반응형 웹과 미디어 쿼리",
+      "description": "다양한 기기 해상도에 맞춰 레이아웃이 유연하게 변하는 반응형 웹의 기본 개념과 viewport 메타 태그를 이해하고, 미디어 쿼리(@media) 작성법 및 모바일 퍼스트 전략에 기반한 브레이크포인트 설정을 학습합니다.",
+      "type": "doc",
+      "tags": ["CSS", "반응형_웹"],
+      "path": "../content/web-fundamentals/CSS/09.md"
+    },
+    {
+      "id": "flexbox-layout", 
+      "title": "플렉스 박스 레이아웃 (Flexbox)",
+      "description": "1차원 방향으로 요소를 유연하게 배치하는 플렉스 박스(Flexbox)의 컨테이너와 아이템 관계를 이해하고, 주축/교차축 기준 정렬(justify-content, align-items), 줄바꿈(flex-wrap) 및 완벽한 중앙 정렬 기법을 다룹니다.",
+      "type": "doc",
+      "tags": ["CSS", "레이아웃", "반응형_웹"],
+      "path": "../content/web-fundamentals/CSS/10.md"
+    },
+    {
+      "id": "advanced-selectors", 
+      "title": "CSS 고급 선택자 (Advanced Selectors)",
+      "description": "HTML 계층 구조를 이용하는 연결 선택자와 특정 속성값을 찾는 속성 선택자, 요소의 상태 및 순서를 감지하는 가상 클래스(:hover, :nth-child), 그리고 가상 요소(::before, ::after)를 활용해 요소를 정밀하게 타격하는 스타일링 기법을 학습합니다.",
+      "type": "doc",
+      "tags": ["CSS", "selector", "선택자"],
+      "path": "../content/web-fundamentals/CSS/11.md"
+    }
+  ],
   "admin": [
     {
       "id": "test-style", 
       "title": "스타일 테스트",
-      "description": "",
+      "description": "실습 기능을 테스트하고 점검하기 위한 테스트용 문서입니다. 실제 콘텐츠가 아닌, 실습 전용 요소가 올바르게 동작되는지 확인하는 용도로 사용하세요.",
       "type": "doc",
       "tags": ["admin"],
       "path": "../content/admin/style-test.md"
@@ -11,7 +207,7 @@
     {
       "id": "test-lab", 
       "title": "실습 테스트",
-      "description": "",
+      "description": "마크다운 렌더링 품질과 CSS 스타일을 점검하기 위한 테스트용 문서입니다. 실제 콘텐츠가 아닌, 모든 마크다운 요소가 의도한 대로 표시되는지 확인하는 용도로 사용하세요.",
       "type": "lab",
       "tags": ["admin"],
       "path": "../content/admin/lab.md"

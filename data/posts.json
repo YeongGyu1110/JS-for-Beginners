@@ -6,7 +6,7 @@
       "description": "프로그래밍의 기본 개념과 자바스크립트의 탄생 배경, 그리고 많은 사람들이 혼동하는 자바(Java)와의 차이점을 알아봅니다.",
       "type": "doc",
       "tags": ["JavaScript", "Java"],
-      "path": "../content/chapter01/01.md",
+      "path": "../content/javascript-fundamentals/chapter01/01.md",
       "order": 1
     },
     {
@@ -15,7 +15,7 @@
       "description": "크롬 개발자 도구를 실행하는 방법을 배우고, alert와 confirm 함수를 이용해 브라우저에 첫 명령을 내립니다.",
       "type": "doc",
       "tags": ["alert", "confirm", "개발자도구", "브라우저"],
-      "path": "../content/chapter01/02.md",
+      "path": "../content/javascript-fundamentals/chapter01/02.md",
       "order": 2
     },
     {
@@ -23,8 +23,8 @@
       "title": "자바스크립트 개발 환경 구축하기",
       "description": "본격적인 코딩을 위해 코드 에디터 VS Code와 실행 엔진 Node.js를 설치하여 로컬 개발 환경을 구축합니다",
       "type": "doc",
-      "tags": ["환경설정", "Visual_Studio_Code", "VS_Code", "Node.js"],
-      "path": "../content/chapter01/03.md",
+      "tags": ["환경설정", "Visual_Studio_Code", "VS_Code", "Node.js", "확장_프로그램"],
+      "path": "../content/javascript-fundamentals/chapter01/03.md",
       "order": 3
     },
     {
@@ -33,7 +33,7 @@
       "description":  "자바스크립트 파일을 생성하고 Node.js를 통해 터미널에서 직접 코드를 실행 및 수정하며 동작 원리를 파악합니다.",
       "type": "doc",
       "tags": ["Node.js", "터미널"],
-      "path": "../content/chapter01/04.md",
+      "path": "../content/javascript-fundamentals/chapter01/04.md",
       "order": 4
     }
   ],
@@ -44,7 +44,7 @@
       "description": "자바스크립트의 기본 실행 단위인 문(Statement)을 이해하고, 변수를 생성해 데이터를 저장하고 터미널에 출력하는 방법을 알아봅니다.",
       "type": "doc",
       "tags": ["변수", "let", "console.log", "변수", "출력", "템플릿_리터럴"],
-      "path": "../content/chapter02/01.md",
+      "path": "../content/javascript-fundamentals/chapter02/01.md",
       "order": 1
     },
     {
@@ -53,7 +53,7 @@
       "description":  "let, const, var 키워드의 차이점(재할당 및 중복 선언)을 비교하고, 에러 없는 안전한 변수 이름 짓기 규칙(네이밍 컨벤션)을 학습합니다.",
       "type": "doc",
       "tags": ["변수", "let", "const", "var", "카멜_케이스", "스크림밍_스네이크_케이스"],
-      "path": "../content/chapter02/02.md",
+      "path": "../content/javascript-fundamentals/chapter02/02.md",
       "order": 2
     },
     {
@@ -62,7 +62,7 @@
       "description": "숫자, 문자열, 논리형 등 원시 자료형과 객체, 배열 등 참조 자료형의 개념을 배우고, typeof 연산자로 데이터 타입을 확인해 봅니다.",
       "type": "doc",
       "tags": ["자료형", "typeof", "원시형", "null", "undefined", "참조형"],
-      "path": "../content/chapter02/03.md",
+      "path": "../content/javascript-fundamentals/chapter02/03.md",
       "order": 3
     },
     {
@@ -71,7 +71,7 @@
       "description": "String(), Number(), Boolean() 함수를 사용하여 데이터의 자료형을 원하는 형태로 명시적으로 변환하는 방법과 각 자료형 변환 시 주의해야 할 점을 학습합니다.",
       "type": "doc",
       "tags": ["자료형", "String()", "Number()", "Boolean()", "Truthy", "Falsy", "NaN", "형변환"],
-      "path": "../content/chapter02/04.md",
+      "path": "../content/javascript-fundamentals/chapter02/04.md",
       "order": 4
     },
     {
@@ -80,7 +80,7 @@
       "description": "prompt() 함수를 통해 사용자로부터 데이터를 입력받고, 숫자로 변환하여 연산한 뒤 출력하는 과정을 실습합니다.",
       "type": "lab",
       "tags": ["변수", "자료형", "개발자도구", "브라우저", "prompt()", "LAB"],
-      "path": "../content/chapter02/05.md",
+      "path": "../content/javascript-fundamentals/chapter02/05.md",
       "order": 5
     }
   ],
@@ -91,7 +91,7 @@
       "description": "연산자와 피연산자의 개념을 이해하고, 가장 기초가 되는 사칙연산, 거듭제곱, 나머지 연산자와 문자열 연결, 그리고 계산의 순서를 결정하는 우선순위에 대해 알아봅니다.",
       "type": "doc",
       "tags": ["연산자", "피연산자"],
-      "path": "../content/chapter03/01.md",
+      "path": "../content/javascript-fundamentals/chapter03/01.md",
       "order": 1
     },
     {
@@ -100,7 +100,7 @@
       "description": "자신의 원래 값에 기반하여 변수를 업데이트하는 복합 할당 연산자, 값을 1씩 올리거나 내리는 증감 연산자(전위/후위), 그리고 이진수 단위로 조작하는 비트 연산자를 학습합니다.",
       "type": "doc",
       "tags": ["연산자"],
-      "path": "../content/chapter03/02.md",
+      "path": "../content/javascript-fundamentals/chapter03/02.md",
       "order": 2
     },
     {
@@ -109,7 +109,7 @@
       "description": "여러 조건을 결합하거나 뒤집는 논리 연산자(AND, OR, NOT)의 단축 평가 원리와, 값이 비어있을 때를 안전하게 처리해 주는 최신 문법인 Nullish 병합 연산자(??)에 대해 학습합니다.",
       "type": "doc",
       "tags": ["연산자", "자료형", "단축_평가", "null", "undefined", "Truthy", "Falsy"],
-      "path": "../content/chapter03/03.md",
+      "path": "../content/javascript-fundamentals/chapter03/03.md",
       "order": 3
     },
     {
@@ -118,7 +118,7 @@
       "description": "두 값을 비교하는 방법과 자바스크립트가 문자를 비교하는 원리를 배우며, 동등 연산자(==)와 엄격한 일치 연산자(===)의 차이 및 자동 형변환의 주의점을 상세히 다룹니다.",
       "type": "doc",
       "tags": ["연산자", "자료형", "형변환", "유니코드"],
-      "path": "../content/chapter03/04.md",
+      "path": "../content/javascript-fundamentals/chapter03/04.md",
       "order": 4
     },
     {
@@ -127,7 +127,7 @@
       "description": "논리 연산자(&&, ||, ??)의 단축 평가와 비교 연산자만을 활용하여 로그인 기능 및 프로필 환경 설정 기능을 구현하는 과정을 실습합니다.",
       "type": "lab",
       "tags": ["연산자", "단축_평가", "Node.js", "LAB"],
-      "path": "../content/chapter03/05.md",
+      "path": "../content/javascript-fundamentals/chapter03/05.md",
       "order": 5
     }
   ],
@@ -138,7 +138,7 @@
       "description": "if문, else, else if문의 기본 구조와 작동 원리를 배우고, 소괄호 내부에서 일어나는 Truthy/Falsy 자동 형변환 개념 및 조건부 연산자(삼항 연산자)의 올바른 활용법에 대해 다룹니다.",
       "type": "doc",
       "tags": ["조건문", "if", "else", "Truthy", "Falsy", "형변환"],
-      "path": "../content/chapter04/01.md",
+      "path": "../content/javascript-fundamentals/chapter04/01.md",
       "order": 1
     },
     {
@@ -147,7 +147,7 @@
       "description": "switch문에 대해 다룹니다. 엄격한 일치 연산(===) 기준의 비교 방식, break 키워드의 중요성, 그리고 의도적인 폴스루(Fallthrough) 현상을 활용한 case 묶기 기법을 배웁니다.",
       "type": "doc",
       "tags": ["조건문", "switch", "case", "break", "default"],
-      "path": "../content/chapter04/02.md",
+      "path": "../content/javascript-fundamentals/chapter04/02.md",
       "order": 2
     },
     {
@@ -156,7 +156,7 @@
       "description": "while문과 do...while문, 4가지 구성 요소를 갖춘 for문의 작동 원리 및 인라인 변수 선언에 대해 다룹니다.",
       "type": "doc",
       "tags": ["반복문", "while", "do_while", "for", "break", "continue", "Lable"],
-      "path": "../content/chapter04/03.md",
+      "path": "../content/javascript-fundamentals/chapter04/03.md",
       "order": 3
     },
     {
@@ -165,7 +165,7 @@
       "description": "'최소 화폐 개수 거스름돈 계산 알고리즘'을 구현하는 실습 가이드입니다. 결제 부족 예외 처리, 10원 미만 자투리 금액 절삭과 나머지 연산자(%)를 활용한 탐욕법(Greedy) 기초를 익힙니다.",
       "type": "lab",
       "tags": ["조건문", "반복문", "Node.js", "LAB"],
-      "path": "../content/chapter04/04.md",
+      "path": "../content/javascript-fundamentals/chapter04/04.md",
       "order": 4
     }
   ],
@@ -176,7 +176,7 @@
       "description": "함수의 선언과 호출의 차이를 이해하고, 올바른 이름 짓기 규칙(동사형, 카멜케이스) 및 지역 변수와 외부 변수(스코프)의 기초 개념을 학습합니다.",
       "type": "doc",
       "tags": ["함수", "변수", "스코프"],
-      "path": "../content/chapter05/01.md",
+      "path": "../content/javascript-fundamentals/chapter05/01.md",
       "order": 1
     },
     {
@@ -185,7 +185,7 @@
       "description": "함수 내부로 데이터를 전달하는 매개변수와 인수, 기본값(Default Parameter) 설정 방법, 그리고 결과를 내보내거나 실행을 즉시 종료하는 반환(return)에 대해 다룹니다.",
       "type": "doc",
       "tags": ["함수", "파라미터", "아규먼트", "return"],
-      "path": "../content/chapter05/02.md",
+      "path": "../content/javascript-fundamentals/chapter05/02.md",
       "order": 2
     },
     {
@@ -194,7 +194,7 @@
       "description": "함수를 '값'으로 취급하는 자바스크립트의 특성을 이해하고, 함수 선언문과의 핵심 차이점(호이스팅, 스코프) 및 콜백(Callback) 함수의 동작 원리를 알아봅니다.",
       "type": "doc",
       "tags": ["함수", "함수_표현식", "스코프", "콜백"],
-      "path": "../content/chapter05/03.md",
+      "path": "../content/javascript-fundamentals/chapter05/03.md",
       "order": 3
     },
     {
@@ -203,7 +203,7 @@
       "description": "ES6에 도입된 화살표 함수 문법을 학습하고, 매개변수 및 코드 길이에 따른 축약 규칙(암묵적 반환)을 통해 콜백 코드를 극도로 간결하게 작성하는 방법을 배웁니다.",
       "type": "doc",
       "tags": ["함수", "화살표_함수"],
-      "path": "../content/chapter05/04.md",
+      "path": "../content/javascript-fundamentals/chapter05/04.md",
       "order": 4
     },
     {
@@ -212,7 +212,7 @@
       "description": "함수 선언문, 화살표 함수, 매개변수 및 반환값, 그리고 콜백 패턴을 레고 블록처럼 조립하여 터미널 환경에서 작동하는 대화형 챗봇을 직접 구현하는 실습입니다.",
       "type": "lab",
       "tags": ["함수", "콜백", "Node.js", "LAB"],
-      "path": "../content/chapter05/05.md",
+      "path": "../content/javascript-fundamentals/chapter05/05.md",
       "order": 5
     }
   ]

@@ -373,7 +373,7 @@
                 const modulesHTML = chapterPosts.map((post, index) => {
                     const targetPage = post.type === 'lab' ? '../lab/' : '../docs/';
                     const labBadge = post.type === 'lab' ? `<span class="lab-badge">LAB</span>` : '';
-                    const tagsHTML = (post.tags || []).map(tag => `<a href="../search/?q=%23${tag}" class="tag">#${tag}</a>`).join('');
+                    const tagsHTML = (post.tags || []).map(tag => `<a href="../search/?q=%23${tag}" class="post-tag">#${tag}</a>`).join('');
                     
                     return `
                     <li class="module-card">
