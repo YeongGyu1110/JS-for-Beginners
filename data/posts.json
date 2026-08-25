@@ -11,7 +11,7 @@
     },
     {
       "id": "browser-console",
-      "title": "콘솔(Console)과 팝업",
+      "title": "콘솔과 팝업",
       "description": "크롬 개발자 도구를 실행하는 방법을 배우고, alert와 confirm 함수를 이용해 브라우저에 첫 명령을 내립니다.",
       "type": "doc",
       "tags": ["alert", "confirm", "개발자도구", "브라우저"],
